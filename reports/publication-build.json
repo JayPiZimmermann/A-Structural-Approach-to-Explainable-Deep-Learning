@@ -23,7 +23,7 @@
     "tex/chapters/00_text.tex": "949e37d324263c7a5c8658a534677032173b6f84d63318b554836f0b0dbfc139",
     "tex/chapters/01_introduction.tex": "1d7d32f02ae7f8eec1726d9d4fcebb87639c25280473ba0bd577efb2c8a25b75",
     "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656",
-    "tex/chapters/03_decompositions.tex": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
+    "tex/chapters/03_decompositions.tex": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645",
     "tex/chapters/04_game_theory.tex": "dc4faaef93b8e3c5ca28b65496aad9c132dfc939d4657bac867314348e5ad0fc",
     "tex/chapters/07_transformers.tex": "26c730ad2d28e8383702faf5a0a032abcdeeabc9366465e8becc76f434b69dd6",
     "tex/chapters/08_experiments.tex": "8c36d627b67d24cd2e8dc19facdd7c4359a329953253523ad99b1f7c5bb4366e",
@@ -101,7 +101,7 @@
     "tex/figures/smooth_curvature_function.tex": "6f5fbcc49df317b078e1d7262bee95d352451c9f41201f8e3afad5a6b8c180fb"
   },
   "bibliography_sha256": "9dbff2dbbf85dd705d21545774b2788da607ea59d751c5186e0551c58a47c79f",
-  "built_at_utc": "2026-11-20T10:51:10.170612+00:00",
+  "built_at_utc": "2026-11-20T11:06:37.844041+00:00",
   "checks": {
     "aliased_lean_mappings": {
       "eq:canonical_weight_split": {
@@ -215,6 +215,14 @@
               "reviewed_by": "/root/proof_receipt_editorial_check",
               "scope": "The previously reviewed MNIST/VGG/ResNet teaser sentence is now wrapped in the editorial changed environment. Removing only the wrapper reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and proof witnesses are unchanged. No new Lean build is asserted.",
               "source": "tex/chapters/03_decompositions.tex"
+            },
+            {
+              "after_source_sha256": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645",
+              "before_source_sha256": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
+              "recorded_at_utc": "2026-11-20T10:34:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "scope": "The Chapter 03 teaser sentence was revised to report localization and Selectivity gains without retraining or changing model predictions. Replacing this sentence with its previously reviewed wording reproduces the prior source byte-for-byte; all formal statements, equations, proofs, dependencies and witnesses are unchanged. No new Lean build is asserted.",
+              "source": "tex/chapters/03_decompositions.tex"
             }
           ],
           "entropy_notation_refresh": {
@@ -318,7 +326,7 @@
             "scope": "Softmax recovery proof expanded algebraically and concurrent user caption shortening retained; all protected Jacobian and sensitivity displays unchanged."
           },
           "source_sha256": {
-            "tex/chapters/03_decompositions.tex": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab"
+            "tex/chapters/03_decompositions.tex": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645"
           },
           "stabilization_concision_refresh": {
             "evidence": "reports/stabilization-concision/review.json",
@@ -729,7 +737,7 @@
       "path": "docs/thesis.pdf",
       "pinned_lean_uri_count": 155,
       "remote_link_count": 0,
-      "sha256": "c6d9b71130b37fe4a89a751018477dd0fe9c3cb77e559fda44e32f9a2a19cfa3",
+      "sha256": "3963d400676906b1b16df8a2d154e9269f9fca5ed5ef82cac9c55500d3c8731b",
       "underfull_boxes": 0,
       "unique_lean_uris": 118,
       "unresolved_reference_or_citation": false,
@@ -800,7 +808,7 @@
     "reports/implementation-comparison/evidence.json": "8a756b5364cdc120b2bfa81abac2283de26b186fa1ddfa4b218acbeb334188b9",
     "reports/implementation-comparison/manuscript-review.json": "ad6c43bd3fe4871f21c48a106d3f4278dacfde644bc85b264fdd070ff9271407",
     "reports/implementation-comparison/residual-packing-check.json": "278efbbb0a8ab02fc31fa754b22056b632d5098679b63cf2c717ea0f4bab8b8e",
-    "reports/introduction-restoration/publication-checks.json": "94950f525418718307792b4b698b90c06793f849858fedc63e1384b4156bb085",
+    "reports/introduction-restoration/publication-checks.json": "d42d116bead15fbf90b5da9e79fc459b89bc9ba203392cbbe0b62e51f0102af8",
     "reports/introduction-restoration/workspace-alignment-sources.json": "ee1118269404e4c078ceb6ea585e082e44ed561f8f6a3d926ba29e48c56f5552",
     "reports/layered-markov-graph/consistency.json": "04076317548bcba8d5fe9386006c090882713e78f99d00c2d13b47aec35f2593",
     "reports/layered-markov-graph/math-review.json": "dac14f9faf78526b6ef314bd73be305b64b4603bb17e5b788685cf713d95238a",
@@ -842,7 +850,7 @@
     "reports/single-pdf/integration.json": "b4e79fea441b1252238bd7065e624b92c2074a9caa0e5be12207ff774d19e776",
     "reports/single-pdf/inventory-candidate.json": "f8530f5a8866896030929ecf41686d7d8767992acd1fe586c1544d558755921c",
     "reports/single-pdf/inventory-comparison.json": "013ec06f3f0daca1b3793c528f6048061c5601a07e4d4f3814b26a4a9bd8d2a4",
-    "reports/single-pdf/lean-alias-reviews.json": "7ed3e81f630c9d64ec7e193587fb75967f06a5c259cf8dfed964ce1a34e3d90b",
+    "reports/single-pdf/lean-alias-reviews.json": "b495ffcc686e85cefa56da5ede9e0ed23fde0b5c7169f5b20062ce72d3a7cf7b",
     "reports/single-pdf/publication-checks.json": "e3a1d2b95173e67ac684407d1bafa1d75782c1ccf0d2cfd1fb4b43c0d5b0ae9e",
     "reports/single-pdf/validation-matrix-independent-review.json": "d46a11e1c252f926f30914e64e6ab88ba40f9e24e80d8f9176489f6ddf1062b6",
     "reports/single-pdf/validator-checks.json": "7eb8bd49c7f864c5cb5cad91f8c522cff74dfa261ff8e04fd88cc8bf18feffd9",
@@ -928,7 +936,7 @@
     "Text-review draft only: table bodies and qualitative image grids were omitted with rendering flags 0/0; this PDF is not the complete publication PDF."
   ],
   "pages": 137,
-  "pdf_sha256": "c6d9b71130b37fe4a89a751018477dd0fe9c3cb77e559fda44e32f9a2a19cfa3",
+  "pdf_sha256": "3963d400676906b1b16df8a2d154e9269f9fca5ed5ef82cac9c55500d3c8731b",
   "proof_source_commit": "1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06",
   "public_pdf": "docs/thesis.pdf",
   "publication_mode": "single_pdf_with_local_proofs",
@@ -1023,6 +1031,6 @@
     "unique_lean_uris": 123
   },
   "verification_receipt": "reports/introduction-restoration/publication-checks.json",
-  "verification_receipt_sha256": "94950f525418718307792b4b698b90c06793f849858fedc63e1384b4156bb085",
+  "verification_receipt_sha256": "d42d116bead15fbf90b5da9e79fc459b89bc9ba203392cbbe0b62e51f0102af8",
   "verification_scope": "142-page local-development text-review PDF with tables and qualitative grids omitted; 176 pinned links plus one local draft link all resolve. The toy-network lead/figure is absent from the active PDF; standalone plot/code assets are exploratory and excluded from active publication asset/evidence hashes."
 }

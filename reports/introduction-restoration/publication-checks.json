@@ -6,7 +6,7 @@
   "documents": {
     "thesis.pdf": {
       "path": "docs/thesis.pdf",
-      "sha256": "c6d9b71130b37fe4a89a751018477dd0fe9c3cb77e559fda44e32f9a2a19cfa3",
+      "sha256": "3963d400676906b1b16df8a2d154e9269f9fca5ed5ef82cac9c55500d3c8731b",
       "matches_compiled_pdf": true,
       "pages": 137,
       "overfull_boxes": 0,
@@ -40,32 +40,13 @@
     "expected_published_lean_link_count": 160,
     "physical_lean_labels": 155,
     "aliased_lean_mappings": {
-      "ptnb:eq:gibbs-lse": {
-        "canonical_label": "eq:legendre_fenchel",
-        "declaration": "Thesis.Regularization.routing_variational",
-        "physical_link_labels": [
-          "eq:legendre_fenchel",
-          "ptnb:eq:attn-qk-oracle"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:parity-minus": {
+      "ptnb:eq:parity-plus": {
         "canonical_label": "eq:parity_path_sums",
         "declaration": "Thesis.StoppingStructure.stopping_preactivation_parity_paths",
         "physical_link_labels": [
           "eq:parity_path_sums",
           "lem:parity_path",
           "ptnb:lem:parity-path"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "eq:closed_formula_h": {
-        "canonical_label": "eq:closed_formula_g",
-        "declaration": "HiddenMonotonicity.Network.affine_readout_closed_form",
-        "physical_link_labels": [
-          "eq:closed_formula_g"
         ],
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
@@ -82,40 +63,8 @@
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
       },
-      "ptnb:eq:routing-spne-stop": {
-        "canonical_label": "ptnb:eq:routing-activation-value",
-        "declaration": "Thesis.RoutingGate.chosenLogAction_optimal",
-        "physical_link_labels": [
-          "ptnb:eq:routing-activation-value"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:parity-plus": {
-        "canonical_label": "eq:parity_path_sums",
-        "declaration": "Thesis.StoppingStructure.stopping_preactivation_parity_paths",
-        "physical_link_labels": [
-          "eq:parity_path_sums",
-          "lem:parity_path",
-          "ptnb:lem:parity-path"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:attn-branch-policy": {
-        "canonical_label": "ptnb:eq:attn-value-policy",
-        "declaration": "Thesis.AttentionReference.attention_value_routing",
-        "physical_link_labels": [
-          "ptnb:eq:attn-value-policy",
-          "ptnb:eq:attn-value-routing",
-          "ptnb:eq:kl-lf-linearized",
-          "ptnb:prop:attn-value-policy"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:split-pos": {
-        "canonical_label": "eq:split_pos",
+      "ptnb:eq:split-neg": {
+        "canonical_label": "eq:split_neg",
         "declaration": "HiddenMonotonicity.affineChunk",
         "physical_link_labels": [
           "eq:split_neg",
@@ -280,6 +229,114 @@
           ]
         }
       },
+      "ptnb:eq:legendre-fenchel-app": {
+        "canonical_label": "eq:legendre_fenchel",
+        "declaration": "Thesis.Regularization.routing_variational",
+        "physical_link_labels": [
+          "eq:legendre_fenchel",
+          "ptnb:eq:attn-qk-oracle"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "eq:closed_formula_h": {
+        "canonical_label": "eq:closed_formula_g",
+        "declaration": "HiddenMonotonicity.Network.affine_readout_closed_form",
+        "physical_link_labels": [
+          "eq:closed_formula_g"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:softplus-decomp": {
+        "canonical_label": "eq:fsoft_def",
+        "declaration": "Thesis.Regularization.softSplit",
+        "physical_link_labels": [
+          "eq:fsoft_def"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:parity-minus": {
+        "canonical_label": "eq:parity_path_sums",
+        "declaration": "Thesis.StoppingStructure.stopping_preactivation_parity_paths",
+        "physical_link_labels": [
+          "eq:parity_path_sums",
+          "lem:parity_path",
+          "ptnb:lem:parity-path"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:split-pos": {
+        "canonical_label": "eq:split_pos",
+        "declaration": "HiddenMonotonicity.affineChunk",
+        "physical_link_labels": [
+          "eq:split_neg",
+          "eq:split_pos"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:gibbs-lse": {
+        "canonical_label": "eq:legendre_fenchel",
+        "declaration": "Thesis.Regularization.routing_variational",
+        "physical_link_labels": [
+          "eq:legendre_fenchel",
+          "ptnb:eq:attn-qk-oracle"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:attn-branch-policy": {
+        "canonical_label": "ptnb:eq:attn-value-policy",
+        "declaration": "Thesis.AttentionReference.attention_value_routing",
+        "physical_link_labels": [
+          "ptnb:eq:attn-value-policy",
+          "ptnb:eq:attn-value-routing",
+          "ptnb:eq:kl-lf-linearized",
+          "ptnb:prop:attn-value-policy"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "eq:canonical_weight_split": {
+        "canonical_label": "eq:weight_split",
+        "declaration": "HiddenMonotonicity.canonical_weight_split",
+        "physical_link_labels": [
+          "eq:weight_split"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:routing-spne-stop": {
+        "canonical_label": "ptnb:eq:routing-activation-value",
+        "declaration": "Thesis.RoutingGate.chosenLogAction_optimal",
+        "physical_link_labels": [
+          "ptnb:eq:routing-activation-value"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:stop-relu": {
+        "canonical_label": "eq:fstop_def",
+        "declaration": "Thesis.StoppingDecomposition.stopPair",
+        "physical_link_labels": [
+          "def:fstop",
+          "eq:fstop_def"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:lrp-eps-recursion": {
+        "canonical_label": "ptnb:eq:lrp-ab",
+        "declaration": "Thesis.RoutingSupport.sourceLRP",
+        "physical_link_labels": [
+          "ptnb:eq:lrp-ab"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
       "eq:delta_int_neg": {
         "canonical_label": "eq:delta_int_pos",
         "declaration": "HiddenMonotonicity.actual_negative_pullback",
@@ -303,7 +360,7 @@
             "eq:delta_minus_recursion"
           ],
           "source_sha256": {
-            "tex/chapters/03_decompositions.tex": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab"
+            "tex/chapters/03_decompositions.tex": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645"
           },
           "terminology_refresh": {
             "evidence": "reports/dc-terminology/consistency.json",
@@ -514,66 +571,17 @@
               "before_source_sha256": "993b31faa44fb6ece8c910d1332f28161b6ad990ba9357afa655b669cdfab08c",
               "after_source_sha256": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
               "scope": "The previously reviewed MNIST/VGG/ResNet teaser sentence is now wrapped in the editorial changed environment. Removing only the wrapper reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and proof witnesses are unchanged. No new Lean build is asserted."
+            },
+            {
+              "recorded_at_utc": "2026-11-20T10:34:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "source": "tex/chapters/03_decompositions.tex",
+              "before_source_sha256": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
+              "after_source_sha256": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645",
+              "scope": "The Chapter 03 teaser sentence was revised to report localization and Selectivity gains without retraining or changing model predictions. Replacing this sentence with its previously reviewed wording reproduces the prior source byte-for-byte; all formal statements, equations, proofs, dependencies and witnesses are unchanged. No new Lean build is asserted."
             }
           ]
         }
-      },
-      "ptnb:eq:legendre-fenchel-app": {
-        "canonical_label": "eq:legendre_fenchel",
-        "declaration": "Thesis.Regularization.routing_variational",
-        "physical_link_labels": [
-          "eq:legendre_fenchel",
-          "ptnb:eq:attn-qk-oracle"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:lrp-eps-recursion": {
-        "canonical_label": "ptnb:eq:lrp-ab",
-        "declaration": "Thesis.RoutingSupport.sourceLRP",
-        "physical_link_labels": [
-          "ptnb:eq:lrp-ab"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:softplus-decomp": {
-        "canonical_label": "eq:fsoft_def",
-        "declaration": "Thesis.Regularization.softSplit",
-        "physical_link_labels": [
-          "eq:fsoft_def"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "eq:canonical_weight_split": {
-        "canonical_label": "eq:weight_split",
-        "declaration": "HiddenMonotonicity.canonical_weight_split",
-        "physical_link_labels": [
-          "eq:weight_split"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:stop-relu": {
-        "canonical_label": "eq:fstop_def",
-        "declaration": "Thesis.StoppingDecomposition.stopPair",
-        "physical_link_labels": [
-          "def:fstop",
-          "eq:fstop_def"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:split-neg": {
-        "canonical_label": "eq:split_neg",
-        "declaration": "HiddenMonotonicity.affineChunk",
-        "physical_link_labels": [
-          "eq:split_neg",
-          "eq:split_pos"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
       }
     },
     "retired_lean_labels": [
