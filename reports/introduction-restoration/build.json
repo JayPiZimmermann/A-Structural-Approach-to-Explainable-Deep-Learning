@@ -9,7 +9,7 @@
     "tex/chapters/03_decompositions.tex": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8",
     "tex/chapters/04_game_theory.tex": "be6bd91bf6c1a3fc36fc612bdc13ba0e58ef5f7525c0f51df5d9b1e104ab101b",
     "tex/chapters/07_transformers.tex": "1871261292c87c5770f94d0619aa6b916e97d76b7624d578a255272eb2d7ad46",
-    "tex/chapters/08_experiments.tex": "cf0c3a2e0aab66d81ec56036e1aa0ba0a2148472920ceb548f635d662fe8debd",
+    "tex/chapters/08_experiments.tex": "bd52b50afaf4a479a65a854410a513892be3a2ac4150a76cd452dd6f13e4b338",
     "tex/chapters/09_conclusion.tex": "a501439a79d6c1d32b11a962c9e2f9be8bd3d38eae112ac1a97f14c63e6f6de1",
     "tex/chapters/10_appendix.tex": "025ae332717cc921796df51383a345dbbdcde894becd65ee282d27f4f9e3cb36",
     "tex/chapters/11_trajectory.tex": "89a14bd80ba5c43b9a638ada47f5270907d73922bfb539eaddd760cce5da5e66",
@@ -51,6 +51,7 @@
     "tex/tables/integrated/ablations_vgg16_longtable.tex": "afc3ad546204ca1fb3f101147cebd7280ff8e332ffe42c1896bb6b8268cc8193",
     "tex/tables/integrated/ablations_vit_b16_longtable.tex": "45df4e70cbf5a125f526073fda517957a1b288e66250a2441060c3591c05ae85",
     "tex/tables/integrated/validation_rank_matrix_tabular.tex": "9d452c89243c769f460addf17a1bc53c0fddfaeea5f4b8841000f5dc9b1a0236",
+    "tex/tables/model_accuracy.tex": "de976d63a8ed74a14ba8b3f39c01f575ad342ac8c612878b23041957627742f8",
     "tex/tables/ptnb_v2/generated/attention_rule_vit_b16_tabular.tex": "5ade913597b27b35ba95a4074d12f3117afc348df93f0afea8f62572ae5f9935",
     "tex/tables/ptnb_v2/generated/diagnostic_numbers.tex": "6ff9a7d43f059b0712d574b6ff0ab6a2f79aa3d43318929b1f266ab6e3331989",
     "tex/tables/ptnb_v2/generated/double_random_tabular.tex": "0cc4d9b5cc4611460faf2881b6cea561b6ed741776a6c4aaa41be0a2049a1c3c",
@@ -67,7 +68,7 @@
     "tex/tables/ptnb_v2/sanity_check.tex": "ade1f5717c410690ec1b5f3c8ffffe23a0f88c971dc0aab51d529203f8083c14",
     "tex/tables/vit_extension/generated/extension_ci_longtable.tex": "04ecb61d6be1c4e382be838d809a91c9de33f226386d9f74877d2c7f3a08777f",
     "tex/tables/vit_extension/generated/integration.tex": "6e79b58bd9a1d0c72cb0ed64b216832b86a58d7c5543830b3326079199cba762",
-    "tex/tables/model_accuracy.tex": "de976d63a8ed74a14ba8b3f39c01f575ad342ac8c612878b23041957627742f8"
+    "tex/tables/vit_temperature_main.tex": "b8d138dcc2e48769a5b1dbe4728641a3fe0b8f0cb02267bd67225469e5e581aa"
   },
   "artifact": "full-render local-development PDF with all tables and qualitative image grids enabled; includes locally checked draft Lean proof links",
   "asset_sha256": {
@@ -92,7 +93,7 @@
   "biber_warnings_or_errors": [],
   "bibliography_sha256": "9dbff2dbbf85dd705d21545774b2788da607ea59d751c5186e0551c58a47c79f",
   "build_note": "156-page full-render local-development PDF with RenderTables=1 and RenderQualitativeImageTables=1. Tables and qualitative image grids are included. Guard reports page-budget failure against the unchanged 150-page limit. The PDF includes 155 pinned and 5 local draft Lean proof links (160 total).",
-  "built_at_utc": "2026-11-20T13:28:47.234429+00:00",
+  "built_at_utc": "2026-11-20T13:43:01.152501+00:00",
   "commands": [
     "flock -x reports/vit-extension/tex-build.lock; cd tex && latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex",
     "cp tex/main.pdf docs/thesis.pdf",
@@ -116,6 +117,7 @@
     "reports/activation-vector-terminology/consistency.json": "c1cf4659ca144aefee5b9a02125b75ca33b47e8b37137c12f9b004950066916c",
     "reports/activation-vector-terminology/math-review.json": "c61717c9203b93492e521cc3e82ca294cabd8aae2007a6589f34ad1e971dfc44",
     "reports/activation-vector-terminology/terminology-review.json": "0035ccf888669dc6df5dd57035aee5668b4b5e6d0cab3ad999b848c5cb33e1e3",
+    "reports/alpha-mnist-results/review.json": "b411eb274270c24831a281f96eb6a3803c63255ba3ac7e3215e7425258fc0828",
     "reports/bv-curvature-remark/relu-specialization.json": "64407ae9d02c9825426431b7ba905edd0087680119889c4901f48c56708cdcd4",
     "reports/bv-curvature-remark/review.json": "09afdfb9a54d2a5f3e97f55d4ece537dea32db229b0a006ac62158e98dc291cb",
     "reports/cnn-composition-concision/review.json": "b3d55d4e055a98c7aaa2bf225b52782fc7cc38c179aa5df72ff26c7404e44829",
@@ -135,7 +137,7 @@
     "reports/cpwl-constructions/subfigure-math-review.json": "9a3899c29d73651e9e467c739c38864fe503c60f8ea879a918558a798d683280",
     "reports/cpwl-constructions/subfigure-review.json": "b1fd3c551618ce737c7c7ea7bab6e115180220380baf21c3a8ea2254a4048b49",
     "reports/entropy-regularization-notation/consistency.json": "104e68007f779942469c8f671f2492e288ab8de1dfabb5fefd1c192e7b243741",
-    "reports/evidence/hidden-monotonicity-protocol/verification.json": "1878ea24dc037f9846509baebebfbbc440fd96b2350fff76b2fb49a9d0e11d41",
+    "reports/evidence/hidden-monotonicity-protocol/verification.json": "db75c108c4ec2fc4060b73ffc54a6176bf3c791ac7b15d1db7ba110b4f215f9c",
     "reports/evidence/routing-game-recovery/rg_recovery_vgg16.json": "56b623632109d48b8d7b90941a6fc45dfec445107d457e23523589200fd77a33",
     "reports/evidence/routing-game-recovery/rg_recovery_vit.json": "e24a43c0a389c0fa6403f52c02bd0911a64549222a00cbd3336f587eee5d648f",
     "reports/evidence/routing-game-recovery/rg_recovery_vit_end_to_end.json": "e66f7a6076b8d0ab7d41214ea33fb85c7eecab68ab32f47299548069a9bf356a",
@@ -146,10 +148,10 @@
     "reports/implementation-comparison/evidence.json": "8a756b5364cdc120b2bfa81abac2283de26b186fa1ddfa4b218acbeb334188b9",
     "reports/implementation-comparison/manuscript-review.json": "ad6c43bd3fe4871f21c48a106d3f4278dacfde644bc85b264fdd070ff9271407",
     "reports/implementation-comparison/residual-packing-check.json": "278efbbb0a8ab02fc31fa754b22056b632d5098679b63cf2c717ea0f4bab8b8e",
-    "reports/introduction-restoration/publication-checks.json": "40face23cf3351c52cb09a884b6bb6b82eec1fc4fe25dd0f5a5987bf65bbda44",
+    "reports/introduction-restoration/publication-checks.json": "2d64a54ceb0eabf859687e79e990b355c75f7f18fd0a2a0699e95478dc36d177",
     "reports/layered-markov-graph/consistency.json": "04076317548bcba8d5fe9386006c090882713e78f99d00c2d13b47aec35f2593",
     "reports/layered-markov-graph/math-review.json": "dac14f9faf78526b6ef314bd73be305b64b4603bb17e5b788685cf713d95238a",
-    "reports/main-results-restoration/review.json": "cd0a0bb9deaf3b44efdcb1f4d9ca5d14e7a29e77c37098c28458da9aa8e04248",
+    "reports/main-results-restoration/review.json": "3110ac6d16fe52894260649c2a7d382b047083ee296e45e5cdc29edc268e328a",
     "reports/methods-paper-restoration/math-review.json": "54e79325f21eb6e4fa43dd31283140dd23b5a30be71f694c6225ff249cc1b9c0",
     "reports/methods-paper-restoration/reference-coverage.json": "8cbb4ce02c4e60bd7ced6a09a2d8f23acdc617a0b37df937e351dcdf5ac9af77",
     "reports/methods-paper-restoration/relocation-review.json": "e1fa4e18b93fb6b99c865670b9d8899f982ecc610206970d8f078a59b40bc312",
@@ -209,7 +211,7 @@
     "scripts/table_presentation.py": "293dd0e230b877a7ffda30cbdbd9c1635b866a3786d58d957e6d102978fbfbf4",
     "tex/preamble/lean_links_draft.tex": "c87f7d11ff11c837883b028945724be9afe8c72ca00f14056276f5ae7284c824",
     "tex/preamble/lean_links_retired.json": "5d9e0e424a5b714295bd886ce6f55280d6e881c27c866a540a09bd2abb7caaf2",
-    "reports/alpha-mnist-results/review.json": "b411eb274270c24831a281f96eb6a3803c63255ba3ac7e3215e7425258fc0828"
+    "reports/evaluation-setup-temperature/review.json": "ea52bbe17e254d260b86341eacd71d90fb9aad65364237d2398f4380493cc8fe"
   },
   "lean_build": "Separate local Lake build and audit passed; see reports/verification/trajectory-hellinger/receipt.json. No Lean build was run as part of this PDF build.",
   "overfull_boxes": 0,
@@ -219,7 +221,7 @@
     "passed": false
   },
   "pages": 156,
-  "pdf_sha256": "5cabac8c792f074a08c56f2dd9cd0ce2c9014d203217afb79d92b98e149210a2",
+  "pdf_sha256": "b76841f4b8b8c9233d3704c151ae0c07ec10f9e832d7ee426b58840984bd52fc",
   "prior_full_pdf": "reports/introduction-restoration/previous-full-thesis.pdf",
   "prior_publication_receipt": "reports/introduction-restoration/previous-publication-build.json",
   "publication_checks": "reports/introduction-restoration/publication-checks.json",

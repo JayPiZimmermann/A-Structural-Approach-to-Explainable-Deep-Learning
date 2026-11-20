@@ -6,6 +6,7 @@
     "tab:alpha_ablation_main",
     "tab:cdinn_acc",
     "ptnb:tab:eval-vit",
+    "ptnb:tab:vit-temperature",
     "ptnb:tab:abl-gradient-fallback",
     "tab:vit-extension"
   ],
@@ -41,7 +42,7 @@
     "RenderQualitativeImageTables": 1
   },
   "source_sha256": {
-    "tex/chapters/08_experiments.tex": "cf0c3a2e0aab66d81ec56036e1aa0ba0a2148472920ceb548f635d662fe8debd",
+    "tex/chapters/08_experiments.tex": "bd52b50afaf4a479a65a854410a513892be3a2ac4150a76cd452dd6f13e4b338",
     "tex/appendices/experiments.tex": "3d6fc914706ebca98a04abcac8641a3cebde92c203aba6cab52ef3aed75739d9",
     "tex/tables/eval_vgg_main.tex": "14e4c1fdc4cde7431f2c04aac0c80a2d961ed362005d21d82daa994de9a140b5",
     "tex/tables/eval_res_main.tex": "4b5fce3f60403456bb9a3ec6aaedb22579b816aee8caa5929c53f95b110b5c64",
@@ -55,7 +56,8 @@
     "tex/figures/experiments/vgg_saliency_comparison_main.tex": "022289b9517b0d34d72b7057e074416e0de2dcb28ff28f09d65c93ca2bb9a5b6",
     "tex/figures/experiments/vgg_saliency_comparison_appendix.tex": "123bb4904aea78ad58e31dc2ba160ff13430a5d4eed22ff2326629244ebbe394",
     "tex/chapters/03_decompositions.tex": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8",
-    "tex/tables/model_accuracy.tex": "de976d63a8ed74a14ba8b3f39c01f575ad342ac8c612878b23041957627742f8"
+    "tex/tables/model_accuracy.tex": "de976d63a8ed74a14ba8b3f39c01f575ad342ac8c612878b23041957627742f8",
+    "tex/tables/vit_temperature_main.tex": "b8d138dcc2e48769a5b1dbe4728641a3fe0b8f0cb02267bd67225469e5e581aa"
   },
   "rendered_tables": {
     "tab:eval_vgg_main": {
@@ -79,12 +81,12 @@
       "pdf_page": 94
     },
     "ptnb:tab:abl-gradient-fallback": {
-      "number": "6.6",
+      "number": "6.7",
       "printed_page": 84,
       "pdf_page": 95
     },
     "tab:vit-extension": {
-      "number": "6.7",
+      "number": "6.8",
       "printed_page": 85,
       "pdf_page": 96
     },
@@ -132,10 +134,15 @@
       "number": "6.4",
       "printed_page": 81,
       "pdf_page": 92
+    },
+    "ptnb:tab:vit-temperature": {
+      "number": "6.6",
+      "printed_page": 84,
+      "pdf_page": 95
     }
   },
   "render": {
-    "pdf_sha256": "5cabac8c792f074a08c56f2dd9cd0ce2c9014d203217afb79d92b98e149210a2",
+    "pdf_sha256": "b76841f4b8b8c9233d3704c151ae0c07ec10f9e832d7ee426b58840984bd52fc",
     "pages": 156,
     "warnings": [],
     "biber_warnings_or_errors": [],
@@ -161,5 +168,6 @@
     "guided_gradcam_definition_source": "literature/references/Selvaraju2017.pdf",
     "guided_gradcam_definition_source_sha256": "fa3192ab0f817aabe9673d3aade89ccd6c1942b007f339bffe01abd714812d5d"
   },
-  "mnist_followup": "reports/alpha-mnist-results/review.json"
+  "mnist_followup": "reports/alpha-mnist-results/review.json",
+  "temperature_followup": "reports/evaluation-setup-temperature/review.json"
 }

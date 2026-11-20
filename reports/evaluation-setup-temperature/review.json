@@ -1,0 +1,99 @@
+{
+  "task": "Consolidate evaluation setup, contextualize Eq runtime, and show temperature sweep in main text",
+  "setup_review": {
+    "reviewer": "/root/dave_runtime_protocol",
+    "result": "PASS",
+    "citations_relocated_once": [
+      "Simonyan2015",
+      "He2016resnet",
+      "Dosovitskiy2021vit",
+      "Paszke2019PyTorch",
+      "Deng2009",
+      "Russakovsky2015ilsvrc",
+      "gao2022luss",
+      "Everingham2010voc",
+      "Hedstrom2023"
+    ],
+    "split_validation_test": [
+      50,
+      566
+    ],
+    "game_validation_test": [
+      50,
+      565
+    ],
+    "metric_directions_targets_and_perturbation_protocols_retained": true,
+    "duplicate_game_setup_removed": true
+  },
+  "averaging_runtime": {
+    "transformed_inputs": 50,
+    "recipe": "Monte Carlo inverse-aligned transformation averaging, following DAVE strategy; full parameters retained in appendix",
+    "smaller_counts_tested_for_rg_eq": false,
+    "scope": "This statement applies to RG+Eq, not the separate DAVE baseline grid."
+  },
+  "temperature_table": {
+    "reviewer": "/root/vit_temperature_main_table",
+    "result": "PASS: all 32 displayed values checked against source",
+    "source": "tex/tables/integrated/ablations_vit_b16_longtable.tex",
+    "label": "ptnb:tab:vit-temperature",
+    "configuration": "RG (loc)",
+    "test_images": 565,
+    "fixed_parameters": {
+      "lambda_sm": -10,
+      "sigma_squared": 5,
+      "epsilon": 0.1
+    },
+    "validation_selected_tau": 0.4,
+    "swept_tau": [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ],
+    "metric_rows": [
+      "AL",
+      "PG",
+      "PF5",
+      "PF20"
+    ],
+    "main_table_cells": 32,
+    "full_appendix_table_retained": true,
+    "al_monotonically_decreases": true,
+    "pixel_flipping_nonmonotonic": true
+  },
+  "source_sha256": {
+    "tex/chapters/08_experiments.tex": "bd52b50afaf4a479a65a854410a513892be3a2ac4150a76cd452dd6f13e4b338",
+    "tex/tables/vit_temperature_main.tex": "b8d138dcc2e48769a5b1dbe4728641a3fe0b8f0cb02267bd67225469e5e581aa",
+    "tex/tables/integrated/ablations_vit_b16_longtable.tex": "45df4e70cbf5a125f526073fda517957a1b288e66250a2441060c3591c05ae85",
+    "tex/appendices/experiments.tex": "3d6fc914706ebca98a04abcac8641a3cebde92c203aba6cab52ef3aed75739d9"
+  },
+  "render": {
+    "pdf_sha256": "b76841f4b8b8c9233d3704c151ae0c07ec10f9e832d7ee426b58840984bd52fc",
+    "pages": 156,
+    "warnings": [],
+    "biber_warnings_or_errors": [],
+    "all_internal_links_resolve": true,
+    "render_flags": {
+      "RenderTables": 1,
+      "RenderQualitativeImageTables": 1
+    },
+    "temperature_table": {
+      "number": "6.6",
+      "printed_page": 84,
+      "pdf_page": 95
+    },
+    "setup_pdf_page": 87,
+    "page_limit": 150,
+    "page_limit_passed": false,
+    "visual_review": {
+      "reviewer": "/root/rg_full_render_preparation",
+      "table_readable_and_adjacent_to_discussion": true,
+      "setup_and_footnote_clean": true,
+      "root_screenshot_inspected": true
+    }
+  }
+}
