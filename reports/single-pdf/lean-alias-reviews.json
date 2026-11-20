@@ -18,7 +18,7 @@
         "eq:delta_minus_recursion"
       ],
       "source_sha256": {
-        "tex/chapters/03_decompositions.tex": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645"
+        "tex/chapters/03_decompositions.tex": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1"
       },
       "terminology_refresh": {
         "evidence": "reports/dc-terminology/consistency.json",
@@ -237,6 +237,14 @@
           "before_source_sha256": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
           "after_source_sha256": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645",
           "scope": "The Chapter 03 teaser sentence was revised to report localization and Selectivity gains without retraining or changing model predictions. Replacing this sentence with its previously reviewed wording reproduces the prior source byte-for-byte; all formal statements, equations, proofs, dependencies and witnesses are unchanged. No new Lean build is asserted."
+        },
+        {
+          "recorded_at_utc": "2026-11-20T10:38:00Z",
+          "reviewed_by": "/root/proof_receipt_editorial_check",
+          "source": "tex/chapters/03_decompositions.tex",
+          "before_source_sha256": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645",
+          "after_source_sha256": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1",
+          "scope": "Added one changed-environment empirical teaser reporting stabilized Transformer gradient reconstruction on three ViT-B/16 validation images. Removing that sentence reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and witnesses are unchanged. No new Lean build is asserted."
         }
       ]
     },
