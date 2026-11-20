@@ -665,12 +665,12 @@
   ],
   "render": {
     "pages": 155,
-    "pdf_sha256": "ab6dda4c603a9612de5b7190ba308384c67ff95736180e321b969013713af44b",
+    "pdf_sha256": "d78eb99bfccf27e64bea49041b9206e4ee4b3be87431cf39235032e58f82c1b8",
     "warnings": [],
     "biber_warnings": [],
     "both_render_switches_enabled": true,
     "revised_protocol_pdf_page": 87,
-    "source_sha256": "80a37eb481ee36382f84730b60b1ffae2d5cc6cb3499cc6863d2c00414151db0",
+    "source_sha256": "c650d84452af8f4854715e8f5ab766d4acb423d57a2e3f319759f1a1db14794b",
     "tuning_is_the_opening_statement": true
   },
   "data_usage": {
