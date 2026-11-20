@@ -57,7 +57,7 @@
     "formalization/lake-manifest.json": "55344b7f14ad57456e134fcd19765832e818bfc88e676439dd1d9dac98568736",
     "formalization/lakefile.toml": "91212e1a88088f6f06afcbc94b87aa6641a447a7d0162832dacf34758b32523a",
     "formalization/lean-toolchain": "ca5f1f601d34c49079e38d7e7041eb0f2a9c227fbc1df0f404820069a052330c",
-    "tex/chapters/07_transformers.tex": "26c730ad2d28e8383702faf5a0a032abcdeeabc9366465e8becc76f434b69dd6"
+    "tex/chapters/07_transformers.tex": "1871261292c87c5770f94d0619aa6b916e97d76b7624d578a255272eb2d7ad46"
   },
   "scope": "The same exact Transformer DC split-streams admit a materialized shared evaluation whose explicitly accumulated real-arithmetic counter is at most 200 times SharedRuntime.networkSize. The endpoint also retains exact output recovery, convexity and nonnegativity of both heads, coordinatewise monotonicity on independent nonnegative inputs, and globally convex raw-input heads. The architecture has arbitrary finite depth and the existing Transformer type hypotheses.",
   "findings": [
@@ -103,5 +103,43 @@
       "Quot.sound"
     ]
   },
-  "required_fixes": []
+  "required_fixes": [],
+  "source_binding_follow_ups": [
+    {
+      "recorded_at_utc": "2026-11-20T11:24:40Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "verdict": "PASS",
+      "evidence": "git diff -- tex/chapters/07_transformers.tex",
+      "scope": "Clarified that the already-stated raw-input convexity of g and h is retained while coordinatewise monotonicity in signed u is not guaranteed. The adjacent equation, theorem, proof, and all Lean sources and recorded build/audit evidence are unchanged. No new Lean build is asserted.",
+      "before_source_sha256": "26c730ad2d28e8383702faf5a0a032abcdeeabc9366465e8becc76f434b69dd6",
+      "after_source_sha256": "dea30bafc7863e3430fccb64e9ed57901be750ba3c910389554bc56ff65ceb63"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T11:25:50Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "verdict": "PASS",
+      "evidence": "git diff -- tex/chapters/07_transformers.tex",
+      "scope": "Clarified the documented numerical example as post-normalization, with LayerNorm after each residual addition, and contrasted it with the prenorm placement in Definition 5.1. Replacing only this explanatory phrase reconstructs the immediately prior bound source byte-for-byte; no equations, theorem statements, proofs, or Lean sources changed. Existing build/audit evidence is preserved; no new Lean build is asserted.",
+      "before_source_sha256": "dea30bafc7863e3430fccb64e9ed57901be750ba3c910389554bc56ff65ceb63",
+      "after_source_sha256": "329ee357673924fc2a8ebfa6567b17203e15cd1c2588405dfc0923a69b57a9ac"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T11:29:07Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "verdict": "PASS",
+      "evidence": "git diff -- tex/chapters/07_transformers.tex",
+      "scope": "Revised the numerical-scope prose to distinguish the toy postnorm diagnostic (LayerNorm after residual additions) from the evaluated ViT-B/16 prenorm architecture (LayerNorm before attention and MLP). Replacing this passage with the prior wording reconstructs the immediately prior bound file byte-for-byte; equations, theorem statements, proofs, and Lean sources are unchanged. No new Lean build is asserted.",
+      "before_source_sha256": "329ee357673924fc2a8ebfa6567b17203e15cd1c2588405dfc0923a69b57a9ac",
+      "after_source_sha256": "6e9a41ad3b5570f4fa9b7634f4c858269ba6775d318fe5b32aa859d13b52fa4f"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T11:32:46Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "verdict": "PASS",
+      "evidence": "git diff -- tex/chapters/07_transformers.tex; tex/chapters/10_appendix.tex:262-266; reports/evidence/transformer-dc/real-vit-reconstruction.json",
+      "scope": "Updated only the Chapter 07 numerical-evidence prose to refer to the verified full pretrained ViT-B/16 reconstruction check in Appendix A.4.1. The appendix reports 12 blocks, three images at three shift settings, live attention and LayerNorm, disabled gradient repairs, cached ordinary activations for forward stabilization, and input-gradient maximum absolute error 2.36e-15. The separate earlier raw-input convexity clarification remains as previously recorded. No theorem, formula, proof, or Lean source changed; existing Lean build/audit evidence is unchanged and no new Lean build is asserted.",
+      "before_source_sha256": "6e9a41ad3b5570f4fa9b7634f4c858269ba6775d318fe5b32aa859d13b52fa4f",
+      "after_source_sha256": "1871261292c87c5770f94d0619aa6b916e97d76b7624d578a255272eb2d7ad46"
+    }
+  ]
 }

@@ -160,7 +160,7 @@ In particular, the functions
     h(u)=N_-(\posneg{u}{+},\posneg{u}{-})
     \label{eq:transformer_raw_dc}
 \end{equation}
-are convex on all of $\RR^m$, are non-negative, and satisfy $N=g-h$. The functions $N_+,N_-$ are coordinatewise non-decreasing in the independent inputs $(x,y)$; $g,h$ need not be coordinatewise non-decreasing in the original signed variable $u$ (\LeanResult{thm:transformer_dc}).
+are convex on all of $\RR^m$, are non-negative, and satisfy $N=g-h$. The functions $N_+,N_-$ are coordinatewise non-decreasing in the independent inputs $(x,y)$; $g,h$ remain convex in the original signed variable $u$, but need not be coordinatewise non-decreasing (\LeanResult{thm:transformer_dc}).
 
 With shared intermediate values, evaluation at each input satisfies
 \begin{equation}
@@ -176,7 +176,7 @@ Each constituent split recovers its operation and preserves non-negativity, conv
 Each scalar split uses a bounded number of operations; softmax and LayerNorm share their reductions across each row or token. Evaluating each intermediate once therefore gives~\eqref{eq:transformer_dc_linear_cost}.
 \end{proof}
 
-Numerical stability is separate: repeated products and the LayerNorm factor $M=(2\varepsilon^{3/2})^{-1}$ can amplify common stream values and cause floating-point cancellation. Section~\ref{app:transformer_dc_numeric} documents the unstabilized float64 failures in a post-normalization block, whose placement differs from Definition~\ref{def:prenorm_transformer}. The completed SplitCAM benchmark uses the stabilized, conditioned variant (Section~\ref{sec:vit-extension}).
+Numerical stability is separate: repeated products and the LayerNorm factor $M=(2\varepsilon^{3/2})^{-1}$ can amplify common stream values and cause floating-point cancellation. Appendix~\ref{app:transformer_dc_numeric} reports machine-precision gradient recovery for the stabilized implementation on the full pretrained ViT-B/16, whose pre-normalization arrangement matches Definition~\ref{def:prenorm_transformer}. The completed SplitCAM benchmark uses the stabilized, conditioned variant (Section~\ref{sec:vit-extension}).
 
 \section{Attention via a detached-logit oracle}\label{ptnb:sec:attention}\label{ptnb:app:vit-extension}\label{sec:attention_routing_game}\label{ptnb:app:attention-subgame}\label{app:supp_attention}
 

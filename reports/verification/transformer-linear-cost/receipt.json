@@ -76,7 +76,7 @@
     "reports/verification/transformer-linear-cost/build.log": "cd1c9968c1c0f96ae4e18fa3527d9616a9bbc1b881520ee1e07b084359887c34",
     "reports/verification/transformer-linear-cost/audit.log": "6e6e32750df59e934036301b2763a8cf2742bb216d744ffa1e48b1386a500a0e",
     "reports/verification/transformer-linear-cost/build-evidence.json": "3aceb8993017ac9cf017b94312100641a4ffb7326a0f441e65b129d922e65291",
-    "reports/verification/transformer-linear-cost/scope-review.json": "19152cf59dcdb2c35907302f2bc363f92efc75ef1b22ce3476eb051e582a02ff"
+    "reports/verification/transformer-linear-cost/scope-review.json": "999b22d1e65c24f4d48f427c2add18f9882abc89e99863d1b564124d0182286f"
   },
   "scope_review": "reports/verification/transformer-linear-cost/scope-review.json",
   "targets": {
@@ -90,5 +90,39 @@
       ]
     }
   },
-  "publication": "Locally checked source snapshot; existing pinned proofs remain unchanged. No commit or push."
+  "publication": "Locally checked source snapshot; existing pinned proofs remain unchanged. No commit or push.",
+  "source_binding_follow_ups": [
+    {
+      "recorded_at_utc": "2026-11-20T11:24:40Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "evidence": "reports/verification/transformer-linear-cost/scope-review.json",
+      "scope": "Refreshed the dependent scope-review artifact hash after the Chapter 07 explanatory clarification. Existing Lean proof sources, build/audit logs, and original build claims remain unchanged; no new Lean build is asserted.",
+      "scope_review_sha256_before": "19152cf59dcdb2c35907302f2bc363f92efc75ef1b22ce3476eb051e582a02ff",
+      "scope_review_sha256_after": "a32050d2ee54b0212244ab31b9b66fe4ac75912ba1f342b9c88c91a15cecbb4e"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T11:25:50Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "evidence": "reports/verification/transformer-linear-cost/scope-review.json",
+      "scope": "Refreshed the dependent scope-review artifact hash after the LayerNorm placement clarification. Lean sources and prior build/audit records remain unchanged; no new Lean build is asserted.",
+      "scope_review_sha256_before": "a32050d2ee54b0212244ab31b9b66fe4ac75912ba1f342b9c88c91a15cecbb4e",
+      "scope_review_sha256_after": "e0fab0a4072b8d0b416104b48424d938db2301edb54484189b7834a0c334f604"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T11:29:07Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "evidence": "reports/verification/transformer-linear-cost/scope-review.json",
+      "scope": "Refreshed the dependent scope-review artifact hash after clarifying toy postnorm versus evaluated ViT prenorm placement. Existing Lean source and build/audit evidence remain unchanged; no new Lean build is asserted.",
+      "scope_review_sha256_before": "e0fab0a4072b8d0b416104b48424d938db2301edb54484189b7834a0c334f604",
+      "scope_review_sha256_after": "f2e861a98e146acdccb528b7f16158d4dcc2e01b41e5e4881db4d75dfdaf00ca"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T11:32:46Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "evidence": "reports/verification/transformer-linear-cost/scope-review.json",
+      "scope": "Refreshed the dependent review hash after updating Chapter 07 numerical evidence to the existing pretrained ViT-B/16 check. Existing proof, build, and audit records remain unchanged; no new Lean build is asserted.",
+      "scope_review_sha256_before": "ca247074166ac11ed57e7c4d72d926e1285cf2556893da2b3e224f093ddb2a35",
+      "scope_review_sha256_after": "999b22d1e65c24f4d48f427c2add18f9882abc89e99863d1b564124d0182286f"
+    }
+  ]
 }
