@@ -71,6 +71,30 @@ def present(filename: str, text: str) -> tuple[str, list[dict]]:
                 "p{2.7cm}", right_column
             )
             changes.append({"action": "hyphenating_ragged_config_column"})
+    if filename == "main_vit_tabular.tex":
+        # Keep the selected-result table at natural text width. The long
+        # configuration strings may wrap at parameter separators in their
+        # fixed-width column; all metric cells remain untouched.
+        if not lines or not lines[0].startswith(r"\begin{tabular}"):
+            raise ValueError(f"Unexpected tabular start in {filename}")
+        lines[0] = (r"\begin{tabular}{@{}l >{\raggedright\arraybackslash}p{2.7cm} "
+                    r"*{9}{c}@{}}")
+        for n, line in enumerate(lines):
+            row = cells(line)
+            if not row or len(row[0]) != 11 or row[0][0] == "Method":
+                continue
+            values, ending = row
+            config = values[1]
+            # Every comma in a parameterized Config cell is a safe math-mode
+            # break opportunity (the cell's formulas are already delimited).
+            if config.startswith("$"):
+                values[1] = re.sub(r",\s*(?!\\allowbreak)", r",\\allowbreak ", config)
+                if values[1] != config:
+                    lines[n] = " & ".join(values) + ending
+                    changes.append({"action": "wrap_main_vit_config", "line": n + 1,
+                                    "row": values[0]})
+        changes.append({"action": "fit_main_vit_table", "config_width_cm": 2.7,
+                        "font": "8.5pt", "intercolumn_space_pt": 1})
     for n, line in enumerate(lines):
         row = cells(line)
         if not row:

@@ -13,7 +13,7 @@ Complementing Figure~\ref{fig:vgg_saliency_comparison_main}, we give more salien
 
 \subsection{Quantitative Analysis on VGG-16}\label{app:vgg_split}
 
-Table~\ref{tab:xai_eval_comprehensive_vgg} contains the complete VGG-16 comparison discussed in Section~\ref{sec:results_vgg}. Selected rows can differ in layer and absolute-value convention; the controlled $\alpha$ sweeps below isolate these choices more directly.
+Table~\ref{tab:xai_eval_comprehensive_vgg} contains the comprehensive VGG-16 comparison discussed in Section~\ref{sec:results_vgg}. Selected rows can differ in layer and absolute-value convention; the controlled $\alpha$ sweeps below isolate these choices more directly.
 
 \input{tables/appendix/xai_eval_vgg_full}
 
@@ -22,6 +22,35 @@ Table~\ref{tab:xai_eval_comprehensive_vgg} contains the complete VGG-16 comparis
 Table~\ref{tab:xai_eval_comprehensive_res} presents detailed quantitative metrics across all split configurations, baselines, and classical methods for ResNet-18.
 
 \input{tables/appendix/xai_eval_res_full}
+
+\section{Split-Method Randomization Sanity Check}\label{app:p1_sanity}
+
+The model-randomization sanity check~\parencite{Adebayo2018sanity} tests dependence on learned parameters versus input patterns surviving model corruption. For each method, maps from trained VGG-16 are compared with maps after Gaussian reinitialization of the last three fully connected layers; parameter-sensitive methods should show a substantial similarity drop. Given the shortcomings of top-down randomization discussed by \textcite{Binder2022shortcomings}, this complements the primary trajectory-space diagnostic of Section~\ref{subsec:hellinger_randomization}. Similarity measures are (i)~HOG similarity (Pearson correlation of histograms of oriented gradients), (ii)~signed Spearman rank correlation, and (iii)~SSIM; lower similarity indicates stronger parameter dependence.
+
+\input{tables/appendix/randomization_sanity_check}
+
+In Table~\ref{tab:randomization_sanity_check}, every reported SplitCAM and SplitGrad configuration has lower SSIM than every listed baseline; HOG and Spearman comparisons are mixed. This shows responses to the tested randomization without isolating stabilization's effect on numerical gradient growth. SplitLRP retains high HOG and Spearman similarity (approximately $0.99$ and $1.00$), while SSIM falls to $0.45$--$0.56$. Attenuation by the $\epsilon$-\ac{lrp} rule could explain this behavior; the comparison alone does not identify its cause.
+
+\section{Attribution Runtime}\label{app:attribution_runtime}
+
+\subsection{Split Methods}\label{app:p1_timing}
+
+Table~\ref{tab:timing_comparison} reports mean attribution times on the custom 50-image ImageNet-S validation subset for ResNet-18 and VGG-16. Splitting times, averaged separately over 20 setups, are 0.033\,s and 0.030\,s, respectively. SplitCAM and SplitGrad take 0.33--0.44\,s per image, versus 0.28--0.31\,s for the row labeled Guided Grad-CAM. SplitCAM takes approximately 14--29 times as long as the corresponding ordinary Grad-CAM and LayerCAM rows; the split methods are much faster than the reported Feature Ablation and Occlusion configurations.
+
+The released evaluator splits the model once per configuration and reuses it across images. The per-image timer covers attribution, helper postprocessing, copying and cleanup, excluding image/model loading, initial device transfer, target prediction and splitting. The helper computes maps for all spatial layer chunks from cached activations and gradients before selecting the output; this extra computation is timed. The shifting parameter $\alpha$ changes the backward rule; its runtime effect was not measured separately.
+
+The historical timing artifacts lack hardware, precision and exact configuration IDs. The released VGG-16 \texttt{guided\_grad\_cam} configuration dispatches Guided LayerCAM, whereas the source table labels it Guided Grad-CAM. We retain the reported label and numbers, with this baseline identity unresolved. These timings describe the source implementation and do not bound other implementations' overhead.
+
+\input{tables/appendix/timing_comparison}
+
+\subsection{Game Methods}\label{app:game_timing}
+
+\paragraph{Mode selection and cost.}
+Start at the anchor, vary $\tau$ at negligible cost, add risk aversion with input variance $\sigma^2$ to discount high-variance units ($\lambda$ for \acp{cnn}, $\lambda_{\mathrm{sm}}$ for \acp{vit}), then use \ac{rg}+Eq averaging for ViT token-grid artifacts. The validation selections of Section~\ref{ptnb:app:val-selection} show which combination the protocol picks per model and criterion. The VGG-16 \ac{sg} configuration also uses the noisy-observation gate.
+
+Median times on one A100 GPU at batch size 1 show little temperature overhead, from $0.035$ to $0.037$\,s/image for VGG-16 and from $0.089$ to $0.094$\,s/image for ResNet-50. Risk aversion adds one \ac{ptnbADF} pass, from $0.089$ to $0.140$\,s/image on ResNet-50; the noisy gate also requires this pass for $\sigma$. Changing $(\alpha,\beta)$, $\varepsilon$ or the fan-in entropy bias has negligible overhead. Equivariant averaging requires $N$ attribution passes; the ViT timings below use $N=50$.
+
+\paragraph{ViT-B/16 attribution runtime.} For the localization-selected or fixed configurations in Table~\ref{ptnb:tab:test-ci-vit}, seconds per image on one GPU were: Gradient $0.02$, SmoothGrad $1.12$, LRP-$\gamma$ $0.08$, AttnLRP $0.10$, TIBAV $0.15$, GAE $0.03$, KernelSHAP $6.71$, RG anchor $0.10$, RG $0.17$, RG+Eq anchor $4.93$, and RG+Eq $8.66$. The anchors are the exact $\alpha\beta$-\ac{lrp} representations of Theorem~\ref{ptnb:thm:lrp-recovery}; hardware and timing scope are specified in Section~\ref{ptnb:app:compute-resources}.
 
 \section{Stabilization Ablations for the Split Methods}\label{app:ablation}
 
@@ -36,9 +65,13 @@ For SplitCAM with scaling, $\alpha=0.4$, winner-takes-it-all pooling and absolut
 
 \input{tables/appendix/alpha_combined}
 
-\subsection{Forward-stabilization grids}
+\subsection{Forward-Pass Stabilization}\label{app:forward_ablation}
 
-Tables~\ref{tab:alpha_comparison_none} and~\ref{tab:alpha_comparison_shift} give the full unstabilized and shift-stabilized SplitCAM grids discussed in Section~\ref{app:forward_ablation}.
+We assess forward stabilization for framework-selected SplitLRP layers and manually selected SplitCAM layers. The shifting baseline sets positive-neuron activations to half the original activation and negative-neuron activations to its negative half. Without forward stabilization, late VGG-16 SplitCAM activations reach the order of $10^{18}$, with numerical errors of order $10^{9}$ despite per-layer correction. Unstabilized SplitLRP produced nearly white maps with small, random, semantically meaningless artifacts; no quantitative metrics were computed.
+
+Tables~\ref{tab:alpha_comparison_none} and~\ref{tab:alpha_comparison_shift} report SplitCAM without forward stabilization and with shifting, respectively, using the configurations of Table~\ref{tab:alpha_comparison_by_method}. Table~\ref{tab:lrp_scale_shift_comparison} compares SplitLRP shifting and scaling. Scaling improves all reported metrics for both layer-7 configurations. At later layers, shifting gives higher Attribution Localization and Pixel-Flipping score-drop AUC; scaling lowers Maximum Sensitivity. Pointing Game rankings reverse between configurations, supporting a configuration-dependent trade-off.
+
+\input{tables/appendix/lrp_scale_shift}
 
 \input{tables/appendix/alpha_none}
 \input{tables/appendix/alpha_shift}
@@ -70,7 +103,18 @@ Table~\ref{ptnb:tab:val-selection-all} gives both rank-sums for each validation 
 
 \subsection{Test results with confidence intervals}\label{ptnb:app:test-ci}
 
-Table~\ref{ptnb:tab:test-ci-vit} and Tables~\ref{ptnb:tab:test-ci-vgg}--\ref{ptnb:tab:test-ci-resnet} report all 565-image test rows: \texttt{loc}/\texttt{faith} selections, anchors and fixed configurations. Confidence intervals and highlighting follow Table~\ref{ptnb:tab:test-ci-vit}; ViT-B/16 runtimes appear in Section~\ref{sec:results_vit}.
+Table~\ref{ptnb:tab:test-ci-vit} and Tables~\ref{ptnb:tab:test-ci-vgg}--\ref{ptnb:tab:test-ci-resnet} report all 565-image test rows: \texttt{loc}/\texttt{faith} selections, anchors and fixed configurations. Confidence intervals and highlighting follow Table~\ref{ptnb:tab:test-ci-vit}; ViT-B/16 runtimes appear in Section~\ref{app:game_timing}.
+
+\appneedspace{8\baselineskip}
+\begin{center}
+    \captionsetup{hypcap=false}
+    \captionof{table}[ViT-B/16: full ImageNet-S results with confidence intervals]{ViT-B/16, ImageNet-S test split: all rows with 95\% bootstrap confidence
+    intervals (MaxS/AvgS: the fixed 200-image subset). Metrics: Section~\ref{ptnb:app:metrics}; configuration symbols and row labels:
+    Section~\ref{ptnb:app:config-symbols}. Bold/dark shading marks the best row; $^{\approx}$/light shading marks no significant difference from it under the full-table comparison (Section~\ref{ptnb:app:stats}).}
+    \label{ptnb:tab:test-ci-vit}
+\end{center}
+\captionsetup{hypcap=true}
+\appinputgenci{tables/ptnb_v2/generated/test_vit_b16_ci_longtable}
 
 \appneedspace{8\baselineskip}
 \begin{center}

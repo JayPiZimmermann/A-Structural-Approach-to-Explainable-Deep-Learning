@@ -370,9 +370,9 @@ def build(out, names):
 
 
 def integration_text(campaigns):
-    text = r"""\section{Transformer DC Extension Results}
+    text = r"""\appneedspace{12\baselineskip}
+\section{Transformer DC Extension Results}
 \label{sec:vit-extension}
-\appneedspace{8\baselineskip}
 \begin{center}
     \captionsetup{hypcap=false}
     \captionof{table}[ViT-B/16: extension results with confidence intervals]{ViT-B/16 extension results on the same ImageNet-S test split (565 images; MaxS/AvgS: the fixed 200-image subset), with 95\% image-bootstrap confidence intervals. Gradient is copied from Table~\ref{ptnb:tab:test-ci-vit}; the other configurations were selected on the same 50 validation images. Labels loc/faith denote the unchanged selection criteria. Bold/dark shading marks the best row; $^{\approx}$/light shading marks no significant difference under Holm adjustment across all row pairs within each metric of this table (Section~\ref{ptnb:app:stats}).}
