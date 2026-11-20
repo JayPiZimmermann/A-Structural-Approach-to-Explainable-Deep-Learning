@@ -1,0 +1,116 @@
+\chapter{Additional Controls for the Game-Based Experiments}\label{app:rebuttal-controls}
+
+This appendix reports additional controls for the game-based attribution results in Section~\ref{sec:results_vit}. Benchmark configurations are selected on the 50-image validation split; test data do not enter selection. Fixed diagnostic choices are stated below. Held-out comparisons use paired image-bootstrap intervals.
+
+\section{Sharpening and Full-Curve Faithfulness}\label{app:rebuttal-sharpening}
+
+For a nonnegative spatial map $s$, the fixed sharpening transform is $s_i^{(p)}=s_i^p/\sum_j s_j^p$. At $p=1.5$ it preserves pixel order, and thus the deletion/insertion rankings of a fixed map, while changing magnitude-sensitive localization. The validation-matched control selects each LRP baseline by proximity of its validation AL to the predetermined RG AL; the test set is evaluated once. AttnLRP reaches test AL $0.715$ versus RG $0.711$ (paired difference $+0.004$, 95\% CI $[-0.007,0.015]$) and has lower PF$_{20}$, $6.123$ versus $7.481$. LRP-$\gamma$ reaches AL $0.694$ and PF$_{20}=6.398$. Thus the matched control does not support an RG localization--faithfulness Pareto advantage. This result is specific to the tested selection protocol and does not make post-hoc sharpening equivalent to internal routing changes.
+
+\begin{table}[!ht]
+\centering\small
+\caption{Validation-matched fixed-$p=1.5$ sharpening on ViT-B/16. Baseline rows were selected by validation AL proximity to the fixed RG row. Differences and intervals are paired baseline minus RG over 565 test images; lower PF$_{20}$ is better.}
+\label{tab:rebuttal-sharpening}
+\begin{tabular}{lrrrr}
+\toprule
+Method & $p$ & Test AL & $\Delta$AL [95\% CI] & PF$_{20}$ \\
+\midrule
+RG (loc) & 1 & .711 & --- & 7.481 \\
+LRP-$\gamma$ & 1.5 & .694 & $-.017\;[-.027,-.007]$ & 6.398 \\
+AttnLRP & 1.5 & .715 & $+.004\;[-.007,+.015]$ & 6.123 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Applying the same fixed $p=1.5$ to the AttnLRP, RG-anchor and localization-selected RG maps raises AL from $.6291$ to $.7153$, $.5093$ to $.5550$, and $.7112$ to $.7807$, respectively; each PF$_{20}$ remains unchanged because per-image pixel ranks are preserved. This common-power comparison is not AL-matched: the sharpened selected RG still has higher AL and worse PF$_{20}$ than AttnLRP. The exponent is fixed rather than selected, and the comparison does not claim optimality.
+
+\begin{table}[!ht]
+\centering\small
+\input{tables/rebuttal/same_power_sharpening_tabular}
+\caption{Common fixed-$p=1.5$ map ablation on the same 565 ViT-B/16 test images. The exponent is applied after channel collapse, absolute-value reduction and max normalization; PF$_{20}$ is reused after per-image rank invariance was verified.}
+\label{tab:rebuttal-common-power}
+\end{table}
+
+The separate full-curve control ranks $224^2$ spatial pixels by absolute attribution and perturbs all three RGB channels together. Deletion starts from the image; insertion starts from its per-channel spatial-mean image. The target is the dataset label, and the 101 cumulative fractions include both endpoints. This protocol differs from the benchmark PF$_5$/PF$_{20}$, which ranks channel-broadcast scalar features and integrates only an initial fraction. Under both raw-logit and probability AUC, the localization-selected LRP baselines outperform RG in both deletion and insertion direction; all eight paired baseline-versus-RG intervals exclude zero. Since the $p=1.5$ transform preserves pixel order, it also preserves these fixed-map curves.
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{\input{tables/rebuttal/full_auc_tabular}}
+\caption{Full spatial-pixel deletion and insertion AUC, ViT-B/16, $n=565$. Entries are means with image-bootstrap 95\% intervals. Lower deletion and higher insertion are favorable.}
+\label{tab:rebuttal-full-auc}
+\end{table}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=.95\linewidth]{figures/rebuttal/full_auc_probabilities_selected.pdf}\\[.4em]
+\includegraphics[width=.95\linewidth]{figures/rebuttal/full_auc_logits_selected.pdf}
+\caption{Mean full deletion and insertion curves for localization-selected ViT-B/16 rows, using target probabilities (top) and raw target logits (bottom). Shading denotes pointwise image-bootstrap 95\% intervals.}
+\label{fig:rebuttal-full-auc}
+\end{figure}
+
+\section{Robustness Controls}\label{app:rebuttal-robustness}
+
+The ViT full-test robustness evaluation covers the validation-selected localization mode on all 565 images, using 50 image-keyed Uniform$[-0.2,0.2]$ perturbations in normalized input coordinates and 10,000 paired image resamples (seed 42). Validation selected $\lambda_{\mathrm{sm}}=-50$ at the fixed localization center. Compared with zero risk, MaxS changes from $.6850$ to $.6013$, AvgS from $.4447$ to $.3272$, while AL falls from $.6706$ to $.5204$. Thus lower sensitivity accompanies a substantial localization cost in this selected mode.
+
+VGG-16 uses a gate-matched decomposition at the anchor. The first step changes a hard gate to a probit gate with $\lambda=0$; the second varies only $\lambda$ under that probit gate; the combined contrast compares the original hard-gate zero-risk row with the selected probit $\lambda=-2$ row. The table reports held-out means and paired differences, with 10,000 image-bootstrap resamples. The coefficient-only sensitivity gain incurs a small AL cost; the combined AL interval includes zero. This comparison isolates a selection-dependent effect and does not establish general robustness superiority.
+
+\begin{table}[!ht]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.4cm}p{4.2cm}p{4.2cm}p{4.2cm}}
+\toprule
+Contrast & MaxS $\downarrow$ & AvgS $\downarrow$ & AL $\uparrow$ \\
+\midrule
+ViT loc, $\tau=.4,\varepsilon=.1$; $\lambda_{sm}:0\to-50$ & \shortstack{$.6850\to.6013$\\$\Delta=-.0837$\\$[-.1250,-.0419]$} & \shortstack{$.4447\to.3272$\\$\Delta=-.1176$\\$[-.1365,-.0985]$} & \shortstack{$.6706\to.5204$\\$\Delta=-.1502$\\$[-.1689,-.1322]$} \\
+VGG anchor, gate only & \shortstack{$.5546\to.5265$\\$\Delta=-.0281$\\$[-.0330,-.0234]$} & \shortstack{$.4005\to.3714$\\$\Delta=-.0291$\\$[-.0317,-.0267]$} & \shortstack{$.6190\to.6207$\\$\Delta=+.0017$\\$[-.0002,+.0037]$} \\
+VGG anchor, probit $\lambda:0\to-2$ & \shortstack{$.5265\to.4865$\\$\Delta=-.0400$\\$[-.0540,-.0264]$} & \shortstack{$.3714\to.3197$\\$\Delta=-.0518$\\$[-.0577,-.0460]$} & \shortstack{$.6207\to.6107$\\$\Delta=-.0100$\\$[-.0178,-.0021]$} \\
+VGG anchor, combined & \shortstack{$.5546\to.4865$\\$\Delta=-.0680$\\$[-.0832,-.0532]$} & \shortstack{$.4005\to.3197$\\$\Delta=-.0808$\\$[-.0884,-.0737]$} & \shortstack{$.6190\to.6107$\\$\Delta=-.0083$\\$[-.0178,+.0013]$} \\
+\bottomrule
+\end{tabular}
+\caption{Validation-selected risk contrasts on the full 565-image test set. Each cell gives both means, their difference (right minus left), and its paired 95\% interval. The ViT result is the selected localization-mode coefficient versus zero risk; VGG contrasts separate gate, coefficient and combined effects.}
+\label{tab:rebuttal-risk}
+\end{table}
+
+The noise-protocol panel is a validation-only check of the ViT localization center ($n=50$). It crosses uniform and variance-matched Gaussian noise, $r\in\{.05,.1,.2\}$, and nested draw counts $\{10,25,50,100,200\}$, producing 30 correlated settings. For each setting, the risk-selected $\lambda_{sm}=-50$ is compared with zero risk using paired image intervals; intervals are unadjusted. MaxS, AvgS and 95th-percentile sensitivity means favor risk aversion in all 30 settings; their intervals exclude zero in 10, 30 and 19 settings, respectively. Cosine similarity favors risk aversion in all 30 settings, with intervals excluding zero in 10. Spearman similarity favors zero risk in all 30 settings, with intervals excluding zero in all 30. Top-10\% overlap means favor zero risk in all 30 settings, with intervals excluding zero in 10. Normalized-mass total variation favors risk aversion in 8 settings, with no interval excluding zero. These outcomes show that sensitivity and rank-based robustness diagnostics need not agree.
+
+\section{Stopping-Game Pooling and Signed-Gradient Controls}\label{app:rebuttal-sg}
+
+The submitted stopping-game (SG) benchmark exports the positive-player/positive-input (\texttt{pp}) component, not the signed occupation difference that recovers the input gradient. The original-forward pooling control caches max-pooling winners from the ordinary model forward and reuses them in the decomposed pass, keeping the submitted readout and all other settings fixed. On the 50-image VGG-16 validation split, the three configurations have identical PG, TK and Selectivity; paired intervals for AL, PF$_5$, PF$_{20}$, MaxS and AvgS contain zero except a $10^{-6}$ MaxS shift. This shows that pooling-index drift has negligible effect on the reported validation metrics at their precision. It is a diagnostic, not an equivalence test or a test-set result.
+
+Separately, under per-layer numerical centering and cached original-forward pooling, the signed SG result matches autograd on all 50 validation images to a maximum relative $\ell_2$ error of $6.581\times10^{-7}$ with the theorem's strict ReLU-zero convention in float32; float64 reaches machine precision. The implementation's non-strict zero gate has larger float32 error ($2.873\times10^{-4}$ relative), while no exact-zero gate occurs in the float64 pass. Centering preserves the signed difference in exact arithmetic but changes individual components. This audit verifies the signed identity; it does not convert the submitted \texttt{pp} benchmark into a gradient benchmark.
+
+\begin{table}[!ht]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{tables/rebuttal/sg_pool_cache_control_tabular}
+\caption{VGG-16 SG original-forward max-pooling control on the 50-image validation split. Each cell lists recompute/cached means followed by the paired cached-minus-recompute difference and its interval.}
+\label{tab:rebuttal-sg-pooling}
+\end{table}
+
+\section{Checkpoint-Aligned Randomization and Local Hellinger Controls}\label{app:rebuttal-randomization}
+
+The checkpoint-aligned ViT analysis evaluates map diagnostics and trajectory distance on the same 200 test images, dataset labels, model states and randomization conditions. Query/key/value projections remain pretrained in the cascade. Randomizing only the classifier head reduces top-1 accuracy from 88.5\% to zero and mean target probability from .7355 to .000932, while RG absolute-map rank similarity remains .999998; RG Hellinger distance is .769. Randomizing the last encoder block leaves map similarity at .999972 and raises Hellinger distance to .915. At the cascade endpoint, map similarity falls to .377 and survival-conditioned Hellinger reaches 1.000. The map projection can therefore remain nearly unchanged after predictive collapse, while the trajectory diagnostic registers changed routing. These results do not establish Hellinger as a predictor of accuracy or explanation quality.
+
+Per-image associations are condition-dependent. At the cascade endpoint, RG Hellinger has Spearman correlation $-.203$ with RG map similarity (95\% CI $[-.333,-.072]$); head-only and last-block intervals include zero. The exploratory head-only association with absolute PF$_{20}$ change is $.273$ [$ .131,.403$], while other conditions include zero. Because randomization changes the classifier and logit scale, PF$_{20}$ change is not an independent explanation-quality endpoint. Local perturbations of the ViT classifier head produce increasing Hellinger distance as noise scale grows, while a small last-block attention-output perturbation produces much smaller distance; this is a local sensitivity diagnostic, not a quality calibration. Chapter~\ref{ch:trajectory} supplies the trajectory-space definitions and theorem scope.
+
+\begin{table}[!ht]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}
+\resizebox{\linewidth}{!}{\input{tables/rebuttal/corrected_vit_prediction_tabular}}
+\caption{Prediction audit for the checkpoint-aligned ViT randomization controls ($n=200$ fixed test images).}
+\label{tab:rebuttal-vit-prediction}
+\end{table}
+
+\begin{table}[!ht]
+\centering\small\setlength{\tabcolsep}{3pt}
+\input{tables/rebuttal/corrected_vit_randomization_tabular}
+\caption{Checkpoint-aligned ViT map and trajectory diagnostics ($n=200$), transposed by diagnostic for legibility. Spearman associations are exploratory and unadjusted.}
+\label{tab:rebuttal-vit-randomization}
+\end{table}
+
+\begin{table}[!ht]
+\centering\small
+\input{tables/rebuttal/local_hellinger_controls_tabular}
+\caption{Local Hellinger response to controlled ViT weight perturbations.}
+\label{tab:rebuttal-local-hellinger}
+\end{table}
+

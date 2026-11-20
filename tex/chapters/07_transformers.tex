@@ -1,6 +1,6 @@
 \chapter{Extensions: Attention and Transformers}\label{ch:transformers}
 
-This chapter extends decomposition and routing games to multiplicative layers and Transformers: the multiplicative split of \textcite{hiddenMono}, strengthened here by polarization, the exact convex split of the full deterministic Transformer, and the conditioned routing rules evaluated experimentally. Their domains and preserved properties differ.
+This chapter extends decomposition and routing games to multiplicative layers and Transformers: the multiplicative split of \textcite{hiddenMono}, strengthened here by polarization, the exact convex split of the full deterministic Transformer, and the conditioned routing rules evaluated experimentally.
 
 Transformers \parencite{Vaswani2017} introduce input-dependent products $QK^\top$, $AV$ and coordinate-coupled softmax and LayerNorm. Section~\ref{sec:multiplicative_splits} preserves the difference, convexity and monotonicity on non-negative input pairs using polarization; Section~\ref{sec:transformer_dc} extends this to softmax and LayerNorm. The full construction is implemented in PyTorch; Appendix~\ref{app:transformer_dc_numeric} documents its numerical behavior. Chapter~\ref{ch:experiments} evaluates conditioned Value-routing games and stabilized SplitCAM with attention and LayerNorm fixed for each input (Section~\ref{sec:vit-extension}).
 
@@ -8,7 +8,8 @@ Transformers \parencite{Vaswani2017} introduce input-dependent products $QK^\top
 
 Early Transformer-head analyses combined attention patterns, LRP-based importance and pruning \parencite{Voita2019}. To include propagation through depth, \textcite{Abnar2020attention} proposed \emph{attention rollout}, multiplying residual-corrected attention matrices, and \emph{attention flow}, a max-flow computation on the layered graph. Rollout uses these matrices as token-walk transition kernels; flow uses their entries as capacities. Both omit value magnitudes, \acp{mlp} and projection signs, allowing rollout to highlight tokens whose values contribute nothing.
 
-A second line adapts \ac{lrp} \parencite{Bach2015}. \textcite{Chefer2021GenericAttention} combined relevance with attention gradients for class-specific self-attention attribution, later extended to co-attention and encoder--decoder architectures \parencite{Chefer2021ICCV}. \textcite{Ali2022AttnLRP} showed that naive gradients through attention and LayerNorm can \emph{violate conservation}; detaching attention and the LayerNorm denominator while retaining linear centering gives conservative local rules. AttnLRP \parencite{Achtibat2024AttnLRP} introduced bilinear-product and non-linearity rules scaling to \acp{llm}. Other variants yield concept-level \parencite{Achtibat2023CRP} and magnitude-aware \parencite{vukadin2024abslrp} explanations. DAVE \parencite{Wrobel2024} addresses patch-grid attribution artifacts in \acp{vit} \parencite{Dosovitskiy2021vit} through conditioned operators and spatial averaging; \textcite{darcet2024vision} mitigated high-norm artifact tokens with registers. The ResLRP preprint addresses residual-branch cancellation: its residual $\gamma$-rule conserves relevance and bounds absolute relevance amplification per backward merge by $1+2/\gamma$, for nonzero residual output and $\gamma>0$ \parencite{Berend2026ResLRP}. At \ac{llm} scale, gradient approximations of activation patching \parencite{Syed2024AttributionPatching,Kramar2024AtPStar} localize circuits against interventions \parencite{Hanna2024Faithfulness}. RelP replaces local gradients in attribution patching with LRP propagation coefficients, improving its approximation of activation-patching effects on the evaluated language-model tasks~\parencite{Jafari2025RelP}; attribution also supports head identification and guided decoding \parencite{Kahardipraja2025Atlas,Komorowski2026AGD}.
+A second line adapts \ac{lrp} \parencite{Bach2015}. \textcite{Chefer2021GenericAttention} combined relevance with attention gradients for class-specific self-attention attribution, later extended to co-attention and encoder--decoder architectures \parencite{Chefer2021ICCV}. \textcite{Ali2022AttnLRP} showed that naive gradients through attention and LayerNorm can \emph{violate conservation}; detaching attention and the LayerNorm denominator while retaining linear centering gives conservative local rules. AttnLRP \parencite{Achtibat2024AttnLRP} introduced bilinear-product and non-linearity rules scaling to \acp{llm}. Other variants yield concept-level \parencite{Achtibat2023CRP} and magnitude-aware \parencite{vukadin2024abslrp} explanations. DAVE \parencite{Wrobel2024} addresses patch-grid attribution artifacts in \acp{vit} \parencite{Dosovitskiy2021vit} through conditioned operators and spatial averaging; \textcite{darcet2024vision} mitigated high-norm artifact tokens with registers. At \ac{llm} scale, gradient approximations of activation patching \parencite{Syed2024AttributionPatching,Kramar2024AtPStar} localize circuits against interventions \parencite{Hanna2024Faithfulness}. RelP replaces local gradients in attribution patching with LRP propagation coefficients, improving its approximation of activation-patching effects on the evaluated language-model tasks~\parencite{Jafari2025RelP}; attribution also supports head identification and guided decoding \parencite{Kahardipraja2025Atlas,Komorowski2026AGD}.
+ResLRP~\parencite[Section~4.1 and Appendix~A.2]{Berend2026ResLRP} addresses unstable relevance propagation at residual additions: when branches nearly cancel, dividing by their small sum can produce very large positive and negative relevance scores. It adapts the $\gamma$-rule (Section~\ref{sec:related_work}, \eqref{eq:lrp_gamma_overview}) by increasing branch contributions whose sign agrees with the residual output before renormalizing. This preserves total signed relevance while limiting amplification of absolute relevance at each addition with nonzero output.
 
 The structural question asks whether the full forward map, including attention generation, admits explicit convex streams (Sections~\ref{sec:multiplicative_splits} and~\ref{sec:transformer_dc}). The attribution question concerns Value routing under fixed realized attention. Section~\ref{sec:attention_routing_game}'s KL-regularized game recovers \textcite{Ali2022AttnLRP}'s conservative attention-block rule, formalizing a routing calculation motivated by \textcite{Abnar2020attention} with explicit conditioning. Inside our game semantics, the QK-softmax is the oracle player's reference policy, while attribution lives on the Value-routing trajectories. The \ac{rg}+Eq mode adds Reynolds averaging to suppress tokenization-grid artifacts (Section~\ref{ptnb:app:equivariant}).
 
@@ -25,16 +26,14 @@ For non-negative scalars $A,B,C,D$, let
 \end{aligned}
     \label{eq:polarized_product_pair}
 \end{equation}
-Then $P-Q=(A-B)(C-D)$. Both functions are convex, non-negative, and coordinatewise non-decreasing on $\RR^4_{\ge0}$. Hence substituting non-negative convex, coordinatewise non-decreasing incoming streams preserves these properties. In particular,
-\begin{equation}
-    (A-B)^2=2(A^2+B^2)-(A+B)^2
-    \label{eq:convex_square_pair}
-\end{equation}
-is a valid convex, monotone square pair on $\RR^2_{\ge0}$.
+Then $P-Q=(A-B)(C-D)$. Both functions are convex, non-negative, and coordinatewise non-decreasing on $\RR^4_{\ge0}$.
 \end{proposition}
 
 \begin{proof}
-Expand for recovery. Squares of affine forms are convex and non-negative; their derivatives on the orthant are non-negative, permitting convex monotone composition. Set $C=A$, $D=B$ for~\eqref{eq:convex_square_pair}.
+\[
+P-Q=\tfrac12(2AC+2BD-2AD-2BC)=(A-B)(C-D).
+\]
+Squares of affine forms are convex and non-negative; their derivatives on the orthant are non-negative.
 \end{proof}
 
 Monotonicity requires the orthant: $\partial_A(A+C)^2=2(A+C)$ can be negative elsewhere. Thus Transformer streams use non-negative input pairs, although softmax permits a larger domain. For compatible matrix decompositions $U=U^+-U^-$ and $V=V^+-V^-$ with non-negative components, apply~\eqref{eq:polarized_product_pair} to $(A,B,C,D)=(U^+_{ik},U^-_{ik},V^+_{kj},V^-_{kj})$ and sum $P$ and $Q$ separately over $k$. Their difference is $(UV)_{ij}$. This splits attention's matrix products $QK^\top$ and $AV$. The query, key and value matrices may have arbitrary signed entries; non-negativity is required only of their split-streams. The squares in the proposition are scalar squares.
@@ -93,7 +92,7 @@ are convex and coordinatewise non-decreasing on $\RR^2$, are non-negative on $\R
 The pieces meet with derivative $-M$; their second derivatives are $0$ and $3/(4(\varepsilon+t)^{5/2})>0$. Thus $r_\varepsilon$ is convex with $-M\le r_\varepsilon'\le0$. Apply Proposition~\ref{prop:dc_profile_lift} to $p(t)=r_\varepsilon(t)+Mt$, $q(t)=Mt$, whose derivatives lie in $[0,M]$ and origin values are $\varepsilon^{-1/2},0$. Cancellation gives the difference.
 \end{proof}
 
-To split~\eqref{eq:layernorm_dc_definition}, split affine centering, square each centered pair by~\eqref{eq:convex_square_pair}, and average streams to obtain $v=v^+-v^-$. Apply~\eqref{eq:reciprocal_sqrt_pair}: recovered $v\ge0$ makes its extension exactly the normalization factor. Multiply by each centered pair using polarization, then apply signed scale and bias. These operations preserve non-negative convex monotone streams on the input orthant; $\varepsilon>0$ covers every input, including constant vectors.
+To split~\eqref{eq:layernorm_dc_definition}, split affine centering, square each centered pair using~\eqref{eq:polarized_product_pair}, and average streams to obtain $v=v^+-v^-$. Apply~\eqref{eq:reciprocal_sqrt_pair}: recovered $v\ge0$ makes its extension exactly the normalization factor. Multiply by each centered pair using polarization, then apply signed scale and bias. These operations preserve non-negative convex monotone streams on the input orthant; $\varepsilon>0$ covers every input, including constant vectors.
 
 \subsection{An explicit pre-normalization architecture}
 
@@ -125,7 +124,7 @@ Masked coefficients outside $I_{h,t}$ are zero. The usual scaled dot product is 
 \end{aligned}
     \label{eq:explicit_transformer_block}
 \end{equation}
-Both LayerNorms have positive epsilon and arbitrary signed learned scale and bias as in~\eqref{eq:layernorm_dc_definition}. The activation $\varrho_k$ is chosen from ReLU, exact Gaussian GELU, Swish/SiLU, sigmoid, and softplus, with the positive parameters required in Chapter~\ref{ch:decompositions}. Head widths, \ac{mlp} widths, masks, and parameters may differ between blocks, while the residual width is $d$.
+Both LayerNorms have positive epsilon and arbitrary signed learned scale and bias as in~\eqref{eq:layernorm_dc_definition}. The activation $\varrho_k$ is chosen from ReLU, GELU $z\mapsto z\Phi(z)$, Swish/SiLU, sigmoid, and softplus, with the positive parameters required in Chapter~\ref{ch:decompositions}. Head widths, \ac{mlp} widths, masks, and parameters may differ between blocks, while the residual width is $d$.
 
 For any finite depth $K\ge0$, define
 \begin{equation}
@@ -142,37 +141,12 @@ For any finite depth $K\ge0$, define
 The optional final norm is tokenwise with positive epsilon. Depth zero retains only the positional map, optional norm and readout; zero readout weights outside one token give a class-token logit. Fixed coordinate scalings can represent a fixed dropout mask in this deterministic inference computation.
 \end{definition}
 
-\subsection{The recursive split algorithm}
-
-Expand Definition~\ref{def:prenorm_transformer} into scalar expressions built from inputs, constants, sums, signed multiples, products, supported activations, softmax and LayerNorm coordinates. Their ordinary evaluation is~\eqref{eq:explicit_transformer_attention}--\eqref{eq:arbitrary_depth_transformer}, with no assumed convexity certificate.
-
-Write $\mathcal C(e)=(e^+,e^-)$ for the recursively constructed pair, as a function of independent non-negative inputs $(x,y)$. Pair addition is componentwise, and signed scalar multiplication is
-\begin{equation}
-    \operatorname{Scale}_c(p,q)=
-    \begin{cases}(cp,cq),&c\ge0,\\(-cq,-cp),&c<0.
-    \end{cases}
-    \label{eq:transformer_pair_scale}
-\end{equation}
-Use product pair~\eqref{eq:polarized_product_pair}, the activation pairs of Section~\ref{sec:closed_form_dc_activations}, softmax Theorem~\ref{thm:softmax_dc_split}, and the LayerNorm recipe above, retaining its input-dependent statistics.
-
-\begin{algorithm}[htbp]
-\DontPrintSemicolon
-\caption{Recursive DC evaluation of a finite Transformer expression}
-\label{alg:transformer_dc_compile}
-\KwIn{A scalar output expression $e$; independent inputs $x,y\ge0$.}
-\KwOut{$\mathcal C(e)(x,y)$ recovering the ordinary output at $x-y$.}
-Return $(x_i,y_i)$ for input $X_i$ and $(\max\{c,0\},\max\{-c,0\})$ for constant $c$.\;
-Otherwise compile all children recursively. Add pairs for sums; use $\operatorname{Scale}_c$ for signed multiples and~\eqref{eq:polarized_product_pair} for products.\;
-For an activation, softmax coordinate, or LayerNorm coordinate, apply its explicit pair to the compiled arguments (allowed scores for softmax; features with positive epsilon and signed scale/bias for LayerNorm).\;
-Return the pair at the signed affine readout.\;
-\end{algorithm}
-
-Translation follows the finite block list: the empty list preserves its input, and each block substitutes current token expressions into its formulas. This real-arithmetic recursion permits shared-expression reuse and requires no expansion or runtime bound for correctness.
-
 \subsection{The full Transformer construction}
 
-\begin{theoremenv}[Exact DC decomposition of a deterministic Transformer, \LeanResult{thm:transformer_dc}]\label{thm:transformer_dc}
-Let $N\colon\RR^{T\times d}\to\RR$ be the Transformer of Definition~\ref{def:prenorm_transformer}, with any finite list of blocks, including the empty list, and identify its token-feature input with $\RR^m$, where $m=Td$. Algorithm~\ref{alg:transformer_dc_compile}, applied to its output expression, terminates and exactly decomposes this forward map. It constructs functions
+Use the canonical affine and ReLU splits throughout the network, add residual branches componentwise, and apply the product pair~\eqref{eq:polarized_product_pair}, the smooth activation pairs of Section~\ref{sec:closed_form_dc_activations}, softmax Theorem~\ref{thm:softmax_dc_split}, and the LayerNorm recipe above, retaining its input-dependent statistics.
+
+\begin{theoremenv}[Exact DC decomposition of a deterministic Transformer, \LeanLinkIfDeclared{eq:transformer_dc_linear_cost}{\textcolor{leangray}{\normalfont\texttt{Lean}}}]\label{thm:transformer_dc}
+Let $N\colon\RR^{T\times d}\to\RR$ be the Transformer of Definition~\ref{def:prenorm_transformer}, with any finite list of blocks, including the empty list, and identify its token-feature input with $\RR^m$, where $m=Td$. The canonical construction yields split-streams
 $N_+,N_-\colon\RR^{2m}_{\ge0}\to\RR_{\ge0}$,
 convex and coordinatewise non-decreasing on that orthant, such that
 \begin{equation}
@@ -186,16 +160,23 @@ In particular, the functions
     h(u)=N_-(\posneg{u}{+},\posneg{u}{-})
     \label{eq:transformer_raw_dc}
 \end{equation}
-are convex on all of $\RR^m$, are non-negative, and satisfy $N=g-h$. The functions $N_+,N_-$ are coordinatewise non-decreasing in the independent inputs $(x,y)$; $g,h$ need not be coordinatewise non-decreasing in the original signed variable $u$.
+are convex on all of $\RR^m$, are non-negative, and satisfy $N=g-h$. The functions $N_+,N_-$ are coordinatewise non-decreasing in the independent inputs $(x,y)$; $g,h$ need not be coordinatewise non-decreasing in the original signed variable $u$ (\LeanResult{thm:transformer_dc}).
+
+With shared intermediate values, evaluation at each input satisfies
+\begin{equation}
+    \operatorname{cost}_{\mathrm{DC}}\le C S,
+    \qquad C\text{ universal},
+    \label{eq:transformer_dc_linear_cost}
+\end{equation}
+where $S$ is the size of the original scalar computation graph, including constant nodes, counting arithmetic, comparisons and scalar activation or special-function evaluations at unit cost, with constant-time access to stored values and parameters.
 \end{theoremenv}
 
 \begin{proof}
-The finite block list yields finite syntax, so compilation terminates. Structural induction gives exact recovery and non-negative convex, coordinatewise non-decreasing heads: projections and split constants start the induction; sums and signed scaling preserve it, swapping heads for negative scalars. Products use Proposition~\ref{prop:convex_product_pair}; activations use their scalar pairs; softmax uses Theorem~\ref{thm:softmax_dc_split} on nonempty allowed keys; LayerNorm follows its recipe with non-negative variance and positive epsilon. The convex monotone composition argument is the one in Theorem~\ref{thm:general_dc_network}.
-
-Block-list induction identifies ordinary evaluation with~\eqref{eq:arbitrary_depth_transformer}, including depth zero and the ungated signed affine readout, proving~\eqref{eq:transformer_dc_recovery}. Finally, the convex components $\posneg{u}{\sigma}$ take values in the orthant, so the same composition rule gives convex $g,h$ with difference $N(u)$.
+Each constituent split recovers its operation and preserves non-negativity, convexity and coordinatewise monotonicity under composition (Theorem~\ref{thm:general_dc_network}). Induction over the operations and blocks, followed by the affine readout, gives~\eqref{eq:transformer_dc_recovery}. Composing with the convex positive and negative parts $\posneg{u}{\sigma}$ gives convex $g,h$ with difference $N(u)$.
+Each scalar split uses a bounded number of operations; softmax and LayerNorm share their reductions across each row or token. Evaluating each intermediate once therefore gives~\eqref{eq:transformer_dc_linear_cost}.
 \end{proof}
 
-This real-arithmetic DC representation retains the input dependence of Queries, Keys, Values, softmax and LayerNorm statistics. It guarantees neither stable floating-point evaluation nor attribution quality or practical runtime: $M=(2\varepsilon^{3/2})^{-1}$ and repeated products can amplify common stream mass and cause cancellation. Section~\ref{app:transformer_dc_numeric} documents the unstabilized float64 failures in a post-normalization block, whose placement differs from Definition~\ref{def:prenorm_transformer}. The completed SplitCAM benchmark uses the stabilized, conditioned variant (Section~\ref{sec:vit-extension}).
+Numerical stability is separate: repeated products and the LayerNorm factor $M=(2\varepsilon^{3/2})^{-1}$ can amplify common stream values and cause floating-point cancellation. Section~\ref{app:transformer_dc_numeric} documents the unstabilized float64 failures in a post-normalization block, whose placement differs from Definition~\ref{def:prenorm_transformer}. The completed SplitCAM benchmark uses the stabilized, conditioned variant (Section~\ref{sec:vit-extension}).
 
 \section{Attention via a detached-logit oracle}\label{ptnb:sec:attention}\label{ptnb:app:vit-extension}\label{sec:attention_routing_game}\label{ptnb:app:attention-subgame}\label{app:supp_attention}
 

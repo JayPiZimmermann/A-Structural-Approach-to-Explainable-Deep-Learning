@@ -172,6 +172,9 @@ tex/pdfa.xmpi
 # Bibliographic URLs, versions and checksums are recorded in the audit reports.
 /literature/references/
 
+# Locally archived TU Berlin thesis requirements and forms.
+/literature/tu-berlin-thesis-requirements/
+
 # Local ViT completion-watch state and disposable export/build previews.
 /reports/vit-extension/releases/
 /reports/vit-extension/rollback/

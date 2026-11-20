@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>HiddenMonotonicity.TransformerDC.Transformer.dc_decomposition_linear_cost — locally checked Lean proof</title>
+<style>
+body{margin:2rem;color:#202124;background:#fff;font:16px/1.5 system-ui,sans-serif}
+h1{font-size:1.2rem;overflow-wrap:anywhere} .metadata{max-width:85ch}
+pre{overflow:auto;padding:1rem 0;border-top:1px solid #ccc;font:14px/1.5 monospace}
+.line{display:block;min-height:1.5em} .line:target{background:#fff2bd}
+.number{display:inline-block;width:4em;padding-right:1em;text-align:right;color:#666}
+code{font:inherit} .hash{overflow-wrap:anywhere}
+</style><main>
+<h1>HiddenMonotonicity.TransformerDC.Transformer.dc_decomposition_linear_cost</h1>
+<div class="metadata"><p>Locally checked, unpublished Lean source. This is an addition to the
+pinned thesis formalization; it has not been committed or published as a GitHub revision.</p>
+<p>The materialized shared evaluator computes both existing Transformer DC streams exactly, for arbitrary finite depth, heads, masks and widths. Its actual scalar-operation counter is bounded by 200 times the original shared scalar graph size. The same contract includes convexity, monotonicity, nonnegative streams and exact recovery on the doubled-input orthant, and convex exact heads on signed raw inputs. Arithmetic, comparisons and scalar special functions have unit cost; stored inputs and fixed parameters are available directly, and parameter-derived constants are precomputed. This is an arithmetic-work bound, not a bit-complexity, floating-point or compiled Lean wall-clock guarantee.</p>
+<p>Source: <code>formalization/HiddenMonotonicity/TransformerLinearCost.lean</code><br>
+SHA-256: <code class="hash">80b53e3ed513d45c3784d5c2829b196e004f309ca1cbd079c3c81f6a19bc0eaf</code><br>
+Permitted axioms used: <code>propext, Classical.choice, Quot.sound</code>.</p>
+<p>The separate local build, theorem type, axiom audit and scope review passed.
+Keep this <code>draft-proofs</code> directory beside the thesis PDF.</p></div>
+<pre><span class="line" id="L1"><a href="#L1" class="number">1</a><code>import HiddenMonotonicity.TransformerSharedCorrectness</code></span>
+<span class="line" id="L2"><a href="#L2" class="number">2</a><code></code></span>
+<span class="line" id="L3"><a href="#L3" class="number">3</a><code>/-! Arithmetic work of the materialized Transformer DC evaluation.</code></span>
+<span class="line" id="L4"><a href="#L4" class="number">4</a><code></code></span>
+<span class="line" id="L5"><a href="#L5" class="number">5</a><code>The reference size counts the scalar nodes of a shared ordinary forward graph.</code></span>
+<span class="line" id="L6"><a href="#L6" class="number">6</a><code>Real arithmetic, comparisons and standard scalar functions have unit cost;</code></span>
+<span class="line" id="L7"><a href="#L7" class="number">7</a><code>constants count as one source node. Vector materialization and indexed access are</code></span>
+<span class="line" id="L8"><a href="#L8" class="number">8</a><code>not arithmetic operations. Softmax and LayerNorm share their row/token reductions.</code></span>
+<span class="line" id="L9"><a href="#L9" class="number">9</a><code>This is an arithmetic-operation bound, not a bit-complexity or floating-point claim.</code></span>
+<span class="line" id="L10"><a href="#L10" class="number">10</a><code>-/</code></span>
+<span class="line" id="L11"><a href="#L11" class="number">11</a><code>noncomputable section</code></span>
+<span class="line" id="L12"><a href="#L12" class="number">12</a><code>set_option autoImplicit false</code></span>
+<span class="line" id="L13"><a href="#L13" class="number">13</a><code>namespace HiddenMonotonicity.TransformerDC</code></span>
+<span class="line" id="L14"><a href="#L14" class="number">14</a><code>open scoped BigOperators</code></span>
+<span class="line" id="L15"><a href="#L15" class="number">15</a><code></code></span>
+<span class="line" id="L16"><a href="#L16" class="number">16</a><code>namespace SharedRuntime</code></span>
+<span class="line" id="L17"><a href="#L17" class="number">17</a><code></code></span>
+<span class="line" id="L18"><a href="#L18" class="number">18</a><code>/-- Each affine output has `n` scalar products, `n` accumulation additions,</code></span>
+<span class="line" id="L19"><a href="#L19" class="number">19</a><code>a bias source, and one bias addition. -/</code></span>
+<span class="line" id="L20"><a href="#L20" class="number">20</a><code>def affineSize (n m : ℕ) : ℕ := m * (2*n + 2)</code></span>
+<span class="line" id="L21"><a href="#L21" class="number">21</a><code></code></span>
+<span class="line" id="L22"><a href="#L22" class="number">22</a><code>/-- A shared dot product has one multiplication and one accumulation per term. -/</code></span>
+<span class="line" id="L23"><a href="#L23" class="number">23</a><code>def dotSize (n : ℕ) : ℕ := 2*n</code></span>
+<span class="line" id="L24"><a href="#L24" class="number">24</a><code></code></span>
+<span class="line" id="L25"><a href="#L25" class="number">25</a><code>/-- Exponentials, denominator accumulation, coordinate divisions, and one</code></span>
+<span class="line" id="L26"><a href="#L26" class="number">26</a><code>normalization source. The shared denominator is computed once for the row. -/</code></span>
+<span class="line" id="L27"><a href="#L27" class="number">27</a><code>def softmaxSize (n : ℕ) : ℕ := 3*n + 1</code></span>
+<span class="line" id="L28"><a href="#L28" class="number">28</a><code></code></span>
+<span class="line" id="L29"><a href="#L29" class="number">29</a><code>/-- Mean and variance reductions, centering and squares, normalization, learned</code></span>
+<span class="line" id="L30"><a href="#L30" class="number">30</a><code>scale and bias: seven scalar operations per feature and five shared operations. -/</code></span>
+<span class="line" id="L31"><a href="#L31" class="number">31</a><code>def normSize (n : ℕ) : ℕ := 7*n + 5</code></span>
+<span class="line" id="L32"><a href="#L32" class="number">32</a><code></code></span>
+<span class="line" id="L33"><a href="#L33" class="number">33</a><code>/-- Scalar-graph size of one attention head with cached Q, K and V projections. -/</code></span>
+<span class="line" id="L34"><a href="#L34" class="number">34</a><code>def headSize {t d : ℕ} (h : TransformerHead t d) : ℕ :=</code></span>
+<span class="line" id="L35"><a href="#L35" class="number">35</a><code>  t * (2 * affineSize d h.keyWidth + affineSize d h.valueWidth) +</code></span>
+<span class="line" id="L36"><a href="#L36" class="number">36</a><code>    ∑ q : Fin t,</code></span>
+<span class="line" id="L37"><a href="#L37" class="number">37</a><code>      (h.mask.keyCount q * (dotSize h.keyWidth + 1) +</code></span>
+<span class="line" id="L38"><a href="#L38" class="number">38</a><code>       softmaxSize (h.mask.keyCount q) +</code></span>
+<span class="line" id="L39"><a href="#L39" class="number">39</a><code>       h.valueWidth * dotSize (h.mask.keyCount q) +</code></span>
+<span class="line" id="L40"><a href="#L40" class="number">40</a><code>       d * dotSize h.valueWidth)</code></span>
+<span class="line" id="L41"><a href="#L41" class="number">41</a><code></code></span>
+<span class="line" id="L42"><a href="#L42" class="number">42</a><code>/-- Both norms, cached attention heads, two residual merges, and the tokenwise</code></span>
+<span class="line" id="L43"><a href="#L43" class="number">43</a><code>MLP, with a scalar activation node for each hidden feature. -/</code></span>
+<span class="line" id="L44"><a href="#L44" class="number">44</a><code>def blockSize {t d : ℕ} (b : TransformerBlock t d) : ℕ :=</code></span>
+<span class="line" id="L45"><a href="#L45" class="number">45</a><code>  t * normSize d + (b.heads.map headSize).sum +</code></span>
+<span class="line" id="L46"><a href="#L46" class="number">46</a><code>    t*d*(b.heads.length + 3) + t * normSize d +</code></span>
+<span class="line" id="L47"><a href="#L47" class="number">47</a><code>    t*(affineSize d b.hiddenWidth + b.hiddenWidth + affineSize b.hiddenWidth d) + t*d</code></span>
+<span class="line" id="L48"><a href="#L48" class="number">48</a><code></code></span>
+<span class="line" id="L49"><a href="#L49" class="number">49</a><code>/-- The shared graph adds the work of its blocks; earlier blocks are never</code></span>
+<span class="line" id="L50"><a href="#L50" class="number">50</a><code>expanded again at later references. -/</code></span>
+<span class="line" id="L51"><a href="#L51" class="number">51</a><code>def blocksSize {t d : ℕ} : List (TransformerBlock t d) → ℕ</code></span>
+<span class="line" id="L52"><a href="#L52" class="number">52</a><code>  | [] =&gt; 0</code></span>
+<span class="line" id="L53"><a href="#L53" class="number">53</a><code>  | b :: bs =&gt; blockSize b + blocksSize bs</code></span>
+<span class="line" id="L54"><a href="#L54" class="number">54</a><code></code></span>
+<span class="line" id="L55"><a href="#L55" class="number">55</a><code>/-- Nested feature/token reductions for each signed affine output. -/</code></span>
+<span class="line" id="L56"><a href="#L56" class="number">56</a><code>def readoutSize (t d o : ℕ) : ℕ := o*(2*(t*d) + t + 2)</code></span>
+<span class="line" id="L57"><a href="#L57" class="number">57</a><code></code></span>
+<span class="line" id="L58"><a href="#L58" class="number">58</a><code>/-- Positional bias, arbitrary finite block depth, optional final norm, and all</code></span>
+<span class="line" id="L59"><a href="#L59" class="number">59</a><code>output logits. This size counts the original shared graph, not an expression tree. -/</code></span>
+<span class="line" id="L60"><a href="#L60" class="number">60</a><code>def networkSize {t d o : ℕ} (net : Transformer t d o) : ℕ :=</code></span>
+<span class="line" id="L61"><a href="#L61" class="number">61</a><code>  2*(t*d) + blocksSize net.blocks +</code></span>
+<span class="line" id="L62"><a href="#L62" class="number">62</a><code>    (match net.finalNorm with | none =&gt; 0 | some _ =&gt; t * normSize d) +</code></span>
+<span class="line" id="L63"><a href="#L63" class="number">63</a><code>    readoutSize t d o</code></span>
+<span class="line" id="L64"><a href="#L64" class="number">64</a><code></code></span>
+<span class="line" id="L65"><a href="#L65" class="number">65</a><code></code></span>
+<span class="line" id="L66"><a href="#L66" class="number">66</a><code>/-- Exact affine pair schedule cost: scaling, accumulation, bias split, and add. -/</code></span>
+<span class="line" id="L67"><a href="#L67" class="number">67</a><code>def affineWork (n m : ℕ) : ℕ := m*(6*n+5)</code></span>
+<span class="line" id="L68"><a href="#L68" class="number">68</a><code>def softmaxWork (n : ℕ) : ℕ := 8*n+4</code></span>
+<span class="line" id="L69"><a href="#L69" class="number">69</a><code>def normWork (n : ℕ) : ℕ := 39*n+18</code></span>
+<span class="line" id="L70"><a href="#L70" class="number">70</a><code></code></span>
+<span class="line" id="L71"><a href="#L71" class="number">71</a><code>def headWork {t d : ℕ} (h : TransformerHead t d) : ℕ :=</code></span>
+<span class="line" id="L72"><a href="#L72" class="number">72</a><code>  t * (2 * affineWork d h.keyWidth + affineWork d h.valueWidth) +</code></span>
+<span class="line" id="L73"><a href="#L73" class="number">73</a><code>    ∑ q : Fin t,</code></span>
+<span class="line" id="L74"><a href="#L74" class="number">74</a><code>      (h.mask.keyCount q * (14*h.keyWidth + 4) +</code></span>
+<span class="line" id="L75"><a href="#L75" class="number">75</a><code>       softmaxWork (h.mask.keyCount q) +</code></span>
+<span class="line" id="L76"><a href="#L76" class="number">76</a><code>       h.valueWidth * (14*h.mask.keyCount q) + d * (6*h.valueWidth))</code></span>
+<span class="line" id="L77"><a href="#L77" class="number">77</a><code></code></span>
+<span class="line" id="L78"><a href="#L78" class="number">78</a><code>/-- All terms count the schedule directly; 32 uniformly bounds each activation. -/</code></span>
+<span class="line" id="L79"><a href="#L79" class="number">79</a><code>def blockWork {t d : ℕ} (b : TransformerBlock t d) : ℕ :=</code></span>
+<span class="line" id="L80"><a href="#L80" class="number">80</a><code>  t * normWork d + (b.heads.map headWork).sum +</code></span>
+<span class="line" id="L81"><a href="#L81" class="number">81</a><code>    t*d*(2*b.heads.length + 7) + t * normWork d +</code></span>
+<span class="line" id="L82"><a href="#L82" class="number">82</a><code>    t*(affineWork d b.hiddenWidth + 32*b.hiddenWidth + affineWork b.hiddenWidth d) + 2*(t*d)</code></span>
+<span class="line" id="L83"><a href="#L83" class="number">83</a><code></code></span>
+<span class="line" id="L84"><a href="#L84" class="number">84</a><code>def blocksWork {t d : ℕ} : List (TransformerBlock t d) → ℕ</code></span>
+<span class="line" id="L85"><a href="#L85" class="number">85</a><code>  | [] =&gt; 0</code></span>
+<span class="line" id="L86"><a href="#L86" class="number">86</a><code>  | b :: bs =&gt; blockWork b + blocksWork bs</code></span>
+<span class="line" id="L87"><a href="#L87" class="number">87</a><code></code></span>
+<span class="line" id="L88"><a href="#L88" class="number">88</a><code>def readoutWork (t d o : ℕ) : ℕ := o*(6*(t*d)+2*t+5)</code></span>
+<span class="line" id="L89"><a href="#L89" class="number">89</a><code></code></span>
+<span class="line" id="L90"><a href="#L90" class="number">90</a><code>def networkWork {t d o : ℕ} (net : Transformer t d o) : ℕ :=</code></span>
+<span class="line" id="L91"><a href="#L91" class="number">91</a><code>  5*(t*d) + blocksWork net.blocks +</code></span>
+<span class="line" id="L92"><a href="#L92" class="number">92</a><code>    (match net.finalNorm with | none =&gt; 0 | some _ =&gt; t * normWork d) +</code></span>
+<span class="line" id="L93"><a href="#L93" class="number">93</a><code>    readoutWork t d o</code></span>
+<span class="line" id="L94"><a href="#L94" class="number">94</a><code></code></span>
+<span class="line" id="L95"><a href="#L95" class="number">95</a><code>lemma affineWork_le (n m : ℕ) : affineWork n m ≤ 200 * affineSize n m := by</code></span>
+<span class="line" id="L96"><a href="#L96" class="number">96</a><code>  dsimp [affineWork, affineSize]</code></span>
+<span class="line" id="L97"><a href="#L97" class="number">97</a><code>  nlinarith</code></span>
+<span class="line" id="L98"><a href="#L98" class="number">98</a><code></code></span>
+<span class="line" id="L99"><a href="#L99" class="number">99</a><code>lemma softmaxWork_le (n : ℕ) : softmaxWork n ≤ 200 * softmaxSize n := by</code></span>
+<span class="line" id="L100"><a href="#L100" class="number">100</a><code>  dsimp [softmaxWork, softmaxSize]</code></span>
+<span class="line" id="L101"><a href="#L101" class="number">101</a><code>  omega</code></span>
+<span class="line" id="L102"><a href="#L102" class="number">102</a><code></code></span>
+<span class="line" id="L103"><a href="#L103" class="number">103</a><code>lemma normWork_le (n : ℕ) : normWork n ≤ 200 * normSize n := by</code></span>
+<span class="line" id="L104"><a href="#L104" class="number">104</a><code>  dsimp [normWork, normSize]</code></span>
+<span class="line" id="L105"><a href="#L105" class="number">105</a><code>  omega</code></span>
+<span class="line" id="L106"><a href="#L106" class="number">106</a><code></code></span>
+<span class="line" id="L107"><a href="#L107" class="number">107</a><code>lemma headWork_le {t d : ℕ} (h : TransformerHead t d) : headWork h ≤ 200 * headSize h := by</code></span>
+<span class="line" id="L108"><a href="#L108" class="number">108</a><code>  have hq : (∑ q : Fin t,</code></span>
+<span class="line" id="L109"><a href="#L109" class="number">109</a><code>      (h.mask.keyCount q * (14*h.keyWidth + 4) +</code></span>
+<span class="line" id="L110"><a href="#L110" class="number">110</a><code>       softmaxWork (h.mask.keyCount q) +</code></span>
+<span class="line" id="L111"><a href="#L111" class="number">111</a><code>       h.valueWidth * (14*h.mask.keyCount q) + d * (6*h.valueWidth))) ≤</code></span>
+<span class="line" id="L112"><a href="#L112" class="number">112</a><code>      ∑ q : Fin t, 200 *</code></span>
+<span class="line" id="L113"><a href="#L113" class="number">113</a><code>      (h.mask.keyCount q * (dotSize h.keyWidth + 1) +</code></span>
+<span class="line" id="L114"><a href="#L114" class="number">114</a><code>       softmaxSize (h.mask.keyCount q) +</code></span>
+<span class="line" id="L115"><a href="#L115" class="number">115</a><code>       h.valueWidth * dotSize (h.mask.keyCount q) + d * dotSize h.valueWidth) := by</code></span>
+<span class="line" id="L116"><a href="#L116" class="number">116</a><code>    apply Finset.sum_le_sum</code></span>
+<span class="line" id="L117"><a href="#L117" class="number">117</a><code>    intro q _</code></span>
+<span class="line" id="L118"><a href="#L118" class="number">118</a><code>    dsimp [dotSize, softmaxWork, softmaxSize]</code></span>
+<span class="line" id="L119"><a href="#L119" class="number">119</a><code>    nlinarith</code></span>
+<span class="line" id="L120"><a href="#L120" class="number">120</a><code>  rw [← Finset.mul_sum] at hq</code></span>
+<span class="line" id="L121"><a href="#L121" class="number">121</a><code>  have hp := Nat.mul_le_mul_left t</code></span>
+<span class="line" id="L122"><a href="#L122" class="number">122</a><code>    (Nat.add_le_add (Nat.mul_le_mul_left 2 (affineWork_le d h.keyWidth))</code></span>
+<span class="line" id="L123"><a href="#L123" class="number">123</a><code>      (affineWork_le d h.valueWidth))</code></span>
+<span class="line" id="L124"><a href="#L124" class="number">124</a><code>  dsimp [headWork, headSize]</code></span>
+<span class="line" id="L125"><a href="#L125" class="number">125</a><code>  nlinarith</code></span>
+<span class="line" id="L126"><a href="#L126" class="number">126</a><code></code></span>
+<span class="line" id="L127"><a href="#L127" class="number">127</a><code>lemma list_heads_work_le {t d : ℕ} (hs : List (TransformerHead t d)) :</code></span>
+<span class="line" id="L128"><a href="#L128" class="number">128</a><code>    (hs.map headWork).sum ≤ 200 * (hs.map headSize).sum := by</code></span>
+<span class="line" id="L129"><a href="#L129" class="number">129</a><code>  induction hs with</code></span>
+<span class="line" id="L130"><a href="#L130" class="number">130</a><code>  | nil =&gt; simp</code></span>
+<span class="line" id="L131"><a href="#L131" class="number">131</a><code>  | cons h hs ih =&gt;</code></span>
+<span class="line" id="L132"><a href="#L132" class="number">132</a><code>      have hh := headWork_le h</code></span>
+<span class="line" id="L133"><a href="#L133" class="number">133</a><code>      simp only [List.map_cons, List.sum_cons]</code></span>
+<span class="line" id="L134"><a href="#L134" class="number">134</a><code>      omega</code></span>
+<span class="line" id="L135"><a href="#L135" class="number">135</a><code></code></span>
+<span class="line" id="L136"><a href="#L136" class="number">136</a><code>lemma blockWork_le {t d : ℕ} (b : TransformerBlock t d) :</code></span>
+<span class="line" id="L137"><a href="#L137" class="number">137</a><code>    blockWork b ≤ 200 * blockSize b := by</code></span>
+<span class="line" id="L138"><a href="#L138" class="number">138</a><code>  have hn := Nat.mul_le_mul_left t (normWork_le d)</code></span>
+<span class="line" id="L139"><a href="#L139" class="number">139</a><code>  have hh := list_heads_work_le b.heads</code></span>
+<span class="line" id="L140"><a href="#L140" class="number">140</a><code>  have hup := Nat.mul_le_mul_left t (affineWork_le d b.hiddenWidth)</code></span>
+<span class="line" id="L141"><a href="#L141" class="number">141</a><code>  have hdown := Nat.mul_le_mul_left t (affineWork_le b.hiddenWidth d)</code></span>
+<span class="line" id="L142"><a href="#L142" class="number">142</a><code>  have hres : t*d*(2*b.heads.length+7) ≤ 200*(t*d*(b.heads.length+3)) := by</code></span>
+<span class="line" id="L143"><a href="#L143" class="number">143</a><code>    calc</code></span>
+<span class="line" id="L144"><a href="#L144" class="number">144</a><code>      t*d*(2*b.heads.length+7) ≤ t*d*(200*(b.heads.length+3)) :=</code></span>
+<span class="line" id="L145"><a href="#L145" class="number">145</a><code>        Nat.mul_le_mul_left _ (by omega)</code></span>
+<span class="line" id="L146"><a href="#L146" class="number">146</a><code>      _ = _ := by ring</code></span>
+<span class="line" id="L147"><a href="#L147" class="number">147</a><code>  have hact : 32*(t*b.hiddenWidth) ≤ 200*(t*b.hiddenWidth) := by omega</code></span>
+<span class="line" id="L148"><a href="#L148" class="number">148</a><code>  have hlast : 2*(t*d) ≤ 200*(t*d) := by omega</code></span>
+<span class="line" id="L149"><a href="#L149" class="number">149</a><code>  dsimp [blockWork, blockSize]</code></span>
+<span class="line" id="L150"><a href="#L150" class="number">150</a><code>  nlinarith only [hn, hh, hup, hdown, hres, hact, hlast]</code></span>
+<span class="line" id="L151"><a href="#L151" class="number">151</a><code></code></span>
+<span class="line" id="L152"><a href="#L152" class="number">152</a><code>lemma blocksWork_le {t d : ℕ} (bs : List (TransformerBlock t d)) :</code></span>
+<span class="line" id="L153"><a href="#L153" class="number">153</a><code>    blocksWork bs ≤ 200 * blocksSize bs := by</code></span>
+<span class="line" id="L154"><a href="#L154" class="number">154</a><code>  induction bs with</code></span>
+<span class="line" id="L155"><a href="#L155" class="number">155</a><code>  | nil =&gt; simp [blocksWork, blocksSize]</code></span>
+<span class="line" id="L156"><a href="#L156" class="number">156</a><code>  | cons b bs ih =&gt;</code></span>
+<span class="line" id="L157"><a href="#L157" class="number">157</a><code>      have hb := blockWork_le b</code></span>
+<span class="line" id="L158"><a href="#L158" class="number">158</a><code>      simp only [blocksWork, blocksSize]</code></span>
+<span class="line" id="L159"><a href="#L159" class="number">159</a><code>      omega</code></span>
+<span class="line" id="L160"><a href="#L160" class="number">160</a><code></code></span>
+<span class="line" id="L161"><a href="#L161" class="number">161</a><code>lemma readoutWork_le (t d o : ℕ) : readoutWork t d o ≤ 200 * readoutSize t d o := by</code></span>
+<span class="line" id="L162"><a href="#L162" class="number">162</a><code>  dsimp [readoutWork, readoutSize]</code></span>
+<span class="line" id="L163"><a href="#L163" class="number">163</a><code>  calc</code></span>
+<span class="line" id="L164"><a href="#L164" class="number">164</a><code>    o*(6*(t*d)+2*t+5) ≤ o*(200*(2*(t*d)+t+2)) :=</code></span>
+<span class="line" id="L165"><a href="#L165" class="number">165</a><code>      Nat.mul_le_mul_left _ (by omega)</code></span>
+<span class="line" id="L166"><a href="#L166" class="number">166</a><code>    _ = _ := by ring</code></span>
+<span class="line" id="L167"><a href="#L167" class="number">167</a><code></code></span>
+<span class="line" id="L168"><a href="#L168" class="number">168</a><code>lemma networkWork_le {t d o : ℕ} (net : Transformer t d o) :</code></span>
+<span class="line" id="L169"><a href="#L169" class="number">169</a><code>    networkWork net ≤ 200 * networkSize net := by</code></span>
+<span class="line" id="L170"><a href="#L170" class="number">170</a><code>  have hb := blocksWork_le net.blocks</code></span>
+<span class="line" id="L171"><a href="#L171" class="number">171</a><code>  have hr := readoutWork_le t d o</code></span>
+<span class="line" id="L172"><a href="#L172" class="number">172</a><code>  have hn := Nat.mul_le_mul_left t (normWork_le d)</code></span>
+<span class="line" id="L173"><a href="#L173" class="number">173</a><code>  dsimp [networkWork, networkSize]</code></span>
+<span class="line" id="L174"><a href="#L174" class="number">174</a><code>  split &lt;;&gt; nlinarith</code></span>
+<span class="line" id="L175"><a href="#L175" class="number">175</a><code></code></span>
+<span class="line" id="L176"><a href="#L176" class="number">176</a><code>end SharedRuntime</code></span>
+<span class="line" id="L177"><a href="#L177" class="number">177</a><code></code></span>
+<span class="line" id="L178"><a href="#L178" class="number">178</a><code>open SharedRuntime</code></span>
+<span class="line" id="L179"><a href="#L179" class="number">179</a><code></code></span>
+<span class="line" id="L180"><a href="#L180" class="number">180</a><code>@[simp] lemma sum_list_get {α : Type*} (xs : List α) (f : α → ℕ) :</code></span>
+<span class="line" id="L181"><a href="#L181" class="number">181</a><code>    (∑ i : Fin xs.length, f (xs.get i)) = (xs.map f).sum := by</code></span>
+<span class="line" id="L182"><a href="#L182" class="number">182</a><code>  rw [← List.sum_ofFn]</code></span>
+<span class="line" id="L183"><a href="#L183" class="number">183</a><code>  change (List.ofFn (f ∘ xs.get)).sum = _</code></span>
+<span class="line" id="L184"><a href="#L184" class="number">184</a><code>  rw [← List.map_ofFn, List.ofFn_get]</code></span>
+<span class="line" id="L185"><a href="#L185" class="number">185</a><code></code></span>
+<span class="line" id="L186"><a href="#L186" class="number">186</a><code>@[simp] theorem sharedAffine_steps {n m : ℕ} (a : TransformerAffine n m)</code></span>
+<span class="line" id="L187"><a href="#L187" class="number">187</a><code>    (x : Fin n → ℝ × ℝ) : (sharedAffine a x).steps = affineWork n m := by</code></span>
+<span class="line" id="L188"><a href="#L188" class="number">188</a><code>  simp [sharedAffine, affineWork]</code></span>
+<span class="line" id="L189"><a href="#L189" class="number">189</a><code>  omega</code></span>
+<span class="line" id="L190"><a href="#L190" class="number">190</a><code></code></span>
+<span class="line" id="L191"><a href="#L191" class="number">191</a><code>@[simp] theorem sharedNorm_steps {t d : ℕ} (p : TransformerNorm d)</code></span>
+<span class="line" id="L192"><a href="#L192" class="number">192</a><code>    (x : Fin t → Fin d → ℝ × ℝ) : (sharedNorm p x).steps = t * normWork d := by</code></span>
+<span class="line" id="L193"><a href="#L193" class="number">193</a><code>  simp [sharedNorm, normWork]</code></span>
+<span class="line" id="L194"><a href="#L194" class="number">194</a><code></code></span>
+<span class="line" id="L195"><a href="#L195" class="number">195</a><code>@[simp] theorem sharedOptionalNorm_steps {t d : ℕ} (p : Option (TransformerNorm d))</code></span>
+<span class="line" id="L196"><a href="#L196" class="number">196</a><code>    (x : Fin t → Fin d → ℝ × ℝ) :</code></span>
+<span class="line" id="L197"><a href="#L197" class="number">197</a><code>    (sharedOptionalNorm p x).steps = (match p with | none =&gt; 0 | some _ =&gt; t * normWork d) := by</code></span>
+<span class="line" id="L198"><a href="#L198" class="number">198</a><code>  cases p &lt;;&gt; simp [sharedOptionalNorm]</code></span>
+<span class="line" id="L199"><a href="#L199" class="number">199</a><code></code></span>
+<span class="line" id="L200"><a href="#L200" class="number">200</a><code>@[simp] theorem TransformerHead.shared_steps {t d : ℕ} (h : TransformerHead t d)</code></span>
+<span class="line" id="L201"><a href="#L201" class="number">201</a><code>    (x : Fin t → Fin d → ℝ × ℝ) : (h.shared x).steps = headWork h := by</code></span>
+<span class="line" id="L202"><a href="#L202" class="number">202</a><code>  simp [TransformerHead.shared, headWork, softmaxWork, Finset.sum_add_distrib]</code></span>
+<span class="line" id="L203"><a href="#L203" class="number">203</a><code>  ring_nf</code></span>
+<span class="line" id="L204"><a href="#L204" class="number">204</a><code>  simp only [Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc,</code></span>
+<span class="line" id="L205"><a href="#L205" class="number">205</a><code>    Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]</code></span>
+<span class="line" id="L206"><a href="#L206" class="number">206</a><code></code></span>
+<span class="line" id="L207"><a href="#L207" class="number">207</a><code>lemma TransformerBlock.shared_steps_le {t d : ℕ} (b : TransformerBlock t d)</code></span>
+<span class="line" id="L208"><a href="#L208" class="number">208</a><code>    (x : Fin t → Fin d → ℝ × ℝ) : (b.shared x).steps ≤ blockWork b := by</code></span>
+<span class="line" id="L209"><a href="#L209" class="number">209</a><code>  have ha : SharedCost.activationSteps b.activation ≤ 32 := by</code></span>
+<span class="line" id="L210"><a href="#L210" class="number">210</a><code>    simpa only [SharedCost.activation_steps] using</code></span>
+<span class="line" id="L211"><a href="#L211" class="number">211</a><code>      SharedCost.activation_steps_le b.activation (0,0)</code></span>
+<span class="line" id="L212"><a href="#L212" class="number">212</a><code>  have ht := Nat.mul_le_mul_left (t*b.hiddenWidth) ha</code></span>
+<span class="line" id="L213"><a href="#L213" class="number">213</a><code>  simp [TransformerBlock.shared, blockWork, SharedCost.activation_steps]</code></span>
+<span class="line" id="L214"><a href="#L214" class="number">214</a><code>  nlinarith only [ht]</code></span>
+<span class="line" id="L215"><a href="#L215" class="number">215</a><code></code></span>
+<span class="line" id="L216"><a href="#L216" class="number">216</a><code>lemma sharedBlocks_steps_le {t d : ℕ} (bs : List (TransformerBlock t d))</code></span>
+<span class="line" id="L217"><a href="#L217" class="number">217</a><code>    (x : Fin t → Fin d → ℝ × ℝ) : (sharedBlocks bs x).steps ≤ blocksWork bs := by</code></span>
+<span class="line" id="L218"><a href="#L218" class="number">218</a><code>  induction bs generalizing x with</code></span>
+<span class="line" id="L219"><a href="#L219" class="number">219</a><code>  | nil =&gt; simp [sharedBlocks, blocksWork]</code></span>
+<span class="line" id="L220"><a href="#L220" class="number">220</a><code>  | cons b bs ih =&gt;</code></span>
+<span class="line" id="L221"><a href="#L221" class="number">221</a><code>      simp only [sharedBlocks, SharedCost.steps_mbind, blocksWork]</code></span>
+<span class="line" id="L222"><a href="#L222" class="number">222</a><code>      exact Nat.add_le_add (b.shared_steps_le x) (ih _)</code></span>
+<span class="line" id="L223"><a href="#L223" class="number">223</a><code></code></span>
+<span class="line" id="L224"><a href="#L224" class="number">224</a><code>lemma Transformer.sharedDecompose_steps_work {t d o : ℕ} (net : Transformer t d o)</code></span>
+<span class="line" id="L225"><a href="#L225" class="number">225</a><code>    (x : DoubledInput (Fin t × Fin d)) :</code></span>
+<span class="line" id="L226"><a href="#L226" class="number">226</a><code>    (net.sharedDecompose x).steps ≤ networkWork net := by</code></span>
+<span class="line" id="L227"><a href="#L227" class="number">227</a><code>  have hb := sharedBlocks_steps_le net.blocks</code></span>
+<span class="line" id="L228"><a href="#L228" class="number">228</a><code>  simp [Transformer.sharedDecompose, networkWork, readoutWork]</code></span>
+<span class="line" id="L229"><a href="#L229" class="number">229</a><code>  nlinarith [hb (fun q j =&gt; TransformerDC.addPair (x.1 (q,j),x.2 (q,j))</code></span>
+<span class="line" id="L230"><a href="#L230" class="number">230</a><code>    (TransformerDC.constPair (net.positionalBias q j)))]</code></span>
+<span class="line" id="L231"><a href="#L231" class="number">231</a><code></code></span>
+<span class="line" id="L232"><a href="#L232" class="number">232</a><code>/-- Uniform overhead for the same value-correct materialized evaluator. -/</code></span>
+<span class="line" id="L233"><a href="#L233" class="number">233</a><code>theorem Transformer.sharedDecompose_steps_le {t d o : ℕ} (net : Transformer t d o)</code></span>
+<span class="line" id="L234"><a href="#L234" class="number">234</a><code>    (x : DoubledInput (Fin t × Fin d)) :</code></span>
+<span class="line" id="L235"><a href="#L235" class="number">235</a><code>    (net.sharedDecompose x).steps ≤ 200 * networkSize net :=</code></span>
+<span class="line" id="L236"><a href="#L236" class="number">236</a><code>  (net.sharedDecompose_steps_work x).trans (networkWork_le net)</code></span>
+<span class="line" id="L237"><a href="#L237" class="number">237</a><code></code></span>
+<span class="line" id="L238"><a href="#L238" class="number">238</a><code></code></span>
+<span class="line" id="L239"><a href="#L239" class="number">239</a><code>/-- The exact same globally defined DC streams admit a shared evaluation with</code></span>
+<span class="line" id="L240"><a href="#L240" class="number">240</a><code>uniform linear arithmetic cost. The cost statement is proved for the materialized</code></span>
+<span class="line" id="L241"><a href="#L241" class="number">241</a><code>writer computation, not for the earlier recursive expression-tree evaluator. -/</code></span>
+<span class="line" id="L242"><a href="#L242" class="number">242</a><code>theorem Transformer.dc_decomposition_linear_cost {t d o : ℕ} (net : Transformer t d o) :</code></span>
+<span class="line" id="L243"><a href="#L243" class="number">243</a><code>    (∀ x i, (net.sharedDecompose x).val.get i = net.decompose x i) ∧</code></span>
+<span class="line" id="L244"><a href="#L244" class="number">244</a><code>    (∀ x, (net.sharedDecompose x).steps ≤ 200 * networkSize net) ∧</code></span>
+<span class="line" id="L245"><a href="#L245" class="number">245</a><code>    MonotoneOn net.decompose (Set.Ici (0 : DoubledInput (Fin t × Fin d))) ∧</code></span>
+<span class="line" id="L246"><a href="#L246" class="number">246</a><code>    (∀ i, ConvexOn ℝ (Set.Ici (0 : DoubledInput (Fin t × Fin d)))</code></span>
+<span class="line" id="L247"><a href="#L247" class="number">247</a><code>      (fun x =&gt; (net.decompose x i).1)) ∧</code></span>
+<span class="line" id="L248"><a href="#L248" class="number">248</a><code>    (∀ i, ConvexOn ℝ (Set.Ici (0 : DoubledInput (Fin t × Fin d)))</code></span>
+<span class="line" id="L249"><a href="#L249" class="number">249</a><code>      (fun x =&gt; (net.decompose x i).2)) ∧</code></span>
+<span class="line" id="L250"><a href="#L250" class="number">250</a><code>    (∀ x, 0 ≤ x → 0 ≤ net.decompose x) ∧</code></span>
+<span class="line" id="L251"><a href="#L251" class="number">251</a><code>    (∀ x i, (net.decompose x i).1 - (net.decompose x i).2 =</code></span>
+<span class="line" id="L252"><a href="#L252" class="number">252</a><code>      net.eval (x.1 - x.2) i) ∧</code></span>
+<span class="line" id="L253"><a href="#L253" class="number">253</a><code>    (∀ i, ConvexOn ℝ Set.univ (fun x : Fin t × Fin d → ℝ =&gt;</code></span>
+<span class="line" id="L254"><a href="#L254" class="number">254</a><code>      (net.rawDecompose x i).1)) ∧</code></span>
+<span class="line" id="L255"><a href="#L255" class="number">255</a><code>    (∀ i, ConvexOn ℝ Set.univ (fun x : Fin t × Fin d → ℝ =&gt;</code></span>
+<span class="line" id="L256"><a href="#L256" class="number">256</a><code>      (net.rawDecompose x i).2)) ∧</code></span>
+<span class="line" id="L257"><a href="#L257" class="number">257</a><code>    (∀ x, 0 ≤ net.rawDecompose x) ∧</code></span>
+<span class="line" id="L258"><a href="#L258" class="number">258</a><code>    (∀ x i, (net.rawDecompose x i).1 - (net.rawDecompose x i).2 = net.eval x i) := by</code></span>
+<span class="line" id="L259"><a href="#L259" class="number">259</a><code>  obtain ⟨hm,hp,hq,hn,he⟩ := net.dc_decomposition</code></span>
+<span class="line" id="L260"><a href="#L260" class="number">260</a><code>  obtain ⟨hrp,hrq,hrn,hre⟩ := net.raw_dc_decomposition</code></span>
+<span class="line" id="L261"><a href="#L261" class="number">261</a><code>  exact ⟨net.sharedDecompose_eq,net.sharedDecompose_steps_le,hm,hp,hq,hn,he,hrp,hrq,hrn,hre⟩</code></span>
+<span class="line" id="L262"><a href="#L262" class="number">262</a><code></code></span>
+<span class="line" id="L263"><a href="#L263" class="number">263</a><code>end HiddenMonotonicity.TransformerDC</code></span></pre></main></html>

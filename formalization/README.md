@@ -74,7 +74,7 @@ bounds; `MultivariateMonotoneDCLift` supplies the composition criterion.
 coordinatewise monotonicity, plus nonnegativity on the doubled nonnegative orthant.
 Its index witnesses nonempty softmax support.
 
-## Actual Transformer and recursive splitting algorithm
+## Actual Transformer and shared DC evaluation
 
 The namespace is `HiddenMonotonicity.TransformerDC`. The ordinary model and split
 algorithm are defined independently and connected by a compiler theorem:
@@ -121,7 +121,30 @@ The main endpoints in `TransformerCorrectness.lean` are:
   globally convex, nonnegative components whose difference is the model output.
   It does not assert raw-input monotonicity.
 
-These sources passed independent exact-type, axiom, source and boundary reviews
+The shared evaluator in `TransformerSharedEvaluation.lean` materializes finite
+vectors at each stage and caches Q/K/V projections, softmax rows, LayerNorm
+statistics and block outputs. Its `Costed` writer counts the scalar operations
+used to evaluate both streams. `TransformerSharedCorrectness.lean` proves equality
+with the original `Transformer.decompose`, including the individual streams.
+`TransformerLinearCost.lean` combines that equality and the structural guarantees
+in `Transformer.dc_decomposition_linear_cost`, with a uniform bound of
+`200 * SharedRuntime.networkSize net` on the actual operation counter. The
+constant is a conservative proof bound, not a measured slowdown.
+
+The reference size counts the original shared scalar computation graph, including
+the attention work for the chosen token count. Arithmetic, comparisons and scalar
+activation/special-function evaluations have unit cost; stored values and fixed
+parameters are accessed in constant time, and fixed parameter-derived constants
+are precomputed. The count is not a bit-complexity or floating-point guarantee.
+The original recursive expression evaluator is a functional specification; the
+new cost theorem applies to the materialized shared evaluator. The local build,
+exact-type audit and independent scope review are recorded under
+`reports/verification/transformer-linear-cost/` at the repository root.
+
+To check the extension, run `lake build HiddenMonotonicity.TransformerLinearCost`
+and `lake env lean checks/transformer_linear_cost_audit.lean` from this directory.
+
+The original decomposition sources passed independent exact-type, axiom, source and boundary reviews
 and the complete clean production gate at
 `1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06`. The gate checked 167 modules,
 490 selected contracts and 3,640 imported project theorem constants; all 168
@@ -132,9 +155,9 @@ coverage limits. The 216 generated source links are pinned to that local commit.
 Contracts and review evidence are under `../reports/evidence/dc-generalization/`,
 `../reports/evidence/softmax-dc/` and `../reports/evidence/transformer-dc/`.
 
-The theorem is an exact real-arithmetic construction. It does not prove floating-
-point stability, attribution faithfulness, runtime or shared-DAG complexity of the
-expression compiler. The separate post-LayerNorm numerical diagnostic has severe
+The theorem is an exact real-arithmetic construction. Its arithmetic-cost bound
+does not establish floating-point stability or attribution faithfulness.
+The separate post-LayerNorm numerical diagnostic has severe
 cancellation in fifteen of twenty float64 cases. Fixed masks and positive epsilon
 are genuine hypotheses; fully masked rows and stochastic inference are not silently
 covered. The backward attention game and its conditional Value-routing semantics

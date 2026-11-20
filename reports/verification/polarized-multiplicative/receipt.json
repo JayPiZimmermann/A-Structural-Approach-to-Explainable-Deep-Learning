@@ -26,7 +26,7 @@
     "formalization/HiddenMonotonicity/TransformerExpr.lean": "916647af7bc396ea203e6bf1669f7e6586d87bc33ff790fd075a225bff44aa04",
     "formalization/HiddenMonotonicity/TransformerPairCalculus.lean": "eb2413aa4249d8779735da9eb18e94a6ce6f3703863b3efaf5601d17a2487469",
     "formalization/HiddenMonotonicity/PolarizedProductDC.lean": "1b10dd6cb91b919d87174dca09cbea26b3ec7c8fa052da52d03b3e8406b99bd8",
-    "formalization/draft_tex_links.json": "9954c11e4e598b4e63168992bb156ba5ee64badad4977dfcabef21c73f689b30"
+    "formalization/draft_tex_links.json": "d365eb74e4c79045c1f8d9dacfcecad1e9ad660b0b8d585ad966069d0f2dc2c5"
   },
   "artifact_sha256": {
     "reports/verification/polarized-multiplicative/build.log": "de080a367fd8f8f69b34936c3506906eac42f9eec6e76511962264a7827788b4",
@@ -45,5 +45,13 @@
       ]
     }
   },
-  "publication": "Local source snapshot; no commit or push. Existing dependency linter warnings were replayed; the new module built without warnings."
+  "publication": "Local source snapshot; no commit or push. Existing dependency linter warnings were replayed; the new module built without warnings.",
+  "source_binding_follow_ups": [
+    {
+      "recorded_at_utc": "2026-11-20T10:15:18.321465+00:00",
+      "scope": "Added the separately checked Transformer linear-cost proof to the draft-link manifest. This existing proof, its theorem target, build logs and mathematical review remain unchanged; no new build of this existing target is asserted by this metadata update.",
+      "manifest_sha256_before": "9954c11e4e598b4e63168992bb156ba5ee64badad4977dfcabef21c73f689b30",
+      "manifest_sha256_after": "d365eb74e4c79045c1f8d9dacfcecad1e9ad660b0b8d585ad966069d0f2dc2c5"
+    }
+  ]
 }

@@ -4235,7 +4235,7 @@
 }
 
 % Source checked 2026-11-11: https://proceedings.mlr.press/v75/daskalakis18a/daskalakis18a.pdf
-% Lemma 5 and Appendix B prove the geometric-mean-kernel trajectory identity, credited to Kazakos (1978). Thesis uses its layer-dependent counterpart. PDF internal pages 1--25 correspond to proceedings pages 385--409; metadata checked at https://proceedings.mlr.press/v75/daskalakis18a.html .
+% Lemma 5 and Appendix B prove the geometric-mean-kernel trajectory identity, credited to Kazakos (1978). Kazakos also covers time-varying kernels; the thesis applies that recursion to the layered graph. PDF internal pages 1--25 correspond to proceedings pages 385--409; metadata checked at https://proceedings.mlr.press/v75/daskalakis18a.html .
 % Local artifact: literature/references/Daskalakis2018MarkovTesting.pdf
 % SHA256: 437f5afdf5acdf3f8f592a346ad5f42f6a58963c026b08a18b58d9ad6d4535a6
 % Local artifact: literature/references/Daskalakis2018MarkovTesting.txt
@@ -4283,4 +4283,37 @@
   year = {2017},
   doi = {10.1090/mbk/107},
   url = {https://pages.uoregon.edu/dlevin/MARKOV/mcmt2e.pdf}
+}
+
+% Source checked 2026-11-20: https://transformer-circuits.pub/2025/attribution-graphs/methods.html
+% Web publication; authors, title, publication date and supplied BibTeX checked. No publisher PDF linked.
+% Read Introduction, Attribution Graphs, and Limitations: sparse features and cross-layer transcoders;
+% attribution graphs describe a replacement model with fixed attention and normalization denominators.
+% Local artifact: literature/references/Ameisen2025CircuitTracing.html
+% SHA256: a70ce88c09533238154875dbb1320fd2d2aebedfd5fc7e782518385b3d597673
+% Local text: literature/references/Ameisen2025CircuitTracing.txt
+% Text SHA256: 27ba1301bb01023fd0603d4d312828805a687f543939f35841eaba2fa502fc2b
+@article{Ameisen2025CircuitTracing,
+  author = {Ameisen, Emmanuel and Lindsey, Jack and Pearce, Adam and Gurnee, Wes and Turner, Nicholas L. and Chen, Brian and Citro, Craig and Abrahams, David and Carter, Shan and Hosmer, Basil and Marcus, Jonathan and Sklar, Michael and Templeton, Adly and Bricken, Trenton and McDougall, Callum and Cunningham, Hoagy and Henighan, Thomas and Jermyn, Adam and Jones, Andy and Persic, Andrew and Qi, Zhenyi and Ben Thompson, T. and Zimmerman, Sam and Rivoire, Kelley and Conerly, Thomas and Olah, Chris and Batson, Joshua},
+  title = {Circuit Tracing: Revealing Computational Graphs in Language Models},
+  journal = {Transformer Circuits Thread},
+  date = {2025-03-27},
+  url = {https://transformer-circuits.pub/2025/attribution-graphs/methods.html}
+}
+
+% Publisher metadata: https://doi.org/10.1109/TIT.1978.1055967
+% Original text read at https://www.academia.edu/30265053/The_Bhattacharyya_distance_and_detection_between_Markov_chains
+% Section IV, Eqs. (17)--(29): time-varying geometric-mean transition products and overlap recursion.
+% Metadata saved in literature/references/Kazakos1978.crossref.json (gitignored).
+% PDF access failed at IEEE endpoints; no local PDF is claimed.
+@article{Kazakos1978,
+  author = {Kazakos, Dimitri},
+  title = {The {Bhattacharyya} Distance and Detection Between {Markov} Chains},
+  journal = {IEEE Transactions on Information Theory},
+  volume = {24},
+  number = {6},
+  pages = {747--754},
+  year = {1978},
+  month = nov,
+  doi = {10.1109/TIT.1978.1055967}
 }

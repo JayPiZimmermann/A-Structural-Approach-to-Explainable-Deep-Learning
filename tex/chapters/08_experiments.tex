@@ -1,6 +1,6 @@
 \chapter{Experiments and Evaluation}\label{ch:experiments}
 
-This chapter evaluates two design choices: exposing split-streams to attribution and changing backward routing through game policies. The split-method and game-based campaigns examine localization, faithfulness, robustness, and computational cost. We retain their checkpoints, sample exclusions, metric conventions, and selection protocols, comparing scores within each campaign. Model-evaluation scores come from the papers; Pascal VOC uncertainty estimates and comparison statistics are recomputed locally using images as independent sampling units.
+This chapter evaluates attribution from split-streams and game-based backward routing through localization, faithfulness, robustness, and computational cost. It brings together the two papers' experiments and additional controls for numerical accuracy, perturbation protocols, and attribution-map sharpening. The split and game methods use different models and attribution targets, specified below; their benchmark scores are compared within the corresponding experiment.
 
 \section{Experimental Setup}\label{sec:experimental_setup}\label{sec:quantus_evaluation}
 
@@ -388,3 +388,9 @@ The \ac{rg} backward holds the realized attention policy fixed and routes releva
 % BEGIN VIT_EXTENSION_GENERATED
 \input{tables/vit_extension/generated/integration}
 % END VIT_EXTENSION_GENERATED
+
+\paragraph{Interpreting the evaluation.}
+Attribution benchmarks provide valuable but partial evidence: their estimates carry sampling uncertainty, and localization, perturbation-based faithfulness and robustness assess different properties. This motivates a complementary mathematical account of what attribution methods compute. Our framework represents gradients and $\alpha\beta$-\ac{lrp} through backward game trajectories, making their routing decisions and contribution weights explicit and providing a basis for principled modifications (Chapter~\ref{ch:game_theory}). The randomization results in Chapter~\ref{ch:trajectory} demonstrate the value of this perspective: changes in the underlying routing can remain obscured in the resulting heatmaps.
+
+\paragraph{Additional experimental qualification.}
+Additional controls qualify the selected ViT results. At fixed $p=1.5$, post-hoc sharpening lets AttnLRP match the RG localization score while retaining lower PF$_{20}$; full spatial-pixel deletion/insertion AUC likewise favors the LRP baselines on all four score conventions. On all 565 test images, the validation-selected ViT localization risk mode lowers both sensitivity measures while reducing AL; the VGG gate-matched controls show related robustness gains with a small localization cost. In the VGG stopping-game control, caching original-forward max-pooling indices leaves all validation metrics effectively unchanged, while the signed-gradient/autograd check is a separate identity audit and does not describe the submitted \texttt{pp} readout. Finally, checkpoint-aligned ViT randomization confirms that map similarity can remain near one after predictive collapse; local Hellinger distances track routing changes but are not established as explanation-quality predictors. Protocols, numerical results and statistical qualifications appear in Appendix~\ref{app:rebuttal-controls}; the trajectory-space interpretation is developed in Chapter~\ref{ch:trajectory}.

@@ -46,7 +46,8 @@
     "ptnb:eq:decomp-recovery-stop-mix",
     "prop:posynomial_representation",
     "eq:pair_product_rule",
-    "eq:maxout_split_identity"
+    "eq:maxout_split_identity",
+    "eq:convex_square_pair"
   ],
   "previous_retirement_record": {
     "reason": "The author requested removal of the unused tropical/polyhedral background section. These source labels were removed from the thesis; their checked Lean developments and pinned link metadata remain available in the formalization library.",
@@ -427,6 +428,16 @@
       "retained_manuscript_results": [
         "prop:convex_product_pair",
         "thm:polarized_multiplicative_split"
+      ]
+    },
+    "eq:convex_square_pair": {
+      "reason": "The user requested removal of the square special case and composition statement from the polarization proposition and proof. The LayerNorm construction now references the general product pair directly.",
+      "source": "tex/chapters/07_transformers.tex",
+      "pinned_declaration": "HiddenMonotonicity.TransformerDC.productSplit_exact",
+      "proof_and_mapping_unchanged": true,
+      "retained_manuscript_results": [
+        "prop:convex_product_pair",
+        "eq:polarized_product_pair"
       ]
     }
   },

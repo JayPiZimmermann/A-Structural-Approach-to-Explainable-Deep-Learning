@@ -6,22 +6,22 @@
   "documents": {
     "thesis.pdf": {
       "path": "docs/thesis.pdf",
-      "sha256": "c64154c9037e30be1371ccd434cb3e7ba3f6accdb2d75b37e2991e9bf62bdb95",
+      "sha256": "c6d9b71130b37fe4a89a751018477dd0fe9c3cb77e559fda44e32f9a2a19cfa3",
       "matches_compiled_pdf": true,
-      "pages": 129,
+      "pages": 137,
       "overfull_boxes": 0,
       "underfull_boxes": 0,
       "warnings": [],
       "biber_warnings_or_errors": [],
       "unresolved_reference_or_citation": false,
-      "lean_uri_count": 159,
-      "unique_lean_uris": 117,
-      "pinned_lean_uri_count": 156,
-      "draft_lean_uri_count": 3,
+      "lean_uri_count": 160,
+      "unique_lean_uris": 118,
+      "pinned_lean_uri_count": 155,
+      "draft_lean_uri_count": 5,
       "remote_link_count": 0,
-      "internal_link_count": 1737,
-      "named_destinations": 1005,
-      "page_object_count": 129
+      "internal_link_count": 1787,
+      "named_destinations": 1034,
+      "page_object_count": 137
     }
   },
   "proof_source_commit": "1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06",
@@ -33,19 +33,39 @@
     "internal_links_present": true,
     "broken_internal_links": [],
     "all_internal_destinations_resolve": true,
-    "published_lean_uri_count": 159,
-    "unique_lean_uris": 117,
-    "pinned_lean_uri_count": 156,
-    "draft_lean_uri_count": 3,
-    "expected_published_lean_link_count": 159,
-    "physical_lean_labels": 156,
+    "published_lean_uri_count": 160,
+    "unique_lean_uris": 118,
+    "pinned_lean_uri_count": 155,
+    "draft_lean_uri_count": 5,
+    "expected_published_lean_link_count": 160,
+    "physical_lean_labels": 155,
     "aliased_lean_mappings": {
-      "ptnb:eq:split-pos": {
-        "canonical_label": "eq:split_pos",
-        "declaration": "HiddenMonotonicity.affineChunk",
+      "ptnb:eq:gibbs-lse": {
+        "canonical_label": "eq:legendre_fenchel",
+        "declaration": "Thesis.Regularization.routing_variational",
         "physical_link_labels": [
-          "eq:split_neg",
-          "eq:split_pos"
+          "eq:legendre_fenchel",
+          "ptnb:eq:attn-qk-oracle"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:parity-minus": {
+        "canonical_label": "eq:parity_path_sums",
+        "declaration": "Thesis.StoppingStructure.stopping_preactivation_parity_paths",
+        "physical_link_labels": [
+          "eq:parity_path_sums",
+          "lem:parity_path",
+          "ptnb:lem:parity-path"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "eq:closed_formula_h": {
+        "canonical_label": "eq:closed_formula_g",
+        "declaration": "HiddenMonotonicity.Network.affine_readout_closed_form",
+        "physical_link_labels": [
+          "eq:closed_formula_g"
         ],
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
@@ -62,11 +82,22 @@
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
       },
-      "eq:closed_formula_h": {
-        "canonical_label": "eq:closed_formula_g",
-        "declaration": "HiddenMonotonicity.Network.affine_readout_closed_form",
+      "ptnb:eq:routing-spne-stop": {
+        "canonical_label": "ptnb:eq:routing-activation-value",
+        "declaration": "Thesis.RoutingGate.chosenLogAction_optimal",
         "physical_link_labels": [
-          "eq:closed_formula_g"
+          "ptnb:eq:routing-activation-value"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:parity-plus": {
+        "canonical_label": "eq:parity_path_sums",
+        "declaration": "Thesis.StoppingStructure.stopping_preactivation_parity_paths",
+        "physical_link_labels": [
+          "eq:parity_path_sums",
+          "lem:parity_path",
+          "ptnb:lem:parity-path"
         ],
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
@@ -83,64 +114,171 @@
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
       },
-      "ptnb:eq:stop-relu": {
-        "canonical_label": "eq:fstop_def",
-        "declaration": "Thesis.StoppingDecomposition.stopPair",
+      "ptnb:eq:split-pos": {
+        "canonical_label": "eq:split_pos",
+        "declaration": "HiddenMonotonicity.affineChunk",
         "physical_link_labels": [
-          "def:fstop",
-          "eq:fstop_def"
+          "eq:split_neg",
+          "eq:split_pos"
         ],
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
       },
-      "ptnb:eq:gibbs-lse": {
-        "canonical_label": "eq:legendre_fenchel",
-        "declaration": "Thesis.Regularization.routing_variational",
+      "ptnb:eq:conditioned-bc-kernel": {
+        "canonical_label": "ptnb:eq:bc-chain-rule",
+        "declaration": "Thesis.ConditionedSurvival.conditioned_survival_statistics",
         "physical_link_labels": [
-          "eq:legendre_fenchel",
-          "ptnb:eq:attn-qk-oracle"
+          "ptnb:eq:conditioned-bc-posthoc",
+          "ptnb:eq:conditioned-h2",
+          "ptnb:thm:conditioned-survival"
         ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:softplus-decomp": {
-        "canonical_label": "eq:fsoft_def",
-        "declaration": "Thesis.Regularization.softSplit",
-        "physical_link_labels": [
-          "eq:fsoft_def"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:legendre-fenchel-app": {
-        "canonical_label": "eq:legendre_fenchel",
-        "declaration": "Thesis.Regularization.routing_variational",
-        "physical_link_labels": [
-          "eq:legendre_fenchel",
-          "ptnb:eq:attn-qk-oracle"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "ptnb:eq:parity-plus": {
-        "canonical_label": "eq:parity_path_sums",
-        "declaration": "Thesis.StoppingStructure.stopping_preactivation_parity_paths",
-        "physical_link_labels": [
-          "eq:parity_path_sums",
-          "lem:parity_path",
-          "ptnb:lem:parity-path"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
-      },
-      "eq:canonical_weight_split": {
-        "canonical_label": "eq:weight_split",
-        "declaration": "HiddenMonotonicity.canonical_weight_split",
-        "physical_link_labels": [
-          "eq:weight_split"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
+        "canonical_has_same_declaration": false,
+        "review": {
+          "canonical_label": "ptnb:eq:bc-chain-rule",
+          "declaration": "Thesis.ConditionedSurvival.conditioned_survival_statistics",
+          "reason": "The conditioned-survival theorem explicitly applies the generic path-overlap chain rule to its conditioned ordinary-state kernels. Taking l=0 and substituting T_M,surv into the canonical formula gives exactly the removed conditioned full-path product. The theorem retains positive initial survival, normalized conditional path laws, the joint-positive denominator condition for the geometric-mean kernel, and arbitrary completion of unreachable zero-survival rows. The old conditioned result is therefore a stated specialization of the generic equation; its additional normalization/survival proof remains at ptnb:thm:conditioned-survival, rather than being attributed to the generic path-product declaration.",
+          "reviewed_by": "/root/concise_trajectory/further_compact_review and /root/concision_inventory/audit_parser_review",
+          "evidence": [
+            "reports/single-pdf/trajectory-pagination.json"
+          ],
+          "canonical_formula_dependencies": [
+            "ptnb:eq:bc-chain-rule",
+            "ptnb:thm:conditioned-survival",
+            "ptnb:eq:conditioned-kernel",
+            "ptnb:eq:conditioned-geom-kernel"
+          ],
+          "physical_proof_witnesses": [
+            "ptnb:thm:conditioned-survival",
+            "ptnb:eq:conditioned-bc-posthoc",
+            "ptnb:eq:conditioned-h2"
+          ],
+          "source_sha256": {
+            "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656"
+          },
+          "width_notation_refresh": {
+            "old_source_sha256": "6ca238309adbdf1f54dbbeda932c98bbc61402fa34ea2900d3a55d92cfe4248f",
+            "current_source_sha256": "ffcdd9877ef9701e8c1742a342e6cd11fbd380908e0fb64850e6aecb473af2b0",
+            "display_blocks_unchanged": 22,
+            "scope": "Only the introductory MLP width notation n_1,...,n_L was replaced by d^(l), with x in R^{d^(0)} explicit. Every proof and display block is unchanged."
+          },
+          "foundations_relocation": {
+            "evidence": "reports/probability-foundations/relocation.json",
+            "reviewed_by": "/root/concise_trajectory",
+            "scope": "Canonical equation, conditioned-survival theorem/proof, alias and all physical witnesses relocated together. Every displayed formula retained verbatim; positive survival, joint-positive denominators, and unreachable zero-survival row completion checked unchanged."
+          },
+          "activation_vector_definition_refresh": {
+            "evidence": "reports/activation-vector-terminology/consistency.json",
+            "reviewed_by": [
+              "/root",
+              "/root/concise_foundations",
+              "/root/accepted_hm_framing"
+            ],
+            "scope": "Entire probability-distances and layered-processes section, including all canonical dependencies and witnesses, retained byte-for-byte. Source hash updated for preceding activation-vector and CPWL construction exposition edits only.",
+            "independent_reviews": [
+              "reports/activation-vector-terminology/math-review.json",
+              "reports/activation-vector-terminology/terminology-review.json"
+            ]
+          },
+          "constructive_refinement_refresh": {
+            "evidence": "reports/constructive-refinement/consistency.json",
+            "scope": "Only preceding CPWL exposition changed. Entire probability section, canonical equations, conditioned-survival proof and physical witnesses are byte-identical to the immediately preceding source snapshot.",
+            "independent_review": "reports/constructive-refinement/math-review.json"
+          },
+          "payoff_recipient_clarification": {
+            "before_sha256": "3ad06058d6ef9ac711845080ccfee5f3c74f7ef3502bf8ded653fe7080288e75",
+            "after_sha256": "898f9715a33d9c85103864e47ae9660dd73ccc86d72efd5e97beb1948852a013",
+            "reviewed_by": "/root",
+            "scope": "Two prose replacements make ReLU Net Game scalar rewards and values explicitly payoffs to P+. P- receives their negatives; q indexes the active player. Every displayed equation and the entire probability-distances section remain unchanged."
+          },
+          "simple_feasibility_refresh": {
+            "source_sha256": "cac2537cd8f5e086a8471b6b35bee57705e2dc937045adebdf375bc42ce9ee25",
+            "reviewed_by": "/root",
+            "scope": "Optimization feasibility now uses the directly defined convex-fold sum g and h=g-f, without delta_ij, C or G. Probability section and all protected canonical formulas/proof witnesses unchanged. Separate local omission of Maxout observation preserved and explicitly recorded in lean_links_retired.json."
+          },
+          "support_definition_refresh": {
+            "before_sha256": "cac2537cd8f5e086a8471b6b35bee57705e2dc937045adebdf375bc42ce9ee25",
+            "after_sha256": "05ee62dd65a2693942a288437f1e99784cda7dabca9f4d9c33f5f7ef0d584a5a",
+            "scope": "Inline definitions of supp P and supp Q added before first use; Jensen-Shannon motivated by the mixture assigning positive mass wherever either distribution does, avoiding infinite KL values even for disjoint supports. All equations, theorem statements, proofs, canonical dependencies and witnesses unchanged.",
+            "reviewed_by": "/root"
+          },
+          "wasserstein_definition_removal": {
+            "before_sha256": "05ee62dd65a2693942a288437f1e99784cda7dabca9f4d9c33f5f7ef0d584a5a",
+            "after_sha256": "09292e00f1f88075d67a375cda27ed528af95b629ad1870ea142a638a256ccd0",
+            "scope": "Removed the unused standalone Wasserstein definition at the author\u2019s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged.",
+            "reviewed_by": "/root"
+          },
+          "layered_graph_definition_refresh": {
+            "evidence": "reports/layered-markov-graph/consistency.json",
+            "reviewed_by": "/root",
+            "scope": "Explicit vertices/edges and fixed-policy bridge added. All original displays retained verbatim; text from marginal occupations onward unchanged, including all protected canonical dependencies and conditioned-survival proof witnesses.",
+            "independent_review": "reports/layered-markov-graph/math-review.json"
+          },
+          "trajectory_distance_exposition_refresh": {
+            "evidence": "reports/trajectory-distance-exposition/consistency.json",
+            "reviewed_by": "/root",
+            "scope": "Explicit prefix BC/H and probability/overlap meanings added. Canonical prefix product and entire conditioned-survival statement/proof unchanged. Terminal squared-Hellinger contribution now defined first by its same sum of squares; labeled closed form is unchanged apart from coloneqq becoming equality. No normalized conditional-law claim introduced.",
+            "independent_review": "reports/trajectory-distance-exposition/math-review.json"
+          },
+          "hellinger_distance_theorem_refresh": {
+            "evidence": "reports/hellinger-distance-theorem/consistency.json",
+            "reviewed_by": "/root",
+            "scope": "Promoted overlap lemma to explicit Hellinger-recovery theorem. Canonical prefix product retained with computed BC scalar equality prepended; path-law identification is proved rather than assumed as definition. Conditioned-survival statement/equations/proof unchanged except Lemma-to-Theorem cross-reference; all labels and physical witnesses retained.",
+            "independent_review": "reports/hellinger-distance-theorem/math-review.json"
+          },
+          "support_behavior_clarification": {
+            "before_sha256": "a8168fb545a53ddc1c05aa50cb0216da2a0d70286bde2c705cf31759b760d6ef",
+            "after_sha256": "34c3f398f9f7e4506d6889afe6096ed54e4fc79cd1d6899275e44988f7e68159",
+            "reviewed_by": "/root",
+            "scope": "One prose paragraph replaces routes-open/close shorthand with trajectory-support differences, gives an explicit reachable stopping-versus-continuing cemetery example and correct KL direction, and treats Wasserstein as hypothetical. All definitions, theorem statements, equations and proofs unchanged."
+          },
+          "cpwl_constructions_refresh": {
+            "evidence": "reports/cpwl-constructions/consistency.json",
+            "scope": "Only preceding CPWL construction exposition and figure changed. All source from Convexity and Monotonicity onward, including the whole probability theory and protected aliases/witnesses, is byte-identical to the pre-edit snapshot.",
+            "reviewed_by": "/root"
+          },
+          "cpwl_subfigure_refresh": {
+            "evidence": "reports/cpwl-constructions/subfigure-review.json",
+            "scope": "Separate plot files and TeX subcaptions for the convex-fold figure; matching proof headings; explicit pairwise affine inequalities; additional local-maxima illustration. All following text from Expressivity and linear regions unchanged.",
+            "reviewed_by": "/root"
+          },
+          "cpwl_minimum_exposition_refresh": {
+            "evidence": "reports/cpwl-constructions/minimum-exposition.json",
+            "scope": "Replace the unexplained lattice phrase with upper-bound/equality reasoning. Remove the second local-maxima panel; show each convex upper bound dashed and its attaining f pieces solid in matching colors. First construction and all source from Expressivity remark onward byte-identical.",
+            "reviewed_by": "/root"
+          },
+          "cpwl_four_maxima_refresh": {
+            "evidence": "reports/cpwl-constructions/four-maxima-review.json",
+            "scope": "Four convex V-shaped local maxima produce eight affine pieces of f. Colored solid segments attain the minimum; dashed curves are the upper bounds. Axis height reduced from 4.8cm to 3.2cm. First construction and all following source from Expressivity remark unchanged.",
+            "reviewed_by": "/root"
+          },
+          "reference_consolidation_refresh": {
+            "recorded_at_utc": "2026-11-13T11:31:33.777150+00:00",
+            "reviewed_by": "/root/concise_foundations",
+            "evidence": "reports/reference-consolidation/later-chapters-review.json",
+            "scope": "Protected canonical displays and physical negative-pullback/conditioned-survival witnesses unchanged; three newly deduplicated equations use identical pinned declarations and need no distinct-target waiver. Source hashes refreshed after independent domain/terminology review."
+          },
+          "convexity_definition_refresh": {
+            "recorded_at_utc": "2026-11-16T09:50:39.120605+00:00",
+            "reviewed_by": "/root/concise_foundations",
+            "evidence": "reports/convexity-definition/review.json",
+            "scope": "Only the derivative-free convexity definition was inserted before CPWL terminology. Entire probability section, canonical overlap formula, conditioned-survival theorem/proof and physical witnesses are byte-identical to the bound snapshot."
+          },
+          "entropy_notation_refresh": {
+            "reviewed_by": "/root",
+            "evidence": "reports/entropy-regularization-notation/consistency.json",
+            "scope": "Only entropy macro/glyph substitutions; all canonical alias formulas and proof witnesses unchanged."
+          },
+          "editorial_followups": [
+            {
+              "recorded_at_utc": "2026-11-20T10:27:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "source": "tex/chapters/02_foundations.tex",
+              "before_source_sha256": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667",
+              "after_source_sha256": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656",
+              "scope": "Chapter 02 citation sentence was edited to cite Kazakos Section IV directly while retaining Daskalakis as secondary context. The trajectory equation, definitions, assumptions, theorem and proof are unchanged; this refreshes only the source binding. No new Lean build is asserted."
+            }
+          ]
+        }
       },
       "eq:delta_int_neg": {
         "canonical_label": "eq:delta_int_pos",
@@ -165,7 +303,7 @@
             "eq:delta_minus_recursion"
           ],
           "source_sha256": {
-            "tex/chapters/03_decompositions.tex": "4382d329dbdabad15fd2e1e93be6a9adc3c3e1b445e2d587767711fd1aa2bbae"
+            "tex/chapters/03_decompositions.tex": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab"
           },
           "terminology_refresh": {
             "evidence": "reports/dc-terminology/consistency.json",
@@ -359,171 +497,70 @@
             "reviewed_by": "/root",
             "scope": "Only the explanatory Hertrich\u2013Loho paragraph was inserted after the decomposition definition. Removing that paragraph reproduces the previous chapter byte for byte; all formal statements, displayed formulae, proofs, protected aliases and activation plots are unchanged.",
             "evidence": "reports/unified-multiplication/review.json"
-          }
+          },
+          "editorial_followups": [
+            {
+              "recorded_at_utc": "2026-11-20T10:27:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "source": "tex/chapters/03_decompositions.tex",
+              "before_source_sha256": "4382d329dbdabad15fd2e1e93be6a9adc3c3e1b445e2d587767711fd1aa2bbae",
+              "after_source_sha256": "993b31faa44fb6ece8c910d1332f28161b6ad990ba9357afa655b669cdfab08c",
+              "scope": "Chapter 03 opening paragraph gains one sentence linking the MNIST stream-sensitivity study and VGG/ResNet attribution evaluations. Removing that sentence reproduces the prior source; the canonical and physical witness equations, theorem statements, proofs, dependencies, and their locations are unchanged. No new Lean build is asserted."
+            },
+            {
+              "recorded_at_utc": "2026-11-20T10:30:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "source": "tex/chapters/03_decompositions.tex",
+              "before_source_sha256": "993b31faa44fb6ece8c910d1332f28161b6ad990ba9357afa655b669cdfab08c",
+              "after_source_sha256": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
+              "scope": "The previously reviewed MNIST/VGG/ResNet teaser sentence is now wrapped in the editorial changed environment. Removing only the wrapper reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and proof witnesses are unchanged. No new Lean build is asserted."
+            }
+          ]
         }
       },
-      "ptnb:eq:parity-minus": {
-        "canonical_label": "eq:parity_path_sums",
-        "declaration": "Thesis.StoppingStructure.stopping_preactivation_parity_paths",
+      "ptnb:eq:legendre-fenchel-app": {
+        "canonical_label": "eq:legendre_fenchel",
+        "declaration": "Thesis.Regularization.routing_variational",
         "physical_link_labels": [
-          "eq:parity_path_sums",
-          "lem:parity_path",
-          "ptnb:lem:parity-path"
+          "eq:legendre_fenchel",
+          "ptnb:eq:attn-qk-oracle"
         ],
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
       },
-      "ptnb:eq:conditioned-bc-kernel": {
-        "canonical_label": "ptnb:eq:bc-chain-rule",
-        "declaration": "Thesis.ConditionedSurvival.conditioned_survival_statistics",
+      "ptnb:eq:lrp-eps-recursion": {
+        "canonical_label": "ptnb:eq:lrp-ab",
+        "declaration": "Thesis.RoutingSupport.sourceLRP",
         "physical_link_labels": [
-          "ptnb:eq:conditioned-bc-posthoc",
-          "ptnb:eq:conditioned-h2",
-          "ptnb:thm:conditioned-survival"
+          "ptnb:eq:lrp-ab"
         ],
-        "canonical_has_same_declaration": false,
-        "review": {
-          "canonical_label": "ptnb:eq:bc-chain-rule",
-          "declaration": "Thesis.ConditionedSurvival.conditioned_survival_statistics",
-          "reason": "The conditioned-survival theorem explicitly applies the generic path-overlap chain rule to its conditioned ordinary-state kernels. Taking l=0 and substituting T_M,surv into the canonical formula gives exactly the removed conditioned full-path product. The theorem retains positive initial survival, normalized conditional path laws, the joint-positive denominator condition for the geometric-mean kernel, and arbitrary completion of unreachable zero-survival rows. The old conditioned result is therefore a stated specialization of the generic equation; its additional normalization/survival proof remains at ptnb:thm:conditioned-survival, rather than being attributed to the generic path-product declaration.",
-          "reviewed_by": "/root/concise_trajectory/further_compact_review and /root/concision_inventory/audit_parser_review",
-          "evidence": [
-            "reports/single-pdf/trajectory-pagination.json"
-          ],
-          "canonical_formula_dependencies": [
-            "ptnb:eq:bc-chain-rule",
-            "ptnb:thm:conditioned-survival",
-            "ptnb:eq:conditioned-kernel",
-            "ptnb:eq:conditioned-geom-kernel"
-          ],
-          "physical_proof_witnesses": [
-            "ptnb:thm:conditioned-survival",
-            "ptnb:eq:conditioned-bc-posthoc",
-            "ptnb:eq:conditioned-h2"
-          ],
-          "source_sha256": {
-            "tex/chapters/02_foundations.tex": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667"
-          },
-          "width_notation_refresh": {
-            "old_source_sha256": "6ca238309adbdf1f54dbbeda932c98bbc61402fa34ea2900d3a55d92cfe4248f",
-            "current_source_sha256": "ffcdd9877ef9701e8c1742a342e6cd11fbd380908e0fb64850e6aecb473af2b0",
-            "display_blocks_unchanged": 22,
-            "scope": "Only the introductory MLP width notation n_1,...,n_L was replaced by d^(l), with x in R^{d^(0)} explicit. Every proof and display block is unchanged."
-          },
-          "foundations_relocation": {
-            "evidence": "reports/probability-foundations/relocation.json",
-            "reviewed_by": "/root/concise_trajectory",
-            "scope": "Canonical equation, conditioned-survival theorem/proof, alias and all physical witnesses relocated together. Every displayed formula retained verbatim; positive survival, joint-positive denominators, and unreachable zero-survival row completion checked unchanged."
-          },
-          "activation_vector_definition_refresh": {
-            "evidence": "reports/activation-vector-terminology/consistency.json",
-            "reviewed_by": [
-              "/root",
-              "/root/concise_foundations",
-              "/root/accepted_hm_framing"
-            ],
-            "scope": "Entire probability-distances and layered-processes section, including all canonical dependencies and witnesses, retained byte-for-byte. Source hash updated for preceding activation-vector and CPWL construction exposition edits only.",
-            "independent_reviews": [
-              "reports/activation-vector-terminology/math-review.json",
-              "reports/activation-vector-terminology/terminology-review.json"
-            ]
-          },
-          "constructive_refinement_refresh": {
-            "evidence": "reports/constructive-refinement/consistency.json",
-            "scope": "Only preceding CPWL exposition changed. Entire probability section, canonical equations, conditioned-survival proof and physical witnesses are byte-identical to the immediately preceding source snapshot.",
-            "independent_review": "reports/constructive-refinement/math-review.json"
-          },
-          "payoff_recipient_clarification": {
-            "before_sha256": "3ad06058d6ef9ac711845080ccfee5f3c74f7ef3502bf8ded653fe7080288e75",
-            "after_sha256": "898f9715a33d9c85103864e47ae9660dd73ccc86d72efd5e97beb1948852a013",
-            "reviewed_by": "/root",
-            "scope": "Two prose replacements make ReLU Net Game scalar rewards and values explicitly payoffs to P+. P- receives their negatives; q indexes the active player. Every displayed equation and the entire probability-distances section remain unchanged."
-          },
-          "simple_feasibility_refresh": {
-            "source_sha256": "cac2537cd8f5e086a8471b6b35bee57705e2dc937045adebdf375bc42ce9ee25",
-            "reviewed_by": "/root",
-            "scope": "Optimization feasibility now uses the directly defined convex-fold sum g and h=g-f, without delta_ij, C or G. Probability section and all protected canonical formulas/proof witnesses unchanged. Separate local omission of Maxout observation preserved and explicitly recorded in lean_links_retired.json."
-          },
-          "support_definition_refresh": {
-            "before_sha256": "cac2537cd8f5e086a8471b6b35bee57705e2dc937045adebdf375bc42ce9ee25",
-            "after_sha256": "05ee62dd65a2693942a288437f1e99784cda7dabca9f4d9c33f5f7ef0d584a5a",
-            "scope": "Inline definitions of supp P and supp Q added before first use; Jensen-Shannon motivated by the mixture assigning positive mass wherever either distribution does, avoiding infinite KL values even for disjoint supports. All equations, theorem statements, proofs, canonical dependencies and witnesses unchanged.",
-            "reviewed_by": "/root"
-          },
-          "wasserstein_definition_removal": {
-            "before_sha256": "05ee62dd65a2693942a288437f1e99784cda7dabca9f4d9c33f5f7ef0d584a5a",
-            "after_sha256": "09292e00f1f88075d67a375cda27ed528af95b629ad1870ea142a638a256ccd0",
-            "scope": "Removed the unused standalone Wasserstein definition at the author\u2019s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged.",
-            "reviewed_by": "/root"
-          },
-          "layered_graph_definition_refresh": {
-            "evidence": "reports/layered-markov-graph/consistency.json",
-            "reviewed_by": "/root",
-            "scope": "Explicit vertices/edges and fixed-policy bridge added. All original displays retained verbatim; text from marginal occupations onward unchanged, including all protected canonical dependencies and conditioned-survival proof witnesses.",
-            "independent_review": "reports/layered-markov-graph/math-review.json"
-          },
-          "trajectory_distance_exposition_refresh": {
-            "evidence": "reports/trajectory-distance-exposition/consistency.json",
-            "reviewed_by": "/root",
-            "scope": "Explicit prefix BC/H and probability/overlap meanings added. Canonical prefix product and entire conditioned-survival statement/proof unchanged. Terminal squared-Hellinger contribution now defined first by its same sum of squares; labeled closed form is unchanged apart from coloneqq becoming equality. No normalized conditional-law claim introduced.",
-            "independent_review": "reports/trajectory-distance-exposition/math-review.json"
-          },
-          "hellinger_distance_theorem_refresh": {
-            "evidence": "reports/hellinger-distance-theorem/consistency.json",
-            "reviewed_by": "/root",
-            "scope": "Promoted overlap lemma to explicit Hellinger-recovery theorem. Canonical prefix product retained with computed BC scalar equality prepended; path-law identification is proved rather than assumed as definition. Conditioned-survival statement/equations/proof unchanged except Lemma-to-Theorem cross-reference; all labels and physical witnesses retained.",
-            "independent_review": "reports/hellinger-distance-theorem/math-review.json"
-          },
-          "support_behavior_clarification": {
-            "before_sha256": "a8168fb545a53ddc1c05aa50cb0216da2a0d70286bde2c705cf31759b760d6ef",
-            "after_sha256": "34c3f398f9f7e4506d6889afe6096ed54e4fc79cd1d6899275e44988f7e68159",
-            "reviewed_by": "/root",
-            "scope": "One prose paragraph replaces routes-open/close shorthand with trajectory-support differences, gives an explicit reachable stopping-versus-continuing cemetery example and correct KL direction, and treats Wasserstein as hypothetical. All definitions, theorem statements, equations and proofs unchanged."
-          },
-          "cpwl_constructions_refresh": {
-            "evidence": "reports/cpwl-constructions/consistency.json",
-            "scope": "Only preceding CPWL construction exposition and figure changed. All source from Convexity and Monotonicity onward, including the whole probability theory and protected aliases/witnesses, is byte-identical to the pre-edit snapshot.",
-            "reviewed_by": "/root"
-          },
-          "cpwl_subfigure_refresh": {
-            "evidence": "reports/cpwl-constructions/subfigure-review.json",
-            "scope": "Separate plot files and TeX subcaptions for the convex-fold figure; matching proof headings; explicit pairwise affine inequalities; additional local-maxima illustration. All following text from Expressivity and linear regions unchanged.",
-            "reviewed_by": "/root"
-          },
-          "cpwl_minimum_exposition_refresh": {
-            "evidence": "reports/cpwl-constructions/minimum-exposition.json",
-            "scope": "Replace the unexplained lattice phrase with upper-bound/equality reasoning. Remove the second local-maxima panel; show each convex upper bound dashed and its attaining f pieces solid in matching colors. First construction and all source from Expressivity remark onward byte-identical.",
-            "reviewed_by": "/root"
-          },
-          "cpwl_four_maxima_refresh": {
-            "evidence": "reports/cpwl-constructions/four-maxima-review.json",
-            "scope": "Four convex V-shaped local maxima produce eight affine pieces of f. Colored solid segments attain the minimum; dashed curves are the upper bounds. Axis height reduced from 4.8cm to 3.2cm. First construction and all following source from Expressivity remark unchanged.",
-            "reviewed_by": "/root"
-          },
-          "reference_consolidation_refresh": {
-            "recorded_at_utc": "2026-11-13T11:31:33.777150+00:00",
-            "reviewed_by": "/root/concise_foundations",
-            "evidence": "reports/reference-consolidation/later-chapters-review.json",
-            "scope": "Protected canonical displays and physical negative-pullback/conditioned-survival witnesses unchanged; three newly deduplicated equations use identical pinned declarations and need no distinct-target waiver. Source hashes refreshed after independent domain/terminology review."
-          },
-          "convexity_definition_refresh": {
-            "recorded_at_utc": "2026-11-16T09:50:39.120605+00:00",
-            "reviewed_by": "/root/concise_foundations",
-            "evidence": "reports/convexity-definition/review.json",
-            "scope": "Only the derivative-free convexity definition was inserted before CPWL terminology. Entire probability section, canonical overlap formula, conditioned-survival theorem/proof and physical witnesses are byte-identical to the bound snapshot."
-          },
-          "entropy_notation_refresh": {
-            "reviewed_by": "/root",
-            "evidence": "reports/entropy-regularization-notation/consistency.json",
-            "scope": "Only entropy macro/glyph substitutions; all canonical alias formulas and proof witnesses unchanged."
-          }
-        }
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
       },
-      "ptnb:eq:routing-spne-stop": {
-        "canonical_label": "ptnb:eq:routing-activation-value",
-        "declaration": "Thesis.RoutingGate.chosenLogAction_optimal",
+      "ptnb:eq:softplus-decomp": {
+        "canonical_label": "eq:fsoft_def",
+        "declaration": "Thesis.Regularization.softSplit",
         "physical_link_labels": [
-          "ptnb:eq:routing-activation-value"
+          "eq:fsoft_def"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "eq:canonical_weight_split": {
+        "canonical_label": "eq:weight_split",
+        "declaration": "HiddenMonotonicity.canonical_weight_split",
+        "physical_link_labels": [
+          "eq:weight_split"
+        ],
+        "canonical_has_same_declaration": true,
+        "review": "same pinned declaration"
+      },
+      "ptnb:eq:stop-relu": {
+        "canonical_label": "eq:fstop_def",
+        "declaration": "Thesis.StoppingDecomposition.stopPair",
+        "physical_link_labels": [
+          "def:fstop",
+          "eq:fstop_def"
         ],
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
@@ -537,15 +574,6 @@
         ],
         "canonical_has_same_declaration": true,
         "review": "same pinned declaration"
-      },
-      "ptnb:eq:lrp-eps-recursion": {
-        "canonical_label": "ptnb:eq:lrp-ab",
-        "declaration": "Thesis.RoutingSupport.sourceLRP",
-        "physical_link_labels": [
-          "ptnb:eq:lrp-ab"
-        ],
-        "canonical_has_same_declaration": true,
-        "review": "same pinned declaration"
       }
     },
     "retired_lean_labels": [
@@ -556,6 +584,7 @@
       "def:shifted_sensitivities",
       "def:tropical_polynomial",
       "eq:backward_invariant",
+      "eq:convex_square_pair",
       "eq:curvature_antiderivatives",
       "eq:delta_plus_recursion",
       "eq:masked_path_product",
@@ -614,7 +643,7 @@
       "source_sha256": "5bc28089683b0781d90658ebfa595b926a4201d542c4e52715de8c43be1fd579",
       "html_path": "docs/draft-proofs/5bc28089683b0781d90658ebfa595b926a4201d542c4e52715de8c43be1fd579/TrajectoryHellinger.lean.html",
       "html_sha256": "3111cb483a65178a6604569973ae18f8c021a36f93df6873c4d2133a9218af8a",
-      "receipt_sha256": "3f01741f7c8e64a332223371d0fb1cf603ed14f6c06c6fe7085c12ddf0083238"
+      "receipt_sha256": "2d5e4ae12bf2ab17a3e0b3d12a75b98fd435e7aa9cb382f3b9587d00b58e0bb8"
     },
     "eq:multiplicative_dc_recovery": {
       "declaration": "Thesis.PolarizedMultiplicative.polarized_expression_dc",
@@ -626,7 +655,19 @@
       "source_sha256": "493056326fd3333d0df4635e3e4bd538588073d056986fae1b34a157bb3a330f",
       "html_path": "docs/draft-proofs/493056326fd3333d0df4635e3e4bd538588073d056986fae1b34a157bb3a330f/PolarizedMultiplicative.lean.html",
       "html_sha256": "6d5fd768abe78c5af0bab53cfa73ad6ce6187af1d269ce5eea3f9e1d3403c246",
-      "receipt_sha256": "30131534a328db05e19df1efff09fdc4bc6634c8212c8f082a276321f26c48fa"
+      "receipt_sha256": "9f7dc5d54f9d6ef78c540bbf1ae11c83fb4109e0c5b407c2dead4af878a2ef12"
+    },
+    "eq:transformer_dc_linear_cost": {
+      "declaration": "HiddenMonotonicity.TransformerDC.Transformer.dc_decomposition_linear_cost",
+      "path": "formalization/HiddenMonotonicity/TransformerLinearCost.lean",
+      "receipt": "reports/verification/transformer-linear-cost/receipt.json",
+      "scope": "The materialized shared evaluator computes both existing Transformer DC streams exactly, for arbitrary finite depth, heads, masks and widths. Its actual scalar-operation counter is bounded by 200 times the original shared scalar graph size. The same contract includes convexity, monotonicity, nonnegative streams and exact recovery on the doubled-input orthant, and convex exact heads on signed raw inputs. Arithmetic, comparisons and scalar special functions have unit cost; stored inputs and fixed parameters are available directly, and parameter-derived constants are precomputed. This is an arithmetic-work bound, not a bit-complexity, floating-point or compiled Lean wall-clock guarantee.",
+      "line": 242,
+      "url": "draft-proofs/80b53e3ed513d45c3784d5c2829b196e004f309ca1cbd079c3c81f6a19bc0eaf/TransformerLinearCost.lean.html#L242",
+      "source_sha256": "80b53e3ed513d45c3784d5c2829b196e004f309ca1cbd079c3c81f6a19bc0eaf",
+      "html_path": "docs/draft-proofs/80b53e3ed513d45c3784d5c2829b196e004f309ca1cbd079c3c81f6a19bc0eaf/TransformerLinearCost.lean.html",
+      "html_sha256": "4f46d2e0f93d79e8d685dff85d2c506d5cf6bbf86cf080d3389275fc7d3e202b",
+      "receipt_sha256": "3a66efbfa3d254947ce31cafb8e69c4c0819250c4c4f2ed7aaa50b166e00d959"
     }
   },
   "active_source_files": [
@@ -689,7 +730,14 @@
     "tex/tables/integrated/ablations_vit_b16_longtable.tex",
     "tex/tables/integrated/ablations_vgg16_longtable.tex",
     "tex/tables/integrated/ablations_resnet50_longtable.tex",
-    "tex/tables/ptnb_v2/generated/pg_granularity_tabular.tex"
+    "tex/tables/ptnb_v2/generated/pg_granularity_tabular.tex",
+    "tex/appendices/rebuttal_controls.tex",
+    "tex/tables/rebuttal/same_power_sharpening_tabular.tex",
+    "tex/tables/rebuttal/full_auc_tabular.tex",
+    "tex/tables/rebuttal/sg_pool_cache_control_tabular.tex",
+    "tex/tables/rebuttal/corrected_vit_prediction_tabular.tex",
+    "tex/tables/rebuttal/corrected_vit_randomization_tabular.tex",
+    "tex/tables/rebuttal/local_hellinger_controls_tabular.tex"
   ],
   "remote_document_links": [],
   "missing_lean_uri_occurrences": {},

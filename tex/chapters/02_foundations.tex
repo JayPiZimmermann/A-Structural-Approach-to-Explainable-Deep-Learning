@@ -526,7 +526,7 @@ For the fixed path laws $\Pi_A,\Pi_B$, write
 For $0\le l\le L$, let $\mathrm H^{(l)}\coloneqq\mathrm H(\Pi_A^{(l)},\Pi_B^{(l)})$ be the distance between the prefix laws. Thus $\mathrm H^{(0)}=\mathrm H$ is the full trajectory distance, while $\mathrm H^{(L)}=0$ because both processes start at $s_0$.
 \end{definition}
 
-Theorem~\ref{ptnb:lem:bc-chain-rule} shows that a backward recursion computes these distances without enumerating trajectories. It is the layer-dependent form of the Markov-chain identity in \textcite[Lemma~5 and Appendix~B]{Daskalakis2018MarkovTesting}, attributed there to Kazakos (1978).
+Theorem~\ref{ptnb:lem:bc-chain-rule} shows that a backward recursion computes these distances without enumerating trajectories. This is Kazakos' recursion for time-varying Markov chains, written for the layered state graph~\parencite[Section~IV, Eqs.~(17)--(29)]{Kazakos1978}; see also \textcite[Lemma~5]{Daskalakis2018MarkovTesting}.
 For each layer $l \geq 1$ and pair of states $(s, s') \in \mathcal{S}^{(l)}_+ \times
     \mathcal{S}^{(l-1)}_+$, define the \emph{geometric-mean kernel}
 \begin{align}\label{ptnb:eq:geom-kernel}

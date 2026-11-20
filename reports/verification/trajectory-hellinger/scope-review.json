@@ -9,7 +9,7 @@
     "formalization/checks/trajectory_hellinger_audit.lean": "686c1bc1e43f829d5c42de93fa9b76a2b6e7baafe1328957a86c7b428e42e08a",
     "reports/verification/trajectory-hellinger/audit.log": "08fe5e6978d6de13f1ca0eb8bfae74c712855a87beb318f5057171541d37f2bb",
     "reports/verification/trajectory-hellinger/build.log": "9a1441ecd8175d38a275d07b3438a7d21cd1ea3a6bd3855687295f3810391e84",
-    "tex/chapters/02_foundations.tex": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667"
+    "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656"
   },
   "equation_sha256": "69dee4b11e353bcbd9740f14e6d8fac9ac6911630dc4783144d7f530812e63c7",
   "findings": [
@@ -55,6 +55,15 @@
       "scope": "Whole-file binding refreshed after exactly two entropy macro substitutions; all Hellinger definitions, statement and proof unchanged.",
       "before_source_sha256": "91d00b2aeafa57032a9f76dad76a83c9ce40f5bf6ee770d8c436efbf3f8d2b9a",
       "after_source_sha256": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T10:23:28Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "verdict": "PASS",
+      "evidence": "git diff -- tex/chapters/02_foundations.tex",
+      "scope": "Chapter02 full-file binding refreshed after one citation-only editorial change: replaced the indirect attribution sentence with a direct citation to Kazakos Section IV and retained Daskalakis as a secondary citation. The linked trajectory theorem, equation, definitions, assumptions, and surrounding proof text are unchanged; all existing Lean source, build/audit evidence, and proof-closure claims remain unchanged. No new Lean build is asserted.",
+      "before_source_sha256": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667",
+      "after_source_sha256": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656"
     }
   ]
 }

@@ -18,7 +18,7 @@
         "eq:delta_minus_recursion"
       ],
       "source_sha256": {
-        "tex/chapters/03_decompositions.tex": "4382d329dbdabad15fd2e1e93be6a9adc3c3e1b445e2d587767711fd1aa2bbae"
+        "tex/chapters/03_decompositions.tex": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab"
       },
       "terminology_refresh": {
         "evidence": "reports/dc-terminology/consistency.json",
@@ -210,9 +210,27 @@
       },
       "hertrich_context_relocation": {
         "reviewed_by": "/root",
-        "scope": "Only the explanatory Hertrich\u2013Loho paragraph was inserted after the decomposition definition. Removing that paragraph reproduces the previous chapter byte for byte; all formal statements, displayed formulae, proofs, protected aliases and activation plots are unchanged.",
+        "scope": "Only the explanatory Hertrich–Loho paragraph was inserted after the decomposition definition. Removing that paragraph reproduces the previous chapter byte for byte; all formal statements, displayed formulae, proofs, protected aliases and activation plots are unchanged.",
         "evidence": "reports/unified-multiplication/review.json"
-      }
+      },
+      "editorial_followups": [
+        {
+          "recorded_at_utc": "2026-11-20T10:27:00Z",
+          "reviewed_by": "/root/proof_receipt_editorial_check",
+          "source": "tex/chapters/03_decompositions.tex",
+          "before_source_sha256": "4382d329dbdabad15fd2e1e93be6a9adc3c3e1b445e2d587767711fd1aa2bbae",
+          "after_source_sha256": "993b31faa44fb6ece8c910d1332f28161b6ad990ba9357afa655b669cdfab08c",
+          "scope": "Chapter 03 opening paragraph gains one sentence linking the MNIST stream-sensitivity study and VGG/ResNet attribution evaluations. Removing that sentence reproduces the prior source; the canonical and physical witness equations, theorem statements, proofs, dependencies, and their locations are unchanged. No new Lean build is asserted."
+        },
+        {
+          "recorded_at_utc": "2026-11-20T10:30:00Z",
+          "reviewed_by": "/root/proof_receipt_editorial_check",
+          "source": "tex/chapters/03_decompositions.tex",
+          "before_source_sha256": "993b31faa44fb6ece8c910d1332f28161b6ad990ba9357afa655b669cdfab08c",
+          "after_source_sha256": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
+          "scope": "The previously reviewed MNIST/VGG/ResNet teaser sentence is now wrapped in the editorial changed environment. Removing only the wrapper reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and proof witnesses are unchanged. No new Lean build is asserted."
+        }
+      ]
     },
     "ptnb:eq:conditioned-bc-kernel": {
       "canonical_label": "ptnb:eq:bc-chain-rule",
@@ -234,7 +252,7 @@
         "ptnb:eq:conditioned-h2"
       ],
       "source_sha256": {
-        "tex/chapters/02_foundations.tex": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667"
+        "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656"
       },
       "width_notation_refresh": {
         "old_source_sha256": "6ca238309adbdf1f54dbbeda932c98bbc61402fa34ea2900d3a55d92cfe4248f",
@@ -285,7 +303,7 @@
       "wasserstein_definition_removal": {
         "before_sha256": "05ee62dd65a2693942a288437f1e99784cda7dabca9f4d9c33f5f7ef0d584a5a",
         "after_sha256": "09292e00f1f88075d67a375cda27ed528af95b629ad1870ea142a638a256ccd0",
-        "scope": "Removed the unused standalone Wasserstein definition at the author\u2019s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged.",
+        "scope": "Removed the unused standalone Wasserstein definition at the author’s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged.",
         "reviewed_by": "/root"
       },
       "layered_graph_definition_refresh": {
@@ -348,7 +366,17 @@
         "reviewed_by": "/root",
         "evidence": "reports/entropy-regularization-notation/consistency.json",
         "scope": "Only entropy macro/glyph substitutions; all canonical alias formulas and proof witnesses unchanged."
-      }
+      },
+      "editorial_followups": [
+        {
+          "recorded_at_utc": "2026-11-20T10:27:00Z",
+          "reviewed_by": "/root/proof_receipt_editorial_check",
+          "source": "tex/chapters/02_foundations.tex",
+          "before_source_sha256": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667",
+          "after_source_sha256": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656",
+          "scope": "Chapter 02 citation sentence was edited to cite Kazakos Section IV directly while retaining Daskalakis as secondary context. The trajectory equation, definitions, assumptions, theorem and proof are unchanged; this refreshes only the source binding. No new Lean build is asserted."
+        }
+      ]
     }
   }
 }

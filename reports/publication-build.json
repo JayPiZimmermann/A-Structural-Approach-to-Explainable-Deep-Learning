@@ -19,23 +19,23 @@
   },
   "active_root": "tex/main.tex",
   "active_source_sha256": {
-    "tex/appendices/experiments.tex": "e483738e5573e52a21599d94b9e0d6ab77f05d00ba2ea9853a122f0e1fe7ed6c",
+    "tex/appendices/experiments.tex": "3d69bfe648cca264c6d1600a1d726be9c0e6478ccacdb00cd99f7c4976ab5328",
     "tex/chapters/00_text.tex": "949e37d324263c7a5c8658a534677032173b6f84d63318b554836f0b0dbfc139",
-    "tex/chapters/01_introduction.tex": "d50a9d1df409a980434957321d1d4b1d5146318d25a61e1611620b5260bcbaab",
-    "tex/chapters/02_foundations.tex": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667",
-    "tex/chapters/03_decompositions.tex": "4382d329dbdabad15fd2e1e93be6a9adc3c3e1b445e2d587767711fd1aa2bbae",
-    "tex/chapters/04_game_theory.tex": "8e6ddced86e87eca96e2fe13e3475f42ffb489c11b0639a16db6e8e5bd8600e5",
-    "tex/chapters/07_transformers.tex": "e9d3066bdbea88fb0905d9802147174fa5b5d9253f327d5afd07bc1aa87e4f3f",
-    "tex/chapters/08_experiments.tex": "a8d896448a95e862c3aed489c67f2561dd078f846355a2d1faf6daedfb36a8fd",
+    "tex/chapters/01_introduction.tex": "1d7d32f02ae7f8eec1726d9d4fcebb87639c25280473ba0bd577efb2c8a25b75",
+    "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656",
+    "tex/chapters/03_decompositions.tex": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
+    "tex/chapters/04_game_theory.tex": "dc4faaef93b8e3c5ca28b65496aad9c132dfc939d4657bac867314348e5ad0fc",
+    "tex/chapters/07_transformers.tex": "26c730ad2d28e8383702faf5a0a032abcdeeabc9366465e8becc76f434b69dd6",
+    "tex/chapters/08_experiments.tex": "8c36d627b67d24cd2e8dc19facdd7c4359a329953253523ad99b1f7c5bb4366e",
     "tex/chapters/09_conclusion.tex": "a501439a79d6c1d32b11a962c9e2f9be8bd3d38eae112ac1a97f14c63e6f6de1",
-    "tex/chapters/10_appendix.tex": "c6fcbe311407d5ccb84a4f6ae399515513ae62ca9d2e4de61f9959fa7489d7b0",
-    "tex/chapters/11_trajectory.tex": "6a4c6ac2fce002795af9e5344c5872d285d1469b1fc8de23424e21a11e2314e5",
+    "tex/chapters/10_appendix.tex": "5637e48b1e7b890276d39a7adc1d6360f0ccfb9228d006b5312698ee296b7357",
+    "tex/chapters/11_trajectory.tex": "89a14bd80ba5c43b9a638ada47f5270907d73922bfb539eaddd760cce5da5e66",
     "tex/figures/experiments/vgg_saliency_comparison_appendix.tex": "16967ce214ea6b87bbd921ec771da5b1bff9f51de2f96516a3058c4f6e523e83",
     "tex/figures/experiments/vgg_saliency_comparison_main.tex": "8473d7791109cb0c9aa773430886cfd6c1ece675488cdba5824558a60eadbc80",
     "tex/figures/ptnb_v2/plots/hellinger_input_noise/hellinger_input_noise_plots.inc.tex": "1f7e22fe61c31b5043058e9917071fd59565f6ccf74589c69e18aabcd9b55f18",
     "tex/figures/ptnb_v2/plots/sanity_check/hellinger_live_plots.inc.tex": "e6c466072d30b87424abbdfadc4581e7d10ddc3550e98321cfaac46bc2fe9879",
     "tex/frontmatter/abbreviations_list.tex": "5d217835f512f487c9fb50e4db8a40ee0d13d86d9ffb31d10793fd1d0a8ac46b",
-    "tex/frontmatter/abstract.tex": "e77bfbc2c0a374409f7c27a34b4ac32cd7ac0ea6d04faaa0ccad09166c54644e",
+    "tex/frontmatter/abstract.tex": "0249f6a7688b32fbf09ad7822362ee5fe2bee265117c15db059df48f585b5936",
     "tex/frontmatter/acknowledgements.tex": "f5c4961d1174d6571be8414101bd5d57633ca2e9bfdf9439a8fa80dea902db3c",
     "tex/frontmatter/cover.tex": "57c41b2983e5bf2512d262e29ae5f9d0f004b1ded471b275f23bef9de117caa6",
     "tex/frontmatter/declaration.tex": "874c45c4fabd10681290863dcc664af74763d7d8d2beeda3db11291ee100cf93",
@@ -43,10 +43,10 @@
     "tex/main.tex": "6ed7542a0e62c6232721c5f1df2b711e45b2e90775f287672089d3d23fe47021",
     "tex/preamble/abbreviations_def.tex": "f7ab9520b0b48c7dff853b423a60d9d685bca13e742ee4adceac6c26f0ea4d27",
     "tex/preamble/code_languages.tex": "de8753b96180eb3d91b1f0befd4cb33417ef1b834172865092785d513626c7d8",
-    "tex/preamble/commands.tex": "5f5ad3f7f1cef0a99bed85c8324cd240b21d7e4478508dca32dd027a7f7698b0",
+    "tex/preamble/commands.tex": "0d78015b6b84f42865485aba3deb9fee4b3aac5242858bc323edf5dc485bfc6b",
     "tex/preamble/lean_equation_links.sty": "cd2d6863a5ee148e065ea44a2ebe5e0ca4625a9fbb32abe5acb3eba494108a22",
     "tex/preamble/lean_links.tex": "a753fdb6eda8ae1133091df1af35f23f0c9a57a9bf5dc90c24aa90d1f940c308",
-    "tex/preamble/lean_links_draft.tex": "ee3045ed1c72672a45d18f101e3d1c12a363527a7a365a86ff61fd3e712afba4",
+    "tex/preamble/lean_links_draft.tex": "c87f7d11ff11c837883b028945724be9afe8c72ca00f14056276f5ae7284c824",
     "tex/preamble/meta.tex": "03076a4c42259751d7d97937687a87a5bca0307d9a2443d4422d069a1b4c2f59",
     "tex/preamble/nomenclature.tex": "20b2b82c4375d4ecd7581af1a01df1759c08521834b24442a8dc4e0fa958b95b",
     "tex/preamble/packages.tex": "319f9670375b0f71db1410f73f7cbf4390d142b1850b95317aad530518326303",
@@ -61,8 +61,8 @@
     "tex/tables/appendix/xai_eval_res_full.tex": "5f403aeff5af9eebc28a172937612cf0a1243ece88dd4ff064a76902ae182b1a",
     "tex/tables/appendix/xai_eval_vgg_full.tex": "9c9b3d361321f0b43b3783ddecfe87c2f1426605305763cafdee3d527e0a7658",
     "tex/tables/integrated/ablations_resnet50_longtable.tex": "366d714158ee6302457daf2b49e59df41e462699375632760a8a8c18a0f62f6c",
-    "tex/tables/integrated/ablations_vgg16_longtable.tex": "6d90acdf3f9a623a6345f3c483dc9b190c6beb7c89a0979e61f2d8fd018c7a10",
-    "tex/tables/integrated/ablations_vit_b16_longtable.tex": "8d974993f8b4847139f94c965a313db3e34c19ba0c1595e4bd68ab987502c076",
+    "tex/tables/integrated/ablations_vgg16_longtable.tex": "afc3ad546204ca1fb3f101147cebd7280ff8e332ffe42c1896bb6b8268cc8193",
+    "tex/tables/integrated/ablations_vit_b16_longtable.tex": "45df4e70cbf5a125f526073fda517957a1b288e66250a2441060c3591c05ae85",
     "tex/tables/integrated/validation_rank_matrix_tabular.tex": "9d452c89243c769f460addf17a1bc53c0fddfaeea5f4b8841000f5dc9b1a0236",
     "tex/tables/ptnb_v2/generated/attention_rule_vit_b16_tabular.tex": "5ade913597b27b35ba95a4074d12f3117afc348df93f0afea8f62572ae5f9935",
     "tex/tables/ptnb_v2/generated/diagnostic_numbers.tex": "6ff9a7d43f059b0712d574b6ff0ab6a2f79aa3d43318929b1f266ab6e3331989",
@@ -100,8 +100,8 @@
     "tex/figures/smooth_curvature_function.png": "3f8152bb2632e9e01bbe53e07ade0a7169c61976ae02fe938fc54aebbf25e9c0",
     "tex/figures/smooth_curvature_function.tex": "6f5fbcc49df317b078e1d7262bee95d352451c9f41201f8e3afad5a6b8c180fb"
   },
-  "bibliography_sha256": "b31b91b452e4159d428d247a3f7239f236e5b805d6a9b34d3b7d1be8f36ed1b6",
-  "built_at_utc": "2026-11-17T15:01:22.839303+00:00",
+  "bibliography_sha256": "9dbff2dbbf85dd705d21545774b2788da607ea59d751c5186e0551c58a47c79f",
+  "built_at_utc": "2026-11-20T10:51:10.170612+00:00",
   "checks": {
     "aliased_lean_mappings": {
       "eq:canonical_weight_split": {
@@ -199,6 +199,24 @@
             "scope": "Concurrent user edits and root-only syntax/reference repairs preserved. Canonical block Jacobians, joint sensitivity recurrence and separate negative-pullback witness unchanged; no deletions restored."
           },
           "declaration": "HiddenMonotonicity.actual_negative_pullback",
+          "editorial_followups": [
+            {
+              "after_source_sha256": "993b31faa44fb6ece8c910d1332f28161b6ad990ba9357afa655b669cdfab08c",
+              "before_source_sha256": "4382d329dbdabad15fd2e1e93be6a9adc3c3e1b445e2d587767711fd1aa2bbae",
+              "recorded_at_utc": "2026-11-20T10:27:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "scope": "Chapter 03 opening paragraph gains one sentence linking the MNIST stream-sensitivity study and VGG/ResNet attribution evaluations. Removing that sentence reproduces the prior source; the canonical and physical witness equations, theorem statements, proofs, dependencies, and their locations are unchanged. No new Lean build is asserted.",
+              "source": "tex/chapters/03_decompositions.tex"
+            },
+            {
+              "after_source_sha256": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab",
+              "before_source_sha256": "993b31faa44fb6ece8c910d1332f28161b6ad990ba9357afa655b669cdfab08c",
+              "recorded_at_utc": "2026-11-20T10:30:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "scope": "The previously reviewed MNIST/VGG/ResNet teaser sentence is now wrapped in the editorial changed environment. Removing only the wrapper reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and proof witnesses are unchanged. No new Lean build is asserted.",
+              "source": "tex/chapters/03_decompositions.tex"
+            }
+          ],
           "entropy_notation_refresh": {
             "evidence": "reports/entropy-regularization-notation/consistency.json",
             "reviewed_by": "/root",
@@ -300,7 +318,7 @@
             "scope": "Softmax recovery proof expanded algebraically and concurrent user caption shortening retained; all protected Jacobian and sensitivity displays unchanged."
           },
           "source_sha256": {
-            "tex/chapters/03_decompositions.tex": "4382d329dbdabad15fd2e1e93be6a9adc3c3e1b445e2d587767711fd1aa2bbae"
+            "tex/chapters/03_decompositions.tex": "8f58ca2be065d1c36e1f5acf6a37e17d7861bfa5bb1f6a9285b49e0c27cf70ab"
           },
           "stabilization_concision_refresh": {
             "evidence": "reports/stabilization-concision/review.json",
@@ -428,6 +446,16 @@
             "scope": "Separate plot files and TeX subcaptions for the convex-fold figure; matching proof headings; explicit pairwise affine inequalities; additional local-maxima illustration. All following text from Expressivity and linear regions unchanged."
           },
           "declaration": "Thesis.ConditionedSurvival.conditioned_survival_statistics",
+          "editorial_followups": [
+            {
+              "after_source_sha256": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656",
+              "before_source_sha256": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667",
+              "recorded_at_utc": "2026-11-20T10:27:00Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "scope": "Chapter 02 citation sentence was edited to cite Kazakos Section IV directly while retaining Daskalakis as secondary context. The trajectory equation, definitions, assumptions, theorem and proof are unchanged; this refreshes only the source binding. No new Lean build is asserted.",
+              "source": "tex/chapters/02_foundations.tex"
+            }
+          ],
           "entropy_notation_refresh": {
             "evidence": "reports/entropy-regularization-notation/consistency.json",
             "reviewed_by": "/root",
@@ -478,7 +506,7 @@
             "source_sha256": "cac2537cd8f5e086a8471b6b35bee57705e2dc937045adebdf375bc42ce9ee25"
           },
           "source_sha256": {
-            "tex/chapters/02_foundations.tex": "67a548ac9e296d902a213b3f9b6404c640ceaf4ac9901f046315d619648e8667"
+            "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656"
           },
           "support_behavior_clarification": {
             "after_sha256": "34c3f398f9f7e4506d6889afe6096ed54e4fc79cd1d6899275e44988f7e68159",
@@ -619,16 +647,16 @@
     "all_pinned_lean_uris_at_verified_revision": true,
     "broken_internal_links": [],
     "changed_verified_proof_files": [],
-    "draft_lean_uri_count": 3,
-    "expected_published_lean_link_count": 159,
+    "draft_lean_uri_count": 5,
+    "expected_published_lean_link_count": 160,
     "internal_links_present": true,
     "local_proof_sources_builds_and_snapshots_verified": true,
     "main_pdf_within_150_pages": true,
     "no_remote_document_links": true,
-    "physical_lean_labels": 156,
-    "pinned_lean_uri_count": 156,
+    "physical_lean_labels": 155,
+    "pinned_lean_uri_count": 155,
     "publication_log_clean": true,
-    "published_lean_uri_count": 159,
+    "published_lean_uri_count": 160,
     "published_pdf_matches_build": true,
     "represented_unique_lean_declarations": 115,
     "retired_lean_labels": [
@@ -639,6 +667,7 @@
       "def:shifted_sensitivities",
       "def:tropical_polynomial",
       "eq:backward_invariant",
+      "eq:convex_square_pair",
       "eq:curvature_antiderivatives",
       "eq:delta_plus_recursion",
       "eq:masked_path_product",
@@ -677,7 +706,7 @@
       "thm:split_tropical_rational",
       "thm:vertices_gradients"
     ],
-    "unique_lean_uris": 117,
+    "unique_lean_uris": 118,
     "verified_proof_files_checked": 176
   },
   "commands": [
@@ -689,20 +718,20 @@
   "documents": {
     "thesis.pdf": {
       "biber_warnings_or_errors": [],
-      "draft_lean_uri_count": 3,
-      "internal_link_count": 1737,
-      "lean_uri_count": 159,
+      "draft_lean_uri_count": 5,
+      "internal_link_count": 1787,
+      "lean_uri_count": 160,
       "matches_compiled_pdf": true,
-      "named_destinations": 1005,
+      "named_destinations": 1034,
       "overfull_boxes": 0,
-      "page_object_count": 129,
-      "pages": 129,
+      "page_object_count": 137,
+      "pages": 137,
       "path": "docs/thesis.pdf",
-      "pinned_lean_uri_count": 156,
+      "pinned_lean_uri_count": 155,
       "remote_link_count": 0,
-      "sha256": "c64154c9037e30be1371ccd434cb3e7ba3f6accdb2d75b37e2991e9bf62bdb95",
+      "sha256": "c6d9b71130b37fe4a89a751018477dd0fe9c3cb77e559fda44e32f9a2a19cfa3",
       "underfull_boxes": 0,
-      "unique_lean_uris": 117,
+      "unique_lean_uris": 118,
       "unresolved_reference_or_citation": false,
       "warnings": []
     }
@@ -732,7 +761,7 @@
     "docs/draft-proofs/5bc28089683b0781d90658ebfa595b926a4201d542c4e52715de8c43be1fd579/TrajectoryHellinger.lean.html": "3111cb483a65178a6604569973ae18f8c021a36f93df6873c4d2133a9218af8a",
     "formalization/Thesis/PolarizedMultiplicative.lean": "493056326fd3333d0df4635e3e4bd538588073d056986fae1b34a157bb3a330f",
     "formalization/checks/polarized_multiplicative_audit.lean": "3fa50baed5c92f7f061abf7a74a183781cd0784d86e319cfbed51b3254bb6bc5",
-    "formalization/draft_tex_links.json": "9954c11e4e598b4e63168992bb156ba5ee64badad4977dfcabef21c73f689b30",
+    "formalization/draft_tex_links.json": "d365eb74e4c79045c1f8d9dacfcecad1e9ad660b0b8d585ad966069d0f2dc2c5",
     "reports/abstract-placeholder/review.json": "1c0c091a29df39a7cf0ce839c10cf88a84800d12e3cbcbd4bb5aafbbeec41b35",
     "reports/activation-differences/review.json": "3306f369cd51aaf489fb9d80ba1b5b34ac78bea1763192ec6871cd414d5d7605",
     "reports/activation-grid/experimental-provenance.json": "d403d6c1e7eab5784b8cf463815ef13b10c96a55d798f739f5cb20f3c406569f",
@@ -771,7 +800,7 @@
     "reports/implementation-comparison/evidence.json": "8a756b5364cdc120b2bfa81abac2283de26b186fa1ddfa4b218acbeb334188b9",
     "reports/implementation-comparison/manuscript-review.json": "ad6c43bd3fe4871f21c48a106d3f4278dacfde644bc85b264fdd070ff9271407",
     "reports/implementation-comparison/residual-packing-check.json": "278efbbb0a8ab02fc31fa754b22056b632d5098679b63cf2c717ea0f4bab8b8e",
-    "reports/introduction-restoration/publication-checks.json": "ba5e0f6d3c6fb11c087dd8d75aa5b2a27c0d75717024a400831e0f7423752f4d",
+    "reports/introduction-restoration/publication-checks.json": "94950f525418718307792b4b698b90c06793f849858fedc63e1384b4156bb085",
     "reports/introduction-restoration/workspace-alignment-sources.json": "ee1118269404e4c078ceb6ea585e082e44ed561f8f6a3d926ba29e48c56f5552",
     "reports/layered-markov-graph/consistency.json": "04076317548bcba8d5fe9386006c090882713e78f99d00c2d13b47aec35f2593",
     "reports/layered-markov-graph/math-review.json": "dac14f9faf78526b6ef314bd73be305b64b4603bb17e5b788685cf713d95238a",
@@ -813,7 +842,7 @@
     "reports/single-pdf/integration.json": "b4e79fea441b1252238bd7065e624b92c2074a9caa0e5be12207ff774d19e776",
     "reports/single-pdf/inventory-candidate.json": "f8530f5a8866896030929ecf41686d7d8767992acd1fe586c1544d558755921c",
     "reports/single-pdf/inventory-comparison.json": "013ec06f3f0daca1b3793c528f6048061c5601a07e4d4f3814b26a4a9bd8d2a4",
-    "reports/single-pdf/lean-alias-reviews.json": "f52af04d0e19c6ff3543d62be01c1ee8390b12dd0c4f9e5b4d9f5884b8cfbdab",
+    "reports/single-pdf/lean-alias-reviews.json": "7ed3e81f630c9d64ec7e193587fb75967f06a5c259cf8dfed964ce1a34e3d90b",
     "reports/single-pdf/publication-checks.json": "e3a1d2b95173e67ac684407d1bafa1d75782c1ccf0d2cfd1fb4b43c0d5b0ae9e",
     "reports/single-pdf/validation-matrix-independent-review.json": "d46a11e1c252f926f30914e64e6ab88ba40f9e24e80d8f9176489f6ddf1062b6",
     "reports/single-pdf/validator-checks.json": "7eb8bd49c7f864c5cb5cad91f8c522cff74dfa261ff8e04fd88cc8bf18feffd9",
@@ -834,13 +863,13 @@
     "reports/unified-multiplication/review.json": "bd21269cb35ce5f050f072c129bc74cd866202ff55c64b9e6c9e0d5187986b59",
     "reports/verification/polarized-multiplicative/audit.log": "a9b7528e8cf1822f284cbe52fa00a8530815bf40e8bb85845494a959d594cbf1",
     "reports/verification/polarized-multiplicative/build.log": "de080a367fd8f8f69b34936c3506906eac42f9eec6e76511962264a7827788b4",
-    "reports/verification/polarized-multiplicative/receipt.json": "30131534a328db05e19df1efff09fdc4bc6634c8212c8f082a276321f26c48fa",
+    "reports/verification/polarized-multiplicative/receipt.json": "9f7dc5d54f9d6ef78c540bbf1ae11c83fb4109e0c5b407c2dead4af878a2ef12",
     "reports/verification/polarized-multiplicative/scope-review.json": "7b437a281492a193abaeedc562d78c7416b43eb55f6b94411b75bb63bd2cacff",
     "reports/verification/trajectory-hellinger/audit.log": "08fe5e6978d6de13f1ca0eb8bfae74c712855a87beb318f5057171541d37f2bb",
     "reports/verification/trajectory-hellinger/build.log": "9a1441ecd8175d38a275d07b3438a7d21cd1ea3a6bd3855687295f3810391e84",
     "reports/verification/trajectory-hellinger/link-review.json": "14ff2c68c45464dbfae044f7ff69ab060678bec6914166ec5a48dabe2e1ef864",
-    "reports/verification/trajectory-hellinger/receipt.json": "3f01741f7c8e64a332223371d0fb1cf603ed14f6c06c6fe7085c12ddf0083238",
-    "reports/verification/trajectory-hellinger/scope-review.json": "0035c73c917caaf6927155ef901fdb5cc55b1ee66dbcc61eebe815178d79d421",
+    "reports/verification/trajectory-hellinger/receipt.json": "2d5e4ae12bf2ab17a3e0b3d12a75b98fd435e7aa9cb382f3b9587d00b58e0bb8",
+    "reports/verification/trajectory-hellinger/scope-review.json": "33b11d1732df0d7bc9df412d4bdfcbba942c469b9210c3d499fcba2fc2b9c65e",
     "reports/visual-attribution-related-work/review.json": "a7858b385e0e1c65f88d1e60fba14c7b7cd2af9a8ce4be4ba6ec294aa7023ec2",
     "reports/vit-extension/releases/20261111T005825-06706bb71504/previous-publication-build.json": "adfe79fef24547af0a46771097980215a9eae904c82a16098d51f94a28f6495f",
     "reports/vit-extension/releases/20261111T005825-06706bb71504/publication-checks.json": "970bfbb2cebe0a0f31c835c7b13efa2b98aa172bd6e0613520107814fba8414a",
@@ -850,8 +879,8 @@
     "reports/vit-extension/releases/20261111T005825-06706bb71504/table/provenance.json": "6846ffe21280184674b490c51f064e828d0a688b987aa55b1667e15bbbc4eaf9",
     "scripts/generate_draft_lean_links.py": "9024c32cb231bbc194f5efbaf4004a537f2234b713e2de85fa8b3264ef2fd38e",
     "scripts/plot_activation_dc_grid.py": "b221de054040aa5db2a2c2a807a60409e610d673943953bcff8d9c16d3ae6d9f",
-    "tex/preamble/lean_links_draft.tex": "ee3045ed1c72672a45d18f101e3d1c12a363527a7a365a86ff61fd3e712afba4",
-    "tex/preamble/lean_links_retired.json": "70bad9548a5cf03e04495ecbf83a5b4efbffaab0c228ee32d57263364701b1ef"
+    "tex/preamble/lean_links_draft.tex": "c87f7d11ff11c837883b028945724be9afe8c72ca00f14056276f5ae7284c824",
+    "tex/preamble/lean_links_retired.json": "5d9e0e424a5b714295bd886ce6f55280d6e881c27c866a540a09bd2abb7caaf2"
   },
   "extension_history": [
     {
@@ -898,8 +927,8 @@
     "This baseline publication does not include the still-running Quantus extension; a later extension_update supersedes this experiment-inclusion status.",
     "Text-review draft only: table bodies and qualitative image grids were omitted with rendering flags 0/0; this PDF is not the complete publication PDF."
   ],
-  "pages": 129,
-  "pdf_sha256": "c64154c9037e30be1371ccd434cb3e7ba3f6accdb2d75b37e2991e9bf62bdb95",
+  "pages": 137,
+  "pdf_sha256": "c6d9b71130b37fe4a89a751018477dd0fe9c3cb77e559fda44e32f9a2a19cfa3",
   "proof_source_commit": "1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06",
   "public_pdf": "docs/thesis.pdf",
   "publication_mode": "single_pdf_with_local_proofs",
@@ -917,7 +946,7 @@
       "RenderQualitativeImageTables": 0,
       "RenderTables": 0
     },
-    "scope": "129-page local-development tableless review PDF with RenderTables=0 and RenderQualitativeImageTables=0. Table bodies and qualitative grids are omitted by the rendering switches; source content remains intact. Guard passed the unchanged 150-page limit. The PDF includes 156 pinned and 3 local draft Lean proof links (159 total)."
+    "scope": "137-page local-development tableless review PDF with RenderTables=0 and RenderQualitativeImageTables=0. Table bodies and qualitative grids are omitted by the rendering switches; source content remains intact. Guard passed the unchanged 150-page limit. The PDF includes 155 pinned and 5 local draft Lean proof links (160 total)."
   },
   "source_sha256": {
     "tex/appendices/experiments.tex": "e483738e5573e52a21599d94b9e0d6ab77f05d00ba2ea9853a122f0e1fe7ed6c",
@@ -994,6 +1023,6 @@
     "unique_lean_uris": 123
   },
   "verification_receipt": "reports/introduction-restoration/publication-checks.json",
-  "verification_receipt_sha256": "ba5e0f6d3c6fb11c087dd8d75aa5b2a27c0d75717024a400831e0f7423752f4d",
+  "verification_receipt_sha256": "94950f525418718307792b4b698b90c06793f849858fedc63e1384b4156bb085",
   "verification_scope": "142-page local-development text-review PDF with tables and qualitative grids omitted; 176 pinned links plus one local draft link all resolve. The toy-network lead/figure is absent from the active PDF; standalone plot/code assets are exploratory and excluded from active publication asset/evidence hashes."
 }

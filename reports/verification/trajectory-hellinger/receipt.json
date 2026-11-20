@@ -24,12 +24,12 @@
     "formalization/lakefile.toml": "91212e1a88088f6f06afcbc94b87aa6641a447a7d0162832dacf34758b32523a",
     "formalization/lake-manifest.json": "55344b7f14ad57456e134fcd19765832e818bfc88e676439dd1d9dac98568736",
     "scripts/generate_draft_lean_links.py": "9024c32cb231bbc194f5efbaf4004a537f2234b713e2de85fa8b3264ef2fd38e",
-    "formalization/draft_tex_links.json": "9954c11e4e598b4e63168992bb156ba5ee64badad4977dfcabef21c73f689b30"
+    "formalization/draft_tex_links.json": "d365eb74e4c79045c1f8d9dacfcecad1e9ad660b0b8d585ad966069d0f2dc2c5"
   },
   "artifact_sha256": {
     "reports/verification/trajectory-hellinger/build.log": "9a1441ecd8175d38a275d07b3438a7d21cd1ea3a6bd3855687295f3810391e84",
     "reports/verification/trajectory-hellinger/audit.log": "08fe5e6978d6de13f1ca0eb8bfae74c712855a87beb318f5057171541d37f2bb",
-    "reports/verification/trajectory-hellinger/scope-review.json": "0035c73c917caaf6927155ef901fdb5cc55b1ee66dbcc61eebe815178d79d421"
+    "reports/verification/trajectory-hellinger/scope-review.json": "33b11d1732df0d7bc9df412d4bdfcbba942c469b9210c3d499fcba2fc2b9c65e"
   },
   "scope_review": "reports/verification/trajectory-hellinger/scope-review.json",
   "targets": {
@@ -59,6 +59,20 @@
       "reviewer": "/root",
       "evidence": "reports/entropy-regularization-notation/consistency.json",
       "scope": "Refreshed unchanged Hellinger proof review after entropy-only notation edits and manifest hash after adding a separate polarized-expression proof. Original Hellinger mapping, proof, logs and build claims unchanged."
+    },
+    {
+      "recorded_at_utc": "2026-11-20T10:15:18.321465+00:00",
+      "scope": "Added the separately checked Transformer linear-cost proof to the draft-link manifest. This existing proof, its theorem target, build logs and mathematical review remain unchanged; no new build of this existing target is asserted by this metadata update.",
+      "manifest_sha256_before": "9954c11e4e598b4e63168992bb156ba5ee64badad4977dfcabef21c73f689b30",
+      "manifest_sha256_after": "d365eb74e4c79045c1f8d9dacfcecad1e9ad660b0b8d585ad966069d0f2dc2c5"
+    },
+    {
+      "recorded_at_utc": "2026-11-20T10:23:28Z",
+      "reviewer": "/root/proof_receipt_editorial_check",
+      "evidence": "reports/verification/trajectory-hellinger/scope-review.json",
+      "scope": "Refreshed the dependent scope-review artifact hash after its citation-only Chapter02 binding update. Existing Hellinger Lean proof source hashes, theorem mapping, build/audit logs and claims are unchanged; no new Lean build is asserted.",
+      "scope_review_sha256_before": "0035c73c917caaf6927155ef901fdb5cc55b1ee66dbcc61eebe815178d79d421",
+      "scope_review_sha256_after": "33b11d1732df0d7bc9df412d4bdfcbba942c469b9210c3d499fcba2fc2b9c65e"
     }
   ]
 }

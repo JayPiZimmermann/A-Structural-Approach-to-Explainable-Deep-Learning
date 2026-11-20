@@ -1,7 +1,7 @@
 \chapter{Game-Theoretic Framework}\label{ch:game_theory}\label{app:supp_games}
 
 The sign-separated streams of Chapter~\ref{ch:decompositions} expose accumulated opposing contributions. This chapter formalizes the backward-game picture of Figure~\ref{fig:game_trajectory_overview}, tracing backward rules through these contributions.
-The trajectory distributions support method design (Section~\ref{sec:risk_aversion_regularization}) and diagnostics (Chapter~\ref{ch:trajectory}). Exact recovery concerns the anchor rules; myopic temperature changes and risk-sensitive policies deform these rules.
+The trajectory distributions support method design (Section~\ref{sec:risk_aversion_regularization}) and diagnostics (Chapter~\ref{ch:trajectory}). Exact recovery concerns the anchor rules; myopic temperature changes and risk-sensitive policies deform these rules. \begin{changed}In the ViT benchmark, changing routing improves Attribution Localization (Section~\ref{sec:results_vit}), while the full deletion/insertion controls favor LRP baselines (Appendix~\ref{app:rebuttal-sharpening}). These different outcomes motivate examining what each backward rule computes.\end{changed}
 
 \section{Related Work}\label{ptnb:sec:related-work}\label{sec:related_work_games}
 
@@ -68,8 +68,12 @@ $\beta$, each normalized by its own denominator:
 Relevance assigned to the bias and to $\varepsilon$ is absorbed. For non-negative activations,
 $(\alpha,\beta)=(1,0)$ with $\varepsilon=0$ and biases omitted from normalization gives the
 $z^+$-rule of Deep Taylor decomposition~\parencite{Montavon2017DeepTaylor} and
-Excitation Backprop~\parencite{Zhang2018pointinggame}; other rules (LRP-$\varepsilon$, LRP-$\gamma$)
-change the redistribution fractions.
+Excitation Backprop~\parencite{Zhang2018pointinggame}.
+
+\paragraph{Other LRP rules.}\label{par:other_lrp_games}
+The $\varepsilon$- and $\gamma$-rules are defined in Section~\ref{sec:related_work}, \eqref{eq:lrp_gamma_overview}. In that bias-free setting, an active neuron has $z_j=\sum_i a_iw_{ij}>0$. Its $\varepsilon$-rule coefficients sum to $z_j/(z_j+\varepsilon)<1$ for $\varepsilon>0$ and can be negative, so they are not directly a probability kernel. For non-negative coefficients, the missing mass can enter the cemetery; signed coefficients additionally require separate signs and magnitude factors. The \ac{nrm} construction permits signed coefficients with positive column sums by normalizing each column~\parencite[Sections~3.3, 3.5 and Appendix~E]{Xiong2026nrm}. For this $\varepsilon$-rule, however, normalization removes the damping factor $z_j/(z_j+\varepsilon)$; retaining the original rule requires accounting for that factor.
+
+The $\gamma$-rule is the basic $z$-rule with modified backward weights $w_{ij}^{\gamma}=w_{ij}+\gamma[w_{ij}]_+$, evaluated at the original forward activations~\parencite{Montavon_2022_gammaLRP}. Recomputing the forward pass with these weights would generally change those activations. Both rules factor into positive and negative routing fractions with neuron-dependent coefficients. These factorizations permit weighted trajectory representations; an equilibrium interpretation must also specify the game values and policies. The recovery theorem below establishes the fixed-$\alpha\beta$ construction, rather than an impossibility result for other rules.
 
 \paragraph{Transformers.} In a Vision Transformer (\acs{vit}), \ch{LayerNorm couples the features of a token through its
 input-dependent mean and variance,} and the attention matrix $A = \softmax(QK^\top/\sqrt{d})$
@@ -440,7 +444,7 @@ Strict concavity makes Gibbs routing unique when finite-score support is nonempt
 \begin{figure}[ht]
  \centering
  \includegraphics[width=0.6\textwidth]{figures/ptnb_v2/RoutingGame.png}
- \caption[Routing Game: a local routing subgame]{Routing around $s_{2,+}^{(2,\mathrm{act})}$ in the toy network of Figure~\ref{ptnb:fig:Stopping-Game-illustration}. Since $V^+=\log9>-\infty$, $P^+$ continues, retaining the turn on the positive branch or switching to $P^-$ on the negative branch, each with probability $1/2$. Linear states use Gibbs routing. Along $s_{2,+,+}^{(2,\mathrm{lin})}\to s_{1,+}^{(1,\mathrm{act})}$ the active payoff is $\log W_{12}^{(2,+)}=\log7$ and the opponent's is $-\infty$; zero-mass edges have $\log0=-\infty$. The layer-1 activation copies are collapsed, and the intermediate payoff $\log2$ on the position-$2$ to $2$ transition is omitted.}
+ \caption[Routing Game: a local routing subgame]{Routing around $s_{2,+}^{(2,\mathrm{act})}$ in the toy network of Figure~\ref{ptnb:fig:Stopping-Game-illustration}. Since $V^+=\log9>-\infty$, $P^+$ continues, retaining the turn on the positive branch or switching to $P^-$ on the negative branch, each with probability $1/2$. Linear states use Gibbs routing. Along $s_{2,+,+}^{(2,\mathrm{lin})}\to s_{1,+}^{(1,\mathrm{act})}$ the active payoff is $\log W_{12}^{(2,+)}=\log7$ and the opponent's is $-\infty$; zero-mass edges have $\log0=-\infty$. The layer-1 activation copies are collapsed, and the intermediate payoff $\log2$ on the position-$2$ to $2$ transition is omitted. This is an illustrative variant: neuron 3 is assigned active payoff $60$ here, whereas the Stopping-Game illustration uses the configuration in which neuron 3 stops.}
  \label{ptnb:fig:Routing-Game-illustration}
 \end{figure}
 
@@ -470,7 +474,7 @@ These discounts differ from those evaluating game values and keep each occupatio
 \begin{equation}\label{ptnb:eq:routing-Gamma-pair}
  \Gamma_j^{(l)}=\Gamma_x(s_{j,+}^{(l,\mathrm{act})})-\Gamma_x(s_{j,-}^{(l,\mathrm{act})}).
 \end{equation}
-Independently of the game, the $\alpha\beta$-\ac{lrp}-$\varepsilon$ relevance vector follows the recursion~\eqref{ptnb:eq:lrp-eps-recursion} from $R_j^{(L)}=r\delta_{j,u}$. Bias and outside shares are absorbed. This combines Bach et al.'s $\alpha\beta$ rule with a separate $\varepsilon$ in each sign denominator: \textcite{Bach2015} present the two rules as alternative constructions and do not state this combined form; it is the convention of common \ac{lrp} implementations~\parencite{Anders2021Zennit}. At $\varepsilon=0$, the affine rule is the original $\alpha\beta$ rule, with bias absorption retained.
+Independently of the game, the $\alpha\beta$-\ac{lrp}-$\varepsilon$ relevance vector follows the recursion~\eqref{ptnb:eq:lrp-eps-recursion} from $R_j^{(L)}=r\delta_{j,u}$. Bias and outside shares are absorbed. This combines Bach et al.'s $\alpha\beta$ rule with a separate $\varepsilon$ in each sign denominator: \textcite{Bach2015} present the two rules as alternative constructions and do not state this combined form; it is the convention of common \ac{lrp} implementations~\parencite{Anders2021Zennit}. At $\varepsilon=0$, the affine rule is the original $\alpha\beta$ rule, with bias absorption retained. This separate stabilization of the two sign denominators differs from the ordinary $\varepsilon$-rule in~\eqref{eq:lrp_gamma_overview} (\hyperref[par:other_lrp_games]{discussion of other LRP rules}).
 
 \begin{theoremenv}[Recovery of Multi-Path $\alpha\beta$-\ac{lrp}, \LeanResult{ptnb:thm:ab-recovery}, \LeanResult{ptnb:thm:lrp-recovery}]\label{ptnb:thm:ab-recovery}\label{ptnb:thm:lrp-recovery}\label{thm:lrp_recovery}
 Consider the \ac{mlp} above with non-negative activations. The Gibbs policies and selected continuation decisions give the canonical SPNE of Theorem~\ref{ptnb:thm:routing-forward} for every $\tau>0$. At $\tau=1$, for $\varepsilon\geq0$ and $f(x)=a_u^{(L)}>0$, using stop-at-log-ties and empty-stream absorption, the projected occupations satisfy
@@ -500,6 +504,9 @@ Subtract the $p=-$ equation from the $p=+$ equation. The positive branch contrib
 \begin{remark}[Starting player and signed-discount alternative]\label{ptnb:rem:starting-player}\label{ptnb:rem:signed-discount-alt}
 Starting at the negative output copy swaps the two occupations and negates every $\Gamma_j^{(l)}$; we use the positive copy. Equivalently, signed discounts $2\alpha$ and $-2\beta$ recover relevance from the \emph{sum} of player-copy occupations. In our non-negative-discount version, $\Gamma_x$ remains a genuine non-negative occupation measure, and the LRP sign is generated by an explicit algebraic difference rather than absorbed into the trajectory weights.
 \end{remark}
+
+\paragraph{A two-input example.}
+For $f(x)=\relu(2x_1-x_2)$ at $x=(2,1)$, the Stopping Decomposition gives $(4,1)$ and $f(x)=3$. SG routes to the inputs with probabilities $(2/3,1/3)$ and discount $3$, giving signed occupations $(2,-1)=\nabla f(x)$. RG at $\tau=1$, $\varepsilon=0$ and $(\alpha,\beta)=(2,1)$ chooses each sign branch with probability $1/2$; discounts $(4,2)$ give signed occupations $(2,-1)$ and output-scaled relevance $(6,-3)$. The same decomposed computation thus supports different routing laws and attribution readouts.
 
 \subsection{Temperature as a policy deformation}\label{ptnb:app:routing-temp}
 
@@ -559,11 +566,17 @@ The $16\times16$ patch tokenization breaks translation equivariance. Following D
 \Ac{ptnbADF}~\parencite{gast2018lightweight} propagates a Gaussian mean and variance for every pre-activation from variance $\sigma^2$ at every input in one additional moment pass. We use the exact
 $\E[\relu(X)]$ for $X\sim\mathcal N(\mu,\sigma^2)$; our implementation approximates its variance
 by $\sigma^2\Phi(\mu/\sigma)$. At activation states, risk aversion uses the lower-confidence value
-$V_\lambda=\mu+\lambda\sigma$, $\lambda\le0$, attenuating high-variance routes while leaving
-linear-state routing unchanged. This is the pessimistic counterpart of confidence-bound
-exploration~\parencite{auer2002finite,zhang2021risk}. The attention variant shifts oracle logits by
-$\lambda_{\mathrm{sm}}$ times per-key uncertainty before softmax, downweighting high-variance keys
-(Section~\ref{ptnb:app:risk-attn}).
+$V_\lambda=\mu+\lambda\sigma$, $\lambda\le0$, based on the ADF pre-activation mean and
+standard deviation. The propagated post-ReLU mean $\E[\relu(X)]$ can differ from the deterministic
+activation $\relu(z)$, but the captured \ac{sg} gate uses the original pre-activation. With the
+probabilistic gate enabled, routing can still differ at $\lambda=0$ through $\Phi(z/\sigma)$
+instead of the hard gate.
+This is the pessimistic counterpart of confidence-bound exploration~\parencite{auer2002finite,zhang2021risk}.
+The attention variant shifts logits by $\lambda_{\mathrm{sm}}$ times a token-indexed proxy: the
+square root of feature-averaged variance of the key token's query projection, not a per-logit
+standard deviation (Section~\ref{ptnb:app:risk-attn}).
+
+\begin{changed}The validation-selected ViT attention-risk mode reduces both sensitivity metrics on 565 test images, with a substantial localization cost (Table~\ref{tab:rebuttal-risk}). This motivates separating the intended effect of a risk penalty from its measured effects on different attribution criteria.\end{changed}
 
 \subsection{Regularized activation gates}\label{ptnb:app:regularized-gates}
 

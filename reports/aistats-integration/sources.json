@@ -1,0 +1,42 @@
+{
+  "source_repository": "/home/jzimmermann/code/AISTATS_submission",
+  "source_base_commit": "d12fb54",
+  "scope": "Completed AISTATS controls integrated into the thesis; original benchmark protocols remain separately identified.",
+  "selected_vit_risk": {
+    "coefficient": -50,
+    "reference": 0,
+    "center": {
+      "temperature": 0.4,
+      "epsilon": 0.1,
+      "variance": 5
+    },
+    "selection_images": 50,
+    "evaluation_images": 565,
+    "selection": "original validation MaxS/AvgS rank sum; no test selection"
+  },
+  "new_appendix": "tex/appendices/rebuttal_controls.tex",
+  "feedback_archive": "/home/jzimmermann/code/AISTATS_submission/rebutall/AI_feedback_2026-11-20.md",
+  "unused_risk_archive": "/home/jzimmermann/.local/share/thesis-aistats-archives/vit-risk-20261120/",
+  "source_sha256": {
+    "rebutall/results/fulltest_robustness_summary.json": "eeaee0c53d51e49dc64aa158a4d06bbd7112fa33d119e60e9d2e419ae3fc048c",
+    "rebutall/results/robustness_protocol_panel_summary.json": "8ac45dbea62f5dc452b415ee9499a7e434d64f768f291e9d0e5e13d720c5c377",
+    "rebutall/results/full_auc/summary.json": "6397aa9931e904521d639d83b1defde41fd9a02853294d339cc13f4654e118a4",
+    "rebutall/results/vgg_gate_matched_summary.json": "d5beef95fbc24c5d5c5080a98d3d6c1b08a207e33987eca140e3866014da25fe",
+    "rebutall/results/corrected_vit_randomization.json": "532bfd0d49f23b8e411e01be23728e82626775558b7902d306e2590f7c6e0af0",
+    "rebutall/results/paired_prediction_performance/summary.json": "39866a29f9bde50e0e1810cf4b90f02c294888bc2e454f3b52b1d8b90f92f403",
+    "rebutall/results/local_hellinger_controls.json": "dc8deb79cfb922781362eb1591638666ed331e0c9c84b1764a1c1e2f7850c3c6",
+    "rebutall/results/sg_validation_audit.json": "a61a7184ee5a063f8ded0888c2c33e5a1013ae03865d6d728988bfbca9cc584a",
+    "rebutall/results/sg_numerical_audit.json": "9129fd869e4c1d501cd848e59f209ac25fbc3383ae7457df95357800db30924f",
+    "rebutall/results/sg_pool_all_metrics/summary.json": "2f3da567cfae06e1066ace44da8b217a5be56fad4cd561ea914adc601f0b032e",
+    "rebutall/results/live_results_report/sharpening_p15_validation_matched.json": "f53fb04ba0e33a8680082ee67739f68c6129c4e5de445f0b2983050b57dc40c6"
+  },
+  "notes": [
+    "Benchmark PF perturbs scalar RGB features; full AUC perturbs spatial pixels with all channels together.",
+    "SG benchmark pp readout is distinct from signed-gradient reconstruction.",
+    "Only powers 1 and 1.5 are included.",
+    "The selected-risk noise panel has favorable MaxS/AvgS and unfavorable rank/overlap stability; directional confidence-interval counts verified from paired_effects.",
+    "No experiments were relaunched for manuscript synchronization; all imported numerical results come from completed artifacts.",
+    "Unused new ViT robustness sweeps were pruned at explicit user request; original benchmark configurations remain.",
+    "All work stays local; commit authorized, push not authorized."
+  ]
+}

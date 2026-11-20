@@ -39,25 +39,25 @@ Use the state notation and SPNE policies of Sections~\ref{ptnb:app:relu-net-game
 Ordinary states are $s^{(l,\mathrm{act})}_{j,p}$ for $l\ge1$, with start $s_0=s^{(L,\mathrm{act})}_{u,+}$; input terminals $s^{(0)}_{i,q}$ carry the arriving player. Identifying $p,\kappa\in\{+,-\}$ with signs, for $2\le l\le L$ the natural \ac{sg} kernel is
 \begin{equation}\label{ptnb:eq:adf-T}
  T_M^{(l)}(s^{(l,\mathrm{act})}_{j,p}\to s^{(l-1,\mathrm{act})}_{i,\kappa p})
- =\frac{W_M^{(l,\kappa)}[i,j]}{\gamma^{(l)}_{M,j}}\,\1\{z_j^{(l)}>0\},
+ =\frac{W_M^{(l,\kappa)}[i,j]}{\gamma^{(l)}_{M,j}}\,\1\{z_{M,j}^{(l)}>0\},
  \qquad \gamma^{(l)}_{M,j}=\sum_i|W_M^{(l)}[i,j]|.
 \end{equation}
-At $l=1$, the destination is $s^{(0)}_{i,\kappa p}$. Positive weights retain the player; negative weights switch it. With $0/0\coloneqq0$, the cemetery probability is $1-\1\{z_j^{(l)}>0\}\1\{\gamma^{(l)}_{M,j}>0\}$.
+At $l=1$, the destination is $s^{(0)}_{i,\kappa p}$. Positive weights retain the player; negative weights switch it. With $0/0\coloneqq0$, the cemetery probability is $1-\1\{z_{M,j}^{(l)}>0\}\1\{\gamma^{(l)}_{M,j}>0\}$.
 
 \paragraph{Routing Game.}
 The start and activation states are the same; input terminals $s^{(0)}_{i,\kappa}$ instead carry the layer-$1$ routing-edge sign. Composing the gate and uniform stream choice gives
 \begin{align}
  T_M^{(l)}(s^{(l,\mathrm{act})}_{j,p}\to s^{(l-1,\mathrm{act})}_{i,\kappa p})
- &=\tfrac12\pi^{(l)}_{M,\kappa}(i\mid j)\,\1\{z_j^{(l)}>0\},\quad 2\le l\le L,\label{ptnb:eq:rg-T-act}\\
+ &=\tfrac12\pi^{(l)}_{M,\kappa}(i\mid j)\,\1\{z_{M,j}^{(l)}>0\},\quad 2\le l\le L,\label{ptnb:eq:rg-T-act}\\
  T_M^{(1)}(s^{(1,\mathrm{act})}_{j,p}\to s^{(0)}_{i,\kappa})
- &=\tfrac12\pi^{(1)}_{M,\kappa}(i\mid j)\,\1\{z_j^{(1)}>0\}.\label{ptnb:eq:rg-T-pixel}
+ &=\tfrac12\pi^{(1)}_{M,\kappa}(i\mid j)\,\1\{z_{M,j}^{(1)}>0\}.\label{ptnb:eq:rg-T-pixel}
 \end{align}
 The cemetery receives the residual row mass. A nonempty branch uses the temperature-$\tau$ Gibbs policy
 \begin{equation}\label{ptnb:eq:rg-T}
  \pi^{(l)}_{M,\kappa}(i\mid j)\propto
  [a^{(l-1)}_{M,i}W^{(l,\kappa)}_{M,ij}]^{1/\tau},\qquad i\in\mathrm{Pred}_j^{(l)}.
 \end{equation}
-At $l=1$, replace the bracket by $[x_iW^{(1)}_{M,ij}]^\kappa$. An empty stream (all scores $-\infty$) has zero ordinary mass, so its whole $1/2$ share is absorbed even at a live source. For $\varepsilon>0$, each continuing branch additionally sends $\tfrac12\varepsilon^{1/\tau}/Z^{(l)}_{j,\kappa}$ to the cemetery.
+At $l=1$, replace the bracket by $[x_iW^{(1)}_{M,ij}]^\kappa$. An empty stream (all scores $-\infty$) has zero ordinary mass, so its whole $1/2$ share is absorbed even at a live source. For $\varepsilon>0$, each continuing branch additionally sends $\tfrac12\varepsilon^{1/\tau}/Z^{(l)}_{M,j,\kappa}$ to the cemetery.
 
 The diagnostic process retains the original gates but omits the bias action and renormalizes each remaining branch. This differs from the bias-inclusive attribution game when bias carries mass: $a=W=b=1$, $\varepsilon=0$ gives positive-route probability $1/4$ with bias and $1/2$ without. State elimination within one process does not identify these kernels. Full overlap uses the refined gate/branch/routing process; the displayed act-only kernels suffice for ordinary surviving-path overlap.
 
@@ -130,7 +130,7 @@ Random-vs-random is lowest in every nonconstant column, and clean-vs-random is h
 \par\medskip
 \section{Randomization Sanity Checks}\label{ptnb:app:sanity-check}\label{subsec:hellinger_randomization}
 
-We extend~\textcite{Adebayo2018sanity}'s cascading randomization to trajectory laws, compare attribution maps, and establish double-random and per-image references for Section~\ref{ptnb:sec:hellinger-sanity}.
+We extend~\textcite{Adebayo2018sanity}'s cascading randomization to trajectory laws, compare attribution maps, and establish double-random and per-image references for Section~\ref{ptnb:sec:hellinger-sanity}. A separate checkpoint-aligned ViT audit on the same 200 images holds Q/K/V projections fixed across map and trajectory measurements: randomizing only the classifier head drops top-1 accuracy from $88.5\%$ to $0$ while RG map similarity remains $0.999998$ and RG Hellinger is $0.769$. At the cascade endpoint, map similarity is $0.377$ and survival-conditioned Hellinger is $1.000$. Local Hellinger response increases with classifier-head perturbation size, but its per-image association with map drift is weak (endpoint Spearman $-0.203$, 95\% CI $[-0.333,-0.072]$), and the head-only interval includes zero. These controls show that routing distance can register changes hidden by the map; they do not establish Hellinger as an accuracy or explanation-quality predictor. See Appendix~\ref{app:rebuttal-randomization} for protocol and tables. They are distinct from the earlier historical attribution and trajectory cascades, whose ViT Q/K/V randomization granularities differ; the earlier per-image comparison remains qualified accordingly.
 
 \subsection{Cascading Randomization in Trajectory Space}\label{ptnb:sec:lmp-randomization}
 
@@ -148,12 +148,15 @@ The dead row is zero on ordinary successors; the alive row, when nonleaking, is 
 \end{proof}
 
 Fix a ReLU MLP with layer widths $d^{(l)}$, input $x\in\RR^{d^{(0)}}$, and target start $s_0$.
-Model $B$ replaces $W^{(l^*)}$ by i.i.d.\ entries from a continuous law symmetric about zero.
-For each $l\ge l^*$ and neuron $i$, assume
-$\mathbb P_B(i\in\mathrm{alive}^{(l)}_B\mid\text{kernels above }l)\le1-\delta$,
+At cascade depth $l^*$, model $B$ reinitializes the suffix of weight layers $l\ge l^*$,
+with independent i.i.d.\ entries from a continuous law symmetric about zero. Let
+$\mathcal F_{>l}=\sigma(T_B^{(k)}:k>l)$ be the information in the final-model kernels
+above layer $l$. For each $l\ge l^*$ and neuron $i$, assume
+$\mathbb P_B(i\in\mathrm{alive}^{(l)}_B\mid\mathcal F_{>l})\le1-\delta$,
 where $\delta\in(0,\tfrac12]$; set $\eta=1-\delta\in[\tfrac12,1)$ and $N=L-l^*+1$.
-Kernels below $l^*$ agree; row weights and possibly alive sets change at $l^*$,
-with activation changes propagating above it. CNN and Transformer blocks admit the same
+Kernels below $l^*$ agree; weights and possibly alive sets change throughout the randomized
+suffix. The conditional survival bound is required at each layer given the kernels above it;
+symmetry of the initialization alone does not establish this bound. CNN and Transformer blocks admit the same
 reduction as single \ac{ptnbLMP} layers when these hypotheses hold.
 
 \begin{theoremenv}[Randomization in the Stopping Game, \LeanResult{ptnb:thm:rand-adf}]\label{ptnb:thm:rand-adf}\label{thm:rand_stopping}
@@ -219,7 +222,7 @@ The uniform $\bar b<1$ bound requires an architecture- and randomization-specifi
 empirical assessment; Cauchy--Schwarz gives strict contraction when completed normalized rows differ.
 \end{proof}
 
-The discounted occupation measures at the input layer recover gradient and $\alpha\beta$-\ac{lrp} maps (Theorems~\ref{ptnb:thm:deriv-occ} and~\ref{ptnb:thm:ab-recovery}). The undiscounted endpoint marginal $m^{(0)}_M$ is generally different: Hellinger compares the trajectory routing laws and does not include the path discounts. Under their respective contraction hypotheses, Theorems~\ref{ptnb:thm:rand-adf}--\ref{ptnb:thm:rand-routing} show that $\Pi_M$ changes drastically under randomization, while Table~\ref{tab:sanity-check} shows that the resulting attribution maps can remain similar. \ch{The two
+The discounted occupation measures at the input layer recover gradient and $\alpha\beta$-\ac{lrp} maps (Theorems~\ref{ptnb:thm:deriv-occ} and~\ref{ptnb:thm:ab-recovery}); the maps are player differences of these measures, with output scaling for \ac{lrp}. The undiscounted endpoint marginal $m^{(0)}_M$ is generally different: Hellinger compares trajectory routing laws and does not include path discounts. Under their respective contraction hypotheses, Theorems~\ref{ptnb:thm:rand-adf}--\ref{ptnb:thm:rand-routing} bound overlap under randomization, while Table~\ref{tab:sanity-check} shows that resulting attribution maps can remain similar. \ch{The two
 diagnostics therefore detect different aspects of parameter sensitivity: the map-level test
 of~\textcite{Adebayo2018sanity} asks whether the explanation delivered to the user depends on the
 learned parameters, the trajectory-level test whether its normalized routing does. A map can fail
