@@ -18,7 +18,7 @@
         "eq:delta_minus_recursion"
       ],
       "source_sha256": {
-        "tex/chapters/03_decompositions.tex": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1"
+        "tex/chapters/03_decompositions.tex": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15"
       },
       "terminology_refresh": {
         "evidence": "reports/dc-terminology/consistency.json",
@@ -245,6 +245,14 @@
           "before_source_sha256": "8dcd2e5a9e91ae759ed89f83ac370efc4b978ae51cf36fda5535d849b042a645",
           "after_source_sha256": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1",
           "scope": "Added one changed-environment empirical teaser reporting stabilized Transformer gradient reconstruction on three ViT-B/16 validation images. Removing that sentence reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and witnesses are unchanged. No new Lean build is asserted."
+        },
+        {
+          "recorded_at_utc": "2026-11-20T11:20:44Z",
+          "reviewed_by": "/root/proof_receipt_editorial_check",
+          "source": "tex/chapters/03_decompositions.tex",
+          "before_source_sha256": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1",
+          "after_source_sha256": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15",
+          "scope": "Shortened the changed-environment Chapter 03 experimental teaser to state machine-precision gradient recovery in deep Vision Transformers, retaining its appendix reference. Replacing the sentence with the prior reviewed wording reproduces the previous source hash byte-for-byte; formal statements, equations, proofs, dependencies and witnesses are unchanged. No new Lean build is asserted."
         }
       ]
     },

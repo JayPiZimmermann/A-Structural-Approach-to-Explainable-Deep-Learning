@@ -23,8 +23,8 @@
     "tex/chapters/00_text.tex": "949e37d324263c7a5c8658a534677032173b6f84d63318b554836f0b0dbfc139",
     "tex/chapters/01_introduction.tex": "1d7d32f02ae7f8eec1726d9d4fcebb87639c25280473ba0bd577efb2c8a25b75",
     "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656",
-    "tex/chapters/03_decompositions.tex": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1",
-    "tex/chapters/04_game_theory.tex": "4d70cb2726d651def638df791dd23ca10418060ff5e07e3c32b4e69f0ca29545",
+    "tex/chapters/03_decompositions.tex": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15",
+    "tex/chapters/04_game_theory.tex": "0c21b8671355ad8e91db7c58a67887c8487ffc907aed4f63a59cc2c20d07b93c",
     "tex/chapters/07_transformers.tex": "26c730ad2d28e8383702faf5a0a032abcdeeabc9366465e8becc76f434b69dd6",
     "tex/chapters/08_experiments.tex": "8c36d627b67d24cd2e8dc19facdd7c4359a329953253523ad99b1f7c5bb4366e",
     "tex/chapters/09_conclusion.tex": "a501439a79d6c1d32b11a962c9e2f9be8bd3d38eae112ac1a97f14c63e6f6de1",
@@ -101,7 +101,7 @@
     "tex/figures/smooth_curvature_function.tex": "6f5fbcc49df317b078e1d7262bee95d352451c9f41201f8e3afad5a6b8c180fb"
   },
   "bibliography_sha256": "9dbff2dbbf85dd705d21545774b2788da607ea59d751c5186e0551c58a47c79f",
-  "built_at_utc": "2026-11-20T11:14:37.665242+00:00",
+  "built_at_utc": "2026-11-20T11:20:40.307885+00:00",
   "checks": {
     "aliased_lean_mappings": {
       "eq:canonical_weight_split": {
@@ -231,6 +231,14 @@
               "reviewed_by": "/root/proof_receipt_editorial_check",
               "scope": "Added one changed-environment empirical teaser reporting stabilized Transformer gradient reconstruction on three ViT-B/16 validation images. Removing that sentence reproduces the previously reviewed source byte-for-byte; equations, theorem statements, proofs, dependencies, and witnesses are unchanged. No new Lean build is asserted.",
               "source": "tex/chapters/03_decompositions.tex"
+            },
+            {
+              "after_source_sha256": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15",
+              "before_source_sha256": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1",
+              "recorded_at_utc": "2026-11-20T11:20:44Z",
+              "reviewed_by": "/root/proof_receipt_editorial_check",
+              "scope": "Shortened the changed-environment Chapter 03 experimental teaser to state machine-precision gradient recovery in deep Vision Transformers, retaining its appendix reference. Replacing the sentence with the prior reviewed wording reproduces the previous source hash byte-for-byte; formal statements, equations, proofs, dependencies and witnesses are unchanged. No new Lean build is asserted.",
+              "source": "tex/chapters/03_decompositions.tex"
             }
           ],
           "entropy_notation_refresh": {
@@ -334,7 +342,7 @@
             "scope": "Softmax recovery proof expanded algebraically and concurrent user caption shortening retained; all protected Jacobian and sensitivity displays unchanged."
           },
           "source_sha256": {
-            "tex/chapters/03_decompositions.tex": "d5e75e4a5f6629b423e406fd05bde8ea4415699a19af1881041c0956c6ececd1"
+            "tex/chapters/03_decompositions.tex": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15"
           },
           "stabilization_concision_refresh": {
             "evidence": "reports/stabilization-concision/review.json",
@@ -745,7 +753,7 @@
       "path": "docs/thesis.pdf",
       "pinned_lean_uri_count": 155,
       "remote_link_count": 0,
-      "sha256": "2941776cbf28dff6e7122d317b9222f765b71f6fe50b3e6561ac06b1d7798890",
+      "sha256": "7d28758032aa1cdcff2953db170ad7a16441f19ccc2f11548eb1d5a84d23866e",
       "underfull_boxes": 0,
       "unique_lean_uris": 118,
       "unresolved_reference_or_citation": false,
@@ -816,7 +824,7 @@
     "reports/implementation-comparison/evidence.json": "8a756b5364cdc120b2bfa81abac2283de26b186fa1ddfa4b218acbeb334188b9",
     "reports/implementation-comparison/manuscript-review.json": "ad6c43bd3fe4871f21c48a106d3f4278dacfde644bc85b264fdd070ff9271407",
     "reports/implementation-comparison/residual-packing-check.json": "278efbbb0a8ab02fc31fa754b22056b632d5098679b63cf2c717ea0f4bab8b8e",
-    "reports/introduction-restoration/publication-checks.json": "4ec7ff70d9b9691125500c01d1c17b5c73785f488b7ba1b3a0e7daeab096e3e5",
+    "reports/introduction-restoration/publication-checks.json": "dc1e3fbe28a8b9fe3c3a114fa90f0ab5914c6ecdaa96484b7b066a166288fb34",
     "reports/introduction-restoration/workspace-alignment-sources.json": "ee1118269404e4c078ceb6ea585e082e44ed561f8f6a3d926ba29e48c56f5552",
     "reports/layered-markov-graph/consistency.json": "04076317548bcba8d5fe9386006c090882713e78f99d00c2d13b47aec35f2593",
     "reports/layered-markov-graph/math-review.json": "dac14f9faf78526b6ef314bd73be305b64b4603bb17e5b788685cf713d95238a",
@@ -858,7 +866,7 @@
     "reports/single-pdf/integration.json": "b4e79fea441b1252238bd7065e624b92c2074a9caa0e5be12207ff774d19e776",
     "reports/single-pdf/inventory-candidate.json": "f8530f5a8866896030929ecf41686d7d8767992acd1fe586c1544d558755921c",
     "reports/single-pdf/inventory-comparison.json": "013ec06f3f0daca1b3793c528f6048061c5601a07e4d4f3814b26a4a9bd8d2a4",
-    "reports/single-pdf/lean-alias-reviews.json": "18f317084daa5dbc0d87eb4d7c6d7eda1d8d9fbd3d6fe57b4da7d4afe456642e",
+    "reports/single-pdf/lean-alias-reviews.json": "73807c2cf5d0c3b2ed6029809a8bb1813378ba473f35ae550d320f33ef5d2455",
     "reports/single-pdf/publication-checks.json": "e3a1d2b95173e67ac684407d1bafa1d75782c1ccf0d2cfd1fb4b43c0d5b0ae9e",
     "reports/single-pdf/validation-matrix-independent-review.json": "d46a11e1c252f926f30914e64e6ab88ba40f9e24e80d8f9176489f6ddf1062b6",
     "reports/single-pdf/validator-checks.json": "7eb8bd49c7f864c5cb5cad91f8c522cff74dfa261ff8e04fd88cc8bf18feffd9",
@@ -944,7 +952,7 @@
     "Text-review draft only: table bodies and qualitative image grids were omitted with rendering flags 0/0; this PDF is not the complete publication PDF."
   ],
   "pages": 138,
-  "pdf_sha256": "2941776cbf28dff6e7122d317b9222f765b71f6fe50b3e6561ac06b1d7798890",
+  "pdf_sha256": "7d28758032aa1cdcff2953db170ad7a16441f19ccc2f11548eb1d5a84d23866e",
   "proof_source_commit": "1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06",
   "public_pdf": "docs/thesis.pdf",
   "publication_mode": "single_pdf_with_local_proofs",
@@ -1039,6 +1047,6 @@
     "unique_lean_uris": 123
   },
   "verification_receipt": "reports/introduction-restoration/publication-checks.json",
-  "verification_receipt_sha256": "4ec7ff70d9b9691125500c01d1c17b5c73785f488b7ba1b3a0e7daeab096e3e5",
+  "verification_receipt_sha256": "dc1e3fbe28a8b9fe3c3a114fa90f0ab5914c6ecdaa96484b7b066a166288fb34",
   "verification_scope": "142-page local-development text-review PDF with tables and qualitative grids omitted; 176 pinned links plus one local draft link all resolve. The toy-network lead/figure is absent from the active PDF; standalone plot/code assets are exploratory and excluded from active publication asset/evidence hashes."
 }
