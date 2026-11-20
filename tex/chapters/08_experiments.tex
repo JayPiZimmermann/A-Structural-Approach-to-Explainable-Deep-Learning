@@ -30,18 +30,24 @@ VGG-16 gains depend on metric and configuration. Table~\ref{tab:eval_vgg_main} g
 
 \input{tables/eval_res_main}
 
-On ResNet-18 (Table~\ref{tab:eval_res_main}), SplitCAM has the lowest reported Selectivity, $3.503$, versus $3.517$ for the strongest baseline, Guided Backprop: a difference of $0.014$. SplitCAM and SplitGrad reach Pointing Game $0.972$ versus LayerCAM's $0.971$. Attribution Localization is $0.673$ for SplitCAM and $0.664$ for LayerCAM; Guided Grad-CAM leads the full comparison at $0.742$ (Table~\ref{tab:xai_eval_comprehensive_res}). Baselines retain the best Pixel Flipping and Maximum Sensitivity scores: the gains are metric-specific.
+On ResNet-18 (Table~\ref{tab:eval_res_main}), SplitCAM has the lowest reported Selectivity, $3.503$, versus $3.517$ for the strongest baseline, Guided Backprop. SplitCAM and SplitGrad reach Pointing Game $0.972$ versus LayerCAM's $0.971$. Attribution Localization is $0.673$ for SplitCAM and $0.664$ for LayerCAM; Guided Grad-CAM leads the full comparison at $0.742$ (Table~\ref{tab:xai_eval_comprehensive_res}). Baselines retain the best Pixel Flipping and Maximum Sensitivity scores: the gains are metric-specific.
 
 \section{Split-Method Stabilization and Sanity Checks}\label{sec:ablations}
 
 \paragraph{Backward stabilization.}\label{subsec:alpha_ablation}
 
-Table~\ref{tab:alpha_ablation_main} presents the performance of one selected SplitGrad and one SplitCAM configuration across different shifting parameters $\alpha$, evaluated on our custom ImageNet-S test split. As explained in Section~\ref{sec:stabilization_dc}, $\alpha$ controls backward pass stabilization: $\alpha = 0$ means no stabilization and $\alpha = 0.5$ yields local sensitivities resembling scaled original gradients. Reducing $\alpha$ from $0.5$ to $0.4$ improves both configurations' Pointing Game and Attribution Localization, while SplitCAM's PF$^{\mathrm{drop}}_{20}$ falls from $1.607$ to $1.585$. SplitGrad peaks in PF$^{\mathrm{drop}}_{20}$ at $\alpha = 0.4$ and localization at $\alpha = 0.35$; SplitCAM's Pointing Game and Attribution Localization peak at $0.4$ and $0.35$, respectively. Both minimize Maximum Sensitivity at $\alpha = 0$. The sweep supports metric-dependent $\alpha$ choices; numerical stabilization and attribution-rule changes remain confounded. Section~\ref{app:ablation} (Table~\ref{tab:alpha_comparison_by_method}) gives the full grid and compares convex with winner-takes-it-all max-pooling.
+Table~\ref{tab:alpha_ablation_main} presents the performance of one selected SplitGrad and one SplitCAM configuration across different shifting parameters $\alpha$, evaluated on our custom ImageNet-S test split. As explained in Section~\ref{sec:stabilization_dc}, $\alpha$ controls backward pass stabilization: $\alpha = 0$ means no stabilization and $\alpha = 0.5$ yields scaled original gradients (Theorem~\ref{thm:closed_formula_shift}). Reducing $\alpha$ from $0.5$ to $0.4$ improves both configurations' Pointing Game and Attribution Localization, while SplitCAM's PF$^{\mathrm{drop}}_{20}$ falls from $1.607$ to $1.585$. SplitGrad peaks in PF$^{\mathrm{drop}}_{20}$ at $\alpha = 0.4$ and localization at $\alpha = 0.35$; SplitCAM's Pointing Game and Attribution Localization peak at $0.4$ and $0.35$, respectively. \begin{changed}Overall, intermediate values $\alpha=0.35$--$0.45$ give the best localization and Pixel Flipping results in these configurations, while $\alpha=0$ minimizes Maximum Sensitivity.\end{changed} Section~\ref{app:ablation} (Table~\ref{tab:alpha_comparison_by_method}) gives the full grid and compares convex with winner-takes-it-all max-pooling.
 
 \input{tables/alpha_ablation_main}
 
-\paragraph{Forward stabilization and sanity checks.}
-Without forward stabilization, late VGG-16 SplitCAM activations reach the order of $10^{18}$, with reconstruction errors of order $10^9$ despite per-layer correction. Scaling and shifting trade localization, faithfulness and robustness differently across layers (Section~\ref{app:forward_ablation}). After randomizing VGG-16's last three fully connected layers, every reported SplitCAM and SplitGrad configuration has lower SSIM than every listed baseline, while HOG and Spearman comparisons are mixed (Section~\ref{app:p1_sanity}). SplitCAM takes $0.33$--$0.44$\,s per image, approximately $14$--$29$ times the ordinary Grad-CAM and LayerCAM timings; Table~\ref{tab:timing_comparison} gives the full runtime comparison and Section~\ref{app:p1_timing} its measurement scope.
+\paragraph{Forward stabilization.}
+Without forward stabilization, late VGG-16 SplitCAM activations reach the order of $10^{18}$, with reconstruction errors of order $10^9$ despite per-layer correction. Scaling and shifting trade localization, faithfulness and robustness differently across layers (Section~\ref{app:forward_ablation}).
+
+\paragraph{Randomization sanity checks.}
+After randomizing VGG-16's last three fully connected layers, every reported SplitCAM and SplitGrad configuration has lower SSIM than every listed baseline, while HOG and Spearman comparisons are mixed (Section~\ref{app:p1_sanity}).
+
+\paragraph{Runtime.}
+SplitCAM takes $0.33$--$0.44$\,s per image, approximately $14$--$29$ times the ordinary Grad-CAM and LayerCAM timings; Table~\ref{tab:timing_comparison} gives the full runtime comparison and Section~\ref{app:p1_timing} its measurement scope.
 
 \section{Directly Trained Difference-of-Convex Models on MNIST}\label{sec:dcinns}
 
@@ -56,11 +62,13 @@ The \textbf{DIC-model} (directly trained as the difference of two input-convex n
 Three implementation choices matter in practice.
 \begin{itemize}
 	\item \emph{Activations.} Both streams use convex, monotone rank-2 Maxout units~\parencite{Goodfellow2013Maxout}, which consistently outperformed \ac{relu} streams in the difference setting. Their constrained layers use the same non-negative-weight Maxout building blocks as the split-stream construction in Section~\ref{sec:dc_splitting_relu}.
-	\item \emph{Non-negativity.} Constrained weights are parameterized as $p(\tilde{W})$ with free parameters $\tilde{W}$ and a positivity transform $p$; among softplus, exponential and squaring, $p = \relu$ with absolute-value-of-Gaussian initialization gave the best test accuracy. The transform is also applied to biases and to the scale and shift parameters of batch-normalization layers.
-	\item \emph{Regularization.} Because non-negative weights can cause exploding activations, we use a small initialization scale for all base model weights and apply a weight decay of $10^{-3}$ in all experiments.
+	\item \emph{Non-negativity.} Constrained weights are parameterized as $p(\tilde{W})$ with free parameters $\tilde{W}$ and a positivity transform $p$; among softplus, exponential and squaring, $p = \relu$ with absolute-value-of-Gaussian initialization gave the best test accuracy. Positive initialization avoids inactive raw weights: for $\tilde w<0$, the ReLU transform has zero derivative and blocks the task-loss gradient to $\tilde w$. The transform is also applied to biases and to the scale and shift parameters of batch-normalization layers.
+	\item \emph{Regularization.} To limit activation growth, we use small initial weights and weight decay, reported as $10^{-3}$ in \textcite{hiddenMono}. The split-model trainer's default loss additionally penalizes the mean squared outputs of $g$ and $h$ with coefficient $10^{-2}$, limiting common growth that cancels in $g-h$.
 \end{itemize}
 
-We train two base architectures on MNIST: \texttt{cnn\_maxout}, a \ac{cnn} with four convolutional layers (32, 64, 128 and 128 channels with batch normalization) followed by three fully connected layers, roughly $1.2$ million parameters in total, and \texttt{mlp\_maxout}, a wide four-layer \ac{mlp} ($784 \to 800 \to 800 \to 800 \to 10$) with roughly $4.2$ million parameters --- each in eight variants: unconstrained (None), single-stream constrained (IC, Mon), and difference-of-two models (DIC, DM, DICIN, DMIN, and an unconstrained difference baseline).
+We train two base architectures on MNIST: \texttt{cnn\_maxout}, a \ac{cnn} with four convolutional layers (32, 64, 128 and 128 channels with batch normalization) followed by three fully connected layers, roughly $1.2$ million parameters in total, and \texttt{mlp\_maxout}, a wide four-layer \ac{mlp} ($784 \to 800 \to 800 \to 800 \to 10$) with roughly $4.2$ million parameters --- each in eight variants: unconstrained (None), single-stream constrained (IC, Mon), and difference-of-two models (DIC, DM, DICIN, DMIN, and an unconstrained difference baseline, \texttt{Diff\_None}).
+
+\input{tables/model_accuracy}
 
 \paragraph{Stream sensitivities and candidate counterfactual features.}\label{subsec:counterfactual_features}
 
@@ -266,7 +274,7 @@ Figure~\ref{fig:mnist_ic_saliency} visualizes input gradients of the \texttt{cnn
 
 \paragraph{Accuracy trade-offs.}\label{subsec:dcinn_accuracy}
 
-Architectural constraints can reduce expressivity~\parencite{Sill1997_MonotonicNetworks,Liu2020CertifiedMonotone}, but for the difference-of-two construction the accuracy cost is small on the convolutional base model and even negative on the \ac{mlp}, where every difference-of-two variant outperforms the unconstrained baseline; \textcite{hiddenMono} report the full accuracy table across ten seeds and all eight variants.
+Table~\ref{tab:cdinn_acc} reports all eight variants over ten seeds. For the \ac{mlp}, every difference-of-two variant exceeds the unrestricted baseline's median accuracy of $98.39\%$, reaching $98.58\%$ for DICIN. For the \ac{cnn}, IC achieves $99.16\%$, close to the unrestricted model's $99.19\%$; difference-of-two variants reach $97.94$--$98.28\%$.
 
 \section{Game-Based Case Study}\label{sec:results_vit}\label{sec:saliency_results}\label{ptnb:sec:experiments}\label{ptnb:sec:case-study}
 

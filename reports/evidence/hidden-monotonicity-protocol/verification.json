@@ -664,13 +664,13 @@
     }
   ],
   "render": {
-    "pages": 155,
-    "pdf_sha256": "d78eb99bfccf27e64bea49041b9206e4ee4b3be87431cf39235032e58f82c1b8",
+    "pages": 156,
+    "pdf_sha256": "5cabac8c792f074a08c56f2dd9cd0ce2c9014d203217afb79d92b98e149210a2",
     "warnings": [],
     "biber_warnings": [],
     "both_render_switches_enabled": true,
     "revised_protocol_pdf_page": 87,
-    "source_sha256": "c650d84452af8f4854715e8f5ab766d4acb423d57a2e3f319759f1a1db14794b",
+    "source_sha256": "cf0c3a2e0aab66d81ec56036e1aa0ba0a2148472920ceb548f635d662fe8debd",
     "tuning_is_the_opening_statement": true
   },
   "data_usage": {

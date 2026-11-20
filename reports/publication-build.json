@@ -24,10 +24,10 @@
     "tex/chapters/00_text.tex": "949e37d324263c7a5c8658a534677032173b6f84d63318b554836f0b0dbfc139",
     "tex/chapters/01_introduction.tex": "7472d0e3c6512a3785905563dbd8b9fc1b5d2ffdb89dfdc57ebda7b127184d54",
     "tex/chapters/02_foundations.tex": "4dc328e9777d1b6c6cf81c06b748334386192c32072db17e76afca4e48ac6656",
-    "tex/chapters/03_decompositions.tex": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15",
+    "tex/chapters/03_decompositions.tex": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8",
     "tex/chapters/04_game_theory.tex": "be6bd91bf6c1a3fc36fc612bdc13ba0e58ef5f7525c0f51df5d9b1e104ab101b",
     "tex/chapters/07_transformers.tex": "1871261292c87c5770f94d0619aa6b916e97d76b7624d578a255272eb2d7ad46",
-    "tex/chapters/08_experiments.tex": "c650d84452af8f4854715e8f5ab766d4acb423d57a2e3f319759f1a1db14794b",
+    "tex/chapters/08_experiments.tex": "cf0c3a2e0aab66d81ec56036e1aa0ba0a2148472920ceb548f635d662fe8debd",
     "tex/chapters/09_conclusion.tex": "a501439a79d6c1d32b11a962c9e2f9be8bd3d38eae112ac1a97f14c63e6f6de1",
     "tex/chapters/10_appendix.tex": "025ae332717cc921796df51383a345dbbdcde894becd65ee282d27f4f9e3cb36",
     "tex/chapters/11_trajectory.tex": "89a14bd80ba5c43b9a638ada47f5270907d73922bfb539eaddd760cce5da5e66",
@@ -84,7 +84,8 @@
     "tex/tables/ptnb_v2/generated/test_voc_vit_b16_ci_longtable.tex": "81f948ed0cf17e1fef2099e77fafa7a3baa76f519ba22b12f35578c03b66bb5c",
     "tex/tables/ptnb_v2/sanity_check.tex": "ade1f5717c410690ec1b5f3c8ffffe23a0f88c971dc0aab51d529203f8083c14",
     "tex/tables/vit_extension/generated/extension_ci_longtable.tex": "04ecb61d6be1c4e382be838d809a91c9de33f226386d9f74877d2c7f3a08777f",
-    "tex/tables/vit_extension/generated/integration.tex": "6e79b58bd9a1d0c72cb0ed64b216832b86a58d7c5543830b3326079199cba762"
+    "tex/tables/vit_extension/generated/integration.tex": "6e79b58bd9a1d0c72cb0ed64b216832b86a58d7c5543830b3326079199cba762",
+    "tex/tables/model_accuracy.tex": "de976d63a8ed74a14ba8b3f39c01f575ad342ac8c612878b23041957627742f8"
   },
   "all_proof_links_published": false,
   "asset_sha256": {
@@ -107,7 +108,7 @@
     "tex/figures/smooth_curvature_function.tex": "6f5fbcc49df317b078e1d7262bee95d352451c9f41201f8e3afad5a6b8c180fb"
   },
   "bibliography_sha256": "9dbff2dbbf85dd705d21545774b2788da607ea59d751c5186e0551c58a47c79f",
-  "built_at_utc": "2026-11-20T13:09:21.149870+00:00",
+  "built_at_utc": "2026-11-20T13:28:47.234429+00:00",
   "checks": {
     "aliased_lean_mappings": {
       "eq:canonical_weight_split": {
@@ -181,6 +182,13 @@
               "/root/accepted_hm_framing"
             ],
             "scope": "Canonical dependencies and physical negative-pullback witness displays retained verbatim. Binary masks defined via chi; Maxout zero convention, underlying ReLU-tail strict-cell requirement and pooling winners retained."
+          },
+          "alpha_empirical_bridge_refresh": {
+            "after_source_sha256": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8",
+            "before_source_sha256": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15",
+            "evidence": "reports/alpha-mnist-results/review.json",
+            "reviewer": "/root/alpha_bridge_math_review",
+            "scope": "Only one red empirical sentence added; all mathematical text, formulas, proofs, Lean badges and alias witnesses remain byte-identical."
           },
           "bv_curvature_exposition_refresh": {
             "evidence": "reports/bv-curvature-remark/review.json",
@@ -258,7 +266,7 @@
           "hertrich_context_relocation": {
             "evidence": "reports/unified-multiplication/review.json",
             "reviewed_by": "/root",
-            "scope": "Only the explanatory Hertrich\u2013Loho paragraph was inserted after the decomposition definition. Removing that paragraph reproduces the previous chapter byte for byte; all formal statements, displayed formulae, proofs, protected aliases and activation plots are unchanged."
+            "scope": "Only the explanatory Hertrich–Loho paragraph was inserted after the decomposition definition. Removing that paragraph reproduces the previous chapter byte for byte; all formal statements, displayed formulae, proofs, protected aliases and activation plots are unchanged."
           },
           "implementation_subsection_refresh": {
             "evidence": "reports/implementation-comparison/manuscript-review.json",
@@ -348,7 +356,7 @@
             "scope": "Softmax recovery proof expanded algebraically and concurrent user caption shortening retained; all protected Jacobian and sensitivity displays unchanged."
           },
           "source_sha256": {
-            "tex/chapters/03_decompositions.tex": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15"
+            "tex/chapters/03_decompositions.tex": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8"
           },
           "stabilization_concision_refresh": {
             "evidence": "reports/stabilization-concision/review.json",
@@ -560,7 +568,7 @@
             "after_sha256": "09292e00f1f88075d67a375cda27ed528af95b629ad1870ea142a638a256ccd0",
             "before_sha256": "05ee62dd65a2693942a288437f1e99784cda7dabca9f4d9c33f5f7ef0d584a5a",
             "reviewed_by": "/root",
-            "scope": "Removed the unused standalone Wasserstein definition at the author\u2019s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged."
+            "scope": "Removed the unused standalone Wasserstein definition at the author’s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged."
           },
           "width_notation_refresh": {
             "current_source_sha256": "ffcdd9877ef9701e8c1742a342e6cd11fbd380908e0fb64850e6aecb473af2b0",
@@ -749,17 +757,17 @@
     "thesis.pdf": {
       "biber_warnings_or_errors": [],
       "draft_lean_uri_count": 5,
-      "internal_link_count": 1836,
+      "internal_link_count": 1838,
       "lean_uri_count": 160,
       "matches_compiled_pdf": true,
-      "named_destinations": 1069,
+      "named_destinations": 1075,
       "overfull_boxes": 0,
-      "page_object_count": 155,
-      "pages": 155,
+      "page_object_count": 156,
+      "pages": 156,
       "path": "docs/thesis.pdf",
       "pinned_lean_uri_count": 155,
       "remote_link_count": 0,
-      "sha256": "d78eb99bfccf27e64bea49041b9206e4ee4b3be87431cf39235032e58f82c1b8",
+      "sha256": "5cabac8c792f074a08c56f2dd9cd0ce2c9014d203217afb79d92b98e149210a2",
       "underfull_boxes": 0,
       "unique_lean_uris": 118,
       "unresolved_reference_or_citation": false,
@@ -824,7 +832,7 @@
     "reports/dc-terminology/consistency.json": "866b23d7eb8c3a7fe3002fc9ae091b7d617670a3c2b043b88daba723b8199099",
     "reports/dc-terminology/sign-index-review.json": "083be498ad660e0f61df6369241b7afbabf76989e6e037c09e3bf3f88c490be8",
     "reports/entropy-regularization-notation/consistency.json": "104e68007f779942469c8f671f2492e288ab8de1dfabb5fefd1c192e7b243741",
-    "reports/evidence/hidden-monotonicity-protocol/verification.json": "7267cdd9364c08add9bee07fd9301ae12a32777e896529eae37f5cd5ab41a324",
+    "reports/evidence/hidden-monotonicity-protocol/verification.json": "1878ea24dc037f9846509baebebfbbc440fd96b2350fff76b2fb49a9d0e11d41",
     "reports/evidence/routing-game-recovery/rg_recovery_vgg16.json": "56b623632109d48b8d7b90941a6fc45dfec445107d457e23523589200fd77a33",
     "reports/evidence/routing-game-recovery/rg_recovery_vit.json": "e24a43c0a389c0fa6403f52c02bd0911a64549222a00cbd3336f587eee5d648f",
     "reports/evidence/routing-game-recovery/rg_recovery_vit_end_to_end.json": "e66f7a6076b8d0ab7d41214ea33fb85c7eecab68ab32f47299548069a9bf356a",
@@ -835,11 +843,11 @@
     "reports/implementation-comparison/evidence.json": "8a756b5364cdc120b2bfa81abac2283de26b186fa1ddfa4b218acbeb334188b9",
     "reports/implementation-comparison/manuscript-review.json": "ad6c43bd3fe4871f21c48a106d3f4278dacfde644bc85b264fdd070ff9271407",
     "reports/implementation-comparison/residual-packing-check.json": "278efbbb0a8ab02fc31fa754b22056b632d5098679b63cf2c717ea0f4bab8b8e",
-    "reports/introduction-restoration/publication-checks.json": "3174171d885b308c9c3db5f008aa9972d7f2194d8278f9e42d5c5545eacb6887",
+    "reports/introduction-restoration/publication-checks.json": "40face23cf3351c52cb09a884b6bb6b82eec1fc4fe25dd0f5a5987bf65bbda44",
     "reports/introduction-restoration/workspace-alignment-sources.json": "ee1118269404e4c078ceb6ea585e082e44ed561f8f6a3d926ba29e48c56f5552",
     "reports/layered-markov-graph/consistency.json": "04076317548bcba8d5fe9386006c090882713e78f99d00c2d13b47aec35f2593",
     "reports/layered-markov-graph/math-review.json": "dac14f9faf78526b6ef314bd73be305b64b4603bb17e5b788685cf713d95238a",
-    "reports/main-results-restoration/review.json": "d8d69f45a93ec41a913dc4791a9884d6c64a0586878ece64387f062229ce6f2b",
+    "reports/main-results-restoration/review.json": "cd0a0bb9deaf3b44efdcb1f4d9ca5d14e7a29e77c37098c28458da9aa8e04248",
     "reports/methods-paper-restoration/math-review.json": "54e79325f21eb6e4fa43dd31283140dd23b5a30be71f694c6225ff249cc1b9c0",
     "reports/methods-paper-restoration/reference-coverage.json": "8cbb4ce02c4e60bd7ced6a09a2d8f23acdc617a0b37df937e351dcdf5ac9af77",
     "reports/methods-paper-restoration/relocation-review.json": "e1fa4e18b93fb6b99c865670b9d8899f982ecc610206970d8f078a59b40bc312",
@@ -878,7 +886,7 @@
     "reports/single-pdf/integration.json": "b4e79fea441b1252238bd7065e624b92c2074a9caa0e5be12207ff774d19e776",
     "reports/single-pdf/inventory-candidate.json": "f8530f5a8866896030929ecf41686d7d8767992acd1fe586c1544d558755921c",
     "reports/single-pdf/inventory-comparison.json": "013ec06f3f0daca1b3793c528f6048061c5601a07e4d4f3814b26a4a9bd8d2a4",
-    "reports/single-pdf/lean-alias-reviews.json": "73807c2cf5d0c3b2ed6029809a8bb1813378ba473f35ae550d320f33ef5d2455",
+    "reports/single-pdf/lean-alias-reviews.json": "308e4d480573560f38668649dd7a08174a03c12bd2bcf7171b89307b1951c2ca",
     "reports/single-pdf/publication-checks.json": "e3a1d2b95173e67ac684407d1bafa1d75782c1ccf0d2cfd1fb4b43c0d5b0ae9e",
     "reports/single-pdf/validation-matrix-independent-review.json": "d46a11e1c252f926f30914e64e6ab88ba40f9e24e80d8f9176489f6ddf1062b6",
     "reports/single-pdf/validator-checks.json": "7eb8bd49c7f864c5cb5cad91f8c522cff74dfa261ff8e04fd88cc8bf18feffd9",
@@ -918,7 +926,8 @@
     "scripts/plot_activation_dc_grid.py": "b221de054040aa5db2a2c2a807a60409e610d673943953bcff8d9c16d3ae6d9f",
     "scripts/table_presentation.py": "293dd0e230b877a7ffda30cbdbd9c1635b866a3786d58d957e6d102978fbfbf4",
     "tex/preamble/lean_links_draft.tex": "c87f7d11ff11c837883b028945724be9afe8c72ca00f14056276f5ae7284c824",
-    "tex/preamble/lean_links_retired.json": "5d9e0e424a5b714295bd886ce6f55280d6e881c27c866a540a09bd2abb7caaf2"
+    "tex/preamble/lean_links_retired.json": "5d9e0e424a5b714295bd886ce6f55280d6e881c27c866a540a09bd2abb7caaf2",
+    "reports/alpha-mnist-results/review.json": "b411eb274270c24831a281f96eb6a3803c63255ba3ac7e3215e7425258fc0828"
   },
   "extension_history": [
     {
@@ -965,8 +974,8 @@
     "This baseline publication does not include the still-running Quantus extension; a later extension_update supersedes this experiment-inclusion status.",
     "Text-review draft only: table bodies and qualitative image grids were omitted with rendering flags 0/0; this PDF is not the complete publication PDF."
   ],
-  "pages": 155,
-  "pdf_sha256": "d78eb99bfccf27e64bea49041b9206e4ee4b3be87431cf39235032e58f82c1b8",
+  "pages": 156,
+  "pdf_sha256": "5cabac8c792f074a08c56f2dd9cd0ce2c9014d203217afb79d92b98e149210a2",
   "proof_source_commit": "1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06",
   "public_pdf": "docs/thesis.pdf",
   "publication_mode": "single_pdf_with_local_proofs",
@@ -984,18 +993,18 @@
       "RenderQualitativeImageTables": 1,
       "RenderTables": 1
     },
-    "scope": "155-page full-render local-development PDF with RenderTables=1 and RenderQualitativeImageTables=1. Tables and qualitative image grids are included. Guard reports page-budget failure against the unchanged 150-page limit. The PDF includes 155 pinned and 5 local draft Lean proof links (160 total)."
+    "scope": "156-page full-render local-development PDF with RenderTables=1 and RenderQualitativeImageTables=1. Tables and qualitative image grids are included. Guard reports page-budget failure against the unchanged 150-page limit. The PDF includes 155 pinned and 5 local draft Lean proof links (160 total)."
   },
   "source_sha256": {
     "tex/appendices/experiments.tex": "e483738e5573e52a21599d94b9e0d6ab77f05d00ba2ea9853a122f0e1fe7ed6c",
     "tex/chapters/00_text.tex": "14b5d5ea5fd98274520798144b225e8579f2a8022d5803bb9af213eca4abbb45",
     "tex/chapters/01_introduction.tex": "086a794be5b7c8e214fc4ab4e88f2f9280783808c62bbe87bf5ed9c56adf1fa1",
     "tex/chapters/02_foundations.tex": "bc3daf0347dde9debf72298dc7710d2594ef3d15ac780b7d39cc3ceae24b3f6d",
-    "tex/chapters/03_decompositions.tex": "67611441323b8e46da9a9ebaf1f587bd3c434c763abe4fc59e2a2ec08622a253",
+    "tex/chapters/03_decompositions.tex": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8",
     "tex/chapters/04_game_theory.tex": "b1ba336b6c039706734aabe38aa9fb148a1cf9ebb61662d9050e0b614ce9f347",
     "tex/chapters/05_saliency.tex": "f312426bb726b10740e3e8e40c5901d1452dd77f79e258f2d85757ccedcbcc4c",
     "tex/chapters/07_transformers.tex": "e064f9713d1fc0614ab64ce9a170baf9143b732ecff2b384503bd69bb76e4691",
-    "tex/chapters/08_experiments.tex": "99adf872fb3c17c7d044ecf6255d6fe2b5343eaf4e9a4234f680fd12b6360697",
+    "tex/chapters/08_experiments.tex": "cf0c3a2e0aab66d81ec56036e1aa0ba0a2148472920ceb548f635d662fe8debd",
     "tex/chapters/09_conclusion.tex": "d61e2070e5a913e9fd85b55709c7a54ea162ae223d3d3de5a25f92b9a5033666",
     "tex/chapters/10_appendix.tex": "f7eba1479a8c1c45f05db2259b31b5333c94bf5bd4ed691d5d417b7f3d23ee7f",
     "tex/chapters/11_trajectory.tex": "67189713e7151d51e96f78ec52597c92b4789f84c3fb87f35805f5790b1bc1d7",
@@ -1047,7 +1056,8 @@
     "tex/tables/ptnb_v2/generated/test_voc_vit_b16_ci_longtable.tex": "81f948ed0cf17e1fef2099e77fafa7a3baa76f519ba22b12f35578c03b66bb5c",
     "tex/tables/ptnb_v2/sanity_check.tex": "ade1f5717c410690ec1b5f3c8ffffe23a0f88c971dc0aab51d529203f8083c14",
     "tex/tables/vit_extension/generated/extension_ci_longtable.tex": "04ecb61d6be1c4e382be838d809a91c9de33f226386d9f74877d2c7f3a08777f",
-    "tex/tables/vit_extension/generated/integration.tex": "fdf67ea488ca3b9d6ec19e0529875250f6812d2d6ad469825561449396ede5b0"
+    "tex/tables/vit_extension/generated/integration.tex": "fdf67ea488ca3b9d6ec19e0529875250f6812d2d6ad469825561449396ede5b0",
+    "tex/tables/model_accuracy.tex": "de976d63a8ed74a14ba8b3f39c01f575ad342ac8c612878b23041957627742f8"
   },
   "validation_scope": "Current full-render local-development rerender. Tables and qualitative image grids are enabled (RenderTables=1; RenderQualitativeImageTables=1). The original 150-page guard limit is unchanged and its result is recorded in checks.",
   "verification_counts": {
@@ -1061,6 +1071,6 @@
     "unique_lean_uris": 123
   },
   "verification_receipt": "reports/introduction-restoration/publication-checks.json",
-  "verification_receipt_sha256": "3174171d885b308c9c3db5f008aa9972d7f2194d8278f9e42d5c5545eacb6887",
+  "verification_receipt_sha256": "40face23cf3351c52cb09a884b6bb6b82eec1fc4fe25dd0f5a5987bf65bbda44",
   "verification_scope": "142-page local-development text-review PDF with tables and qualitative grids omitted; 176 pinned links plus one local draft link all resolve. The toy-network lead/figure is absent from the active PDF; standalone plot/code assets are exploratory and excluded from active publication asset/evidence hashes."
 }

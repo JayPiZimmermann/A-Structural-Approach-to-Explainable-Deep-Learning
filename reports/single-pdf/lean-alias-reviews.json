@@ -18,7 +18,7 @@
         "eq:delta_minus_recursion"
       ],
       "source_sha256": {
-        "tex/chapters/03_decompositions.tex": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15"
+        "tex/chapters/03_decompositions.tex": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8"
       },
       "terminology_refresh": {
         "evidence": "reports/dc-terminology/consistency.json",
@@ -210,7 +210,7 @@
       },
       "hertrich_context_relocation": {
         "reviewed_by": "/root",
-        "scope": "Only the explanatory Hertrich–Loho paragraph was inserted after the decomposition definition. Removing that paragraph reproduces the previous chapter byte for byte; all formal statements, displayed formulae, proofs, protected aliases and activation plots are unchanged.",
+        "scope": "Only the explanatory Hertrich\u2013Loho paragraph was inserted after the decomposition definition. Removing that paragraph reproduces the previous chapter byte for byte; all formal statements, displayed formulae, proofs, protected aliases and activation plots are unchanged.",
         "evidence": "reports/unified-multiplication/review.json"
       },
       "editorial_followups": [
@@ -254,7 +254,14 @@
           "after_source_sha256": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15",
           "scope": "Shortened the changed-environment Chapter 03 experimental teaser to state machine-precision gradient recovery in deep Vision Transformers, retaining its appendix reference. Replacing the sentence with the prior reviewed wording reproduces the previous source hash byte-for-byte; formal statements, equations, proofs, dependencies and witnesses are unchanged. No new Lean build is asserted."
         }
-      ]
+      ],
+      "alpha_empirical_bridge_refresh": {
+        "evidence": "reports/alpha-mnist-results/review.json",
+        "reviewer": "/root/alpha_bridge_math_review",
+        "before_source_sha256": "3097d2c4eee33d17d2375766cd4a7ae69420200b75fbea6c72fb957b9b344f15",
+        "after_source_sha256": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8",
+        "scope": "Only one red empirical sentence added; all mathematical text, formulas, proofs, Lean badges and alias witnesses remain byte-identical."
+      }
     },
     "ptnb:eq:conditioned-bc-kernel": {
       "canonical_label": "ptnb:eq:bc-chain-rule",
@@ -327,7 +334,7 @@
       "wasserstein_definition_removal": {
         "before_sha256": "05ee62dd65a2693942a288437f1e99784cda7dabca9f4d9c33f5f7ef0d584a5a",
         "after_sha256": "09292e00f1f88075d67a375cda27ed528af95b629ad1870ea142a638a256ccd0",
-        "scope": "Removed the unused standalone Wasserstein definition at the author’s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged.",
+        "scope": "Removed the unused standalone Wasserstein definition at the author\u2019s request; retained its citation on the existing comparison sentence. No remaining references to the deleted label. Canonical overlap equations, conditioned-survival theorem/proof and all physical Lean witnesses unchanged.",
         "reviewed_by": "/root"
       },
       "layered_graph_definition_refresh": {

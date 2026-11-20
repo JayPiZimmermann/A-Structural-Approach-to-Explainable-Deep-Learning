@@ -722,7 +722,7 @@ The \emph{backward invariant} requires these sensitivities to recover the origin
 \delta^{(l)}\coloneqq\frac{\partial f^{(l)}}{\partial\actl{l}}.
 \label{eq:stabilization_backward_invariant}
 \end{equation}
-The shifted sensitivities must satisfy the same identity; at ties, matching branch choices or cached-gradient corrections are required. The original paper's attribution experiments use a common shift parameter $\alpha$ across layers.
+The shifted sensitivities must satisfy the same identity; at ties, matching branch choices or cached-gradient corrections are required. The original paper's attribution experiments use a common shift parameter $\alpha$ across layers. \begin{changed}Intermediate shifts $\alpha=0.35$--$0.45$ give the best localization and Pixel Flipping results for the tested VGG-16 SplitCAM and SplitGrad configurations (Table~\ref{tab:alpha_ablation_main}), while $\alpha=0$ minimizes Maximum Sensitivity.\end{changed}
 
 Differentiating the common-shift identity~\eqref{eq:shift_forward} along each coordinate gives \emph{sensitivity complementarity} (\LeanResult{thm:delta_connection}):
 \begin{equation}

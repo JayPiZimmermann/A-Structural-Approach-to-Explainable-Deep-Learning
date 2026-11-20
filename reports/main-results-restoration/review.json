@@ -4,6 +4,7 @@
     "tab:eval_vgg_main",
     "tab:eval_res_main",
     "tab:alpha_ablation_main",
+    "tab:cdinn_acc",
     "ptnb:tab:eval-vit",
     "ptnb:tab:abl-gradient-fallback",
     "tab:vit-extension"
@@ -40,7 +41,7 @@
     "RenderQualitativeImageTables": 1
   },
   "source_sha256": {
-    "tex/chapters/08_experiments.tex": "c650d84452af8f4854715e8f5ab766d4acb423d57a2e3f319759f1a1db14794b",
+    "tex/chapters/08_experiments.tex": "cf0c3a2e0aab66d81ec56036e1aa0ba0a2148472920ceb548f635d662fe8debd",
     "tex/appendices/experiments.tex": "3d6fc914706ebca98a04abcac8641a3cebde92c203aba6cab52ef3aed75739d9",
     "tex/tables/eval_vgg_main.tex": "14e4c1fdc4cde7431f2c04aac0c80a2d961ed362005d21d82daa994de9a140b5",
     "tex/tables/eval_res_main.tex": "4b5fce3f60403456bb9a3ec6aaedb22579b816aee8caa5929c53f95b110b5c64",
@@ -52,7 +53,9 @@
     "tex/tables/vit_extension/generated/integration.tex": "6e79b58bd9a1d0c72cb0ed64b216832b86a58d7c5543830b3326079199cba762",
     "tex/chapters/01_introduction.tex": "7472d0e3c6512a3785905563dbd8b9fc1b5d2ffdb89dfdc57ebda7b127184d54",
     "tex/figures/experiments/vgg_saliency_comparison_main.tex": "022289b9517b0d34d72b7057e074416e0de2dcb28ff28f09d65c93ca2bb9a5b6",
-    "tex/figures/experiments/vgg_saliency_comparison_appendix.tex": "123bb4904aea78ad58e31dc2ba160ff13430a5d4eed22ff2326629244ebbe394"
+    "tex/figures/experiments/vgg_saliency_comparison_appendix.tex": "123bb4904aea78ad58e31dc2ba160ff13430a5d4eed22ff2326629244ebbe394",
+    "tex/chapters/03_decompositions.tex": "25cad28fe677b14a2daa739f72d6bba3da32fb119cd0ee12cd6873a705f181f8",
+    "tex/tables/model_accuracy.tex": "de976d63a8ed74a14ba8b3f39c01f575ad342ac8c612878b23041957627742f8"
   },
   "rendered_tables": {
     "tab:eval_vgg_main": {
@@ -71,67 +74,72 @@
       "pdf_page": 90
     },
     "ptnb:tab:eval-vit": {
-      "number": "6.4",
+      "number": "6.5",
       "printed_page": 83,
       "pdf_page": 94
     },
     "ptnb:tab:abl-gradient-fallback": {
-      "number": "6.5",
+      "number": "6.6",
       "printed_page": 84,
       "pdf_page": 95
     },
     "tab:vit-extension": {
-      "number": "6.6",
+      "number": "6.7",
       "printed_page": 85,
       "pdf_page": 96
     },
     "tab:xai_eval_comprehensive_vgg": {
       "number": "B.1",
-      "printed_page": 107,
-      "pdf_page": 118
-    },
-    "tab:xai_eval_comprehensive_res": {
-      "number": "B.2",
       "printed_page": 108,
       "pdf_page": 119
     },
+    "tab:xai_eval_comprehensive_res": {
+      "number": "B.2",
+      "printed_page": 109,
+      "pdf_page": 120
+    },
     "tab:randomization_sanity_check": {
       "number": "B.3",
-      "printed_page": 111,
-      "pdf_page": 122
-    },
-    "tab:timing_comparison": {
-      "number": "B.4",
       "printed_page": 112,
       "pdf_page": 123
     },
+    "tab:timing_comparison": {
+      "number": "B.4",
+      "printed_page": 113,
+      "pdf_page": 124
+    },
     "tab:lrp_scale_shift_comparison": {
       "number": "B.6",
-      "printed_page": 115,
-      "pdf_page": 126
-    },
-    "ptnb:tab:test-ci-vit": {
-      "number": "B.10",
       "printed_page": 116,
       "pdf_page": 127
     },
-    "ptnb:tab:test-ci-vgg": {
-      "number": "B.11",
+    "ptnb:tab:test-ci-vit": {
+      "number": "B.10",
       "printed_page": 117,
       "pdf_page": 128
     },
-    "ptnb:tab:test-ci-resnet": {
-      "number": "B.12",
+    "ptnb:tab:test-ci-vgg": {
+      "number": "B.11",
       "printed_page": 118,
       "pdf_page": 129
+    },
+    "ptnb:tab:test-ci-resnet": {
+      "number": "B.12",
+      "printed_page": 119,
+      "pdf_page": 130
+    },
+    "tab:cdinn_acc": {
+      "number": "6.4",
+      "printed_page": 81,
+      "pdf_page": 92
     }
   },
   "render": {
-    "pdf_sha256": "d78eb99bfccf27e64bea49041b9206e4ee4b3be87431cf39235032e58f82c1b8",
-    "pages": 155,
+    "pdf_sha256": "5cabac8c792f074a08c56f2dd9cd0ce2c9014d203217afb79d92b98e149210a2",
+    "pages": 156,
     "warnings": [],
     "biber_warnings_or_errors": [],
-    "all_internal_links_resolve": false,
+    "all_internal_links_resolve": true,
     "page_limit": 150,
     "page_limit_passed": false,
     "render_flags": {
@@ -152,5 +160,6 @@
     "figure_relevance_definition_link": "sec:split_lrp",
     "guided_gradcam_definition_source": "literature/references/Selvaraju2017.pdf",
     "guided_gradcam_definition_source_sha256": "fa3192ab0f817aabe9673d3aade89ccd6c1942b007f339bffe01abd714812d5d"
-  }
+  },
+  "mnist_followup": "reports/alpha-mnist-results/review.json"
 }

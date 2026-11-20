@@ -1,0 +1,24 @@
+% Source: arxive/hiddenMonotonicity/appendix/table_model_accuracy.tex.
+\begin{table}[htbp]
+    \centering
+    \caption[MNIST test accuracy across eight model variants]{MNIST test accuracy (\%) for all eight model variants~\parencite{hiddenMono}. Cells show median [minimum, maximum] over ten random seeds.}
+    \label{tab:cdinn_acc}
+\TableContent{
+    \small
+    \setlength{\tabcolsep}{5pt}
+    \begin{tabular}{lcc}
+        \toprule
+        Variant & \texttt{mlp\_maxout} & \texttt{cnn\_maxout} \\
+        \midrule
+        IC & 98.36 {\scriptsize [98.07, 98.69]} & 99.16 {\scriptsize [98.86, 99.27]} \\
+        Mon & 98.30 {\scriptsize [97.64, 98.49]} & 98.50 {\scriptsize [98.19, 98.79]} \\
+        None & 98.39 {\scriptsize [98.07, 98.63]} & 99.19 {\scriptsize [98.61, 99.44]} \\
+        DIC & 98.56 {\scriptsize [98.33, 98.96]} & 97.94 {\scriptsize [97.81, 98.04]} \\
+        DM & 98.55 {\scriptsize [98.23, 98.71]} & 98.06 {\scriptsize [97.99, 98.19]} \\
+        Diff\_None & 98.47 {\scriptsize [98.19, 98.72]} & 97.94 {\scriptsize [97.72, 98.45]} \\
+        DICIN & 98.58 {\scriptsize [98.41, 98.84]} & 98.17 {\scriptsize [97.96, 98.34]} \\
+        DMIN & 98.54 {\scriptsize [98.36, 98.65]} & 98.28 {\scriptsize [98.17, 98.54]} \\
+        \bottomrule
+    \end{tabular}
+}%
+\end{table}
