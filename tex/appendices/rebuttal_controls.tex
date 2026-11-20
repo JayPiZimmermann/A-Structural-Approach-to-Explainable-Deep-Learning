@@ -87,6 +87,32 @@ Separately, under per-layer numerical centering and cached original-forward pool
 \label{tab:rebuttal-sg-pooling}
 \end{table}
 
+\begin{changed}
+\section{Routing-Game \texorpdfstring{$\alpha\beta$}{alpha-beta}-LRP Recovery}\label{app:rebuttal-rg}
+
+We compare RG at $\tau=1$, with all policy deformations disabled, against independent $\alpha\beta$-LRP calculations. Each model uses three ImageNet-S validation images, $(\alpha,\beta)\in\{(1,0),(2,1)\}$ and $\varepsilon\in\{10^{-6},0.5\}$. A unit seed at the selected output logit fixes the relevance scale; errors compare the complete RGB relevance tensors before normalization or channel reduction. Bias shares are absorbed and each sign denominator receives its own $\varepsilon$, as in Theorem~\ref{ptnb:thm:ab-recovery}.
+
+On pretrained VGG-16, the reference is Zennit's AlphaBeta rule, including signed first-layer contributions and ordinary max-pooling decisions. On pretrained ViT-B/16, an independent reverse recurrence covers the classifier, all twelve encoder blocks and the patch projection. It uses the observed QK-softmax, the composite Value rule of Theorem~\ref{ptnb:thm:attn-ab-recovery}, pass-through relevance at LayerNorm and GELU, and the implementation's full relevance to both addition operands (Section~\ref{ptnb:app:routing-skip}). Thus the ViT comparison verifies the stated local propagation rules throughout the model. Forward logits agree exactly on VGG-16 and within $7.11\times10^{-15}$ on ViT-B/16.
+
+All end-to-end checks pass, reaching float64 relative errors below $3.3\times10^{-16}$ (Table~\ref{tab:rebuttal-rg-recovery}). Separately, fixed signed relevance seeds at each ViT attention--Value output test the composite rule in all twelve blocks: all 144 checks pass. These numerical checks use no reference-relevance injection and do not enter benchmark selection. Scripts, checkpoint hashes, image identifiers and per-run errors are retained with the code and in \nolinkurl{reports/evidence/routing-game-recovery/}.
+
+\begin{table}[!ht]
+\color{red}\centering\small
+\begin{tabular}{llrrr}
+\toprule
+Model / scope & Precision & Checks & Max absolute error & Max relative $\ell_2$ error \\
+\midrule
+VGG-16 & float32 & 12 & $5.82\times10^{-10}$ & $4.11\times10^{-7}$ \\
+VGG-16 & float64 & 12 & $4.34\times10^{-19}$ & $3.28\times10^{-16}$ \\
+ViT-B/16 & float64 & 12 & $9.10\times10^{-13}$ & $3.19\times10^{-16}$ \\
+ViT attention blocks & float64 & 144 & $5.26\times10^{-13}$ & $3.47\times10^{-14}$ \\
+\bottomrule
+\end{tabular}
+\caption{RG recovery against independent $\alpha\beta$-LRP references on pretrained networks. Each entry is the worst error over the stated checks. End-to-end rows use unit output-logit seeds; the block row uses fixed signed relevance seeds.}
+\label{tab:rebuttal-rg-recovery}
+\end{table}
+\end{changed}
+
 \section{Checkpoint-Aligned Randomization and Local Hellinger Controls}\label{app:rebuttal-randomization}
 
 The checkpoint-aligned ViT analysis evaluates map diagnostics and trajectory distance on the same 200 test images, dataset labels, model states and randomization conditions. Query/key/value projections remain pretrained in the cascade. Randomizing only the classifier head reduces top-1 accuracy from 88.5\% to zero and mean target probability from .7355 to .000932, while RG absolute-map rank similarity remains .999998; RG Hellinger distance is .769. Randomizing the last encoder block leaves map similarity at .999972 and raises Hellinger distance to .915. At the cascade endpoint, map similarity falls to .377 and survival-conditioned Hellinger reaches 1.000. The map projection can therefore remain nearly unchanged after predictive collapse, while the trajectory diagnostic registers changed routing. These results do not establish Hellinger as a predictor of accuracy or explanation quality.
