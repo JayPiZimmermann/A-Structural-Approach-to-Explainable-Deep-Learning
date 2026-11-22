@@ -97,30 +97,6 @@ The thesis makes six contributions.
     We represent backward calculations as trajectory distributions and use the known geometric-mean factorization of \textcite{Kazakos1978} to compute Hellinger comparisons. We develop terminal-state and survival-conditioned diagnostics and apply trajectory comparisons to parameter randomization, revealing routing changes that attribution maps can obscure (Chapter~\ref{ch:trajectory}).
 \end{enumerate}
 
-Table~\ref{tab:guarantee_map} maps each object studied in the thesis to its established result, the supporting evidence, and the scope of that statement.
-
-\begin{table}[htbp]
-\TableContent{
-\centering
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.17\linewidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.2\linewidth}>{\raggedright\arraybackslash}p{0.29\linewidth}@{}}
-\toprule
-Object & Established result & Evidence & Scope \\
-\midrule
-Exact \acs{dc} streams & Recovery of the network function; convex, coordinatewise non-decreasing streams on the doubled inputs & Chapters~\ref{ch:decompositions} and~\ref{ch:transformers} & Mathematical property of the streams; their roles are defined by the decomposition. \\
-Stabilized split passes & Forward and backward invariants of the shifted and scaled passes & Section~\ref{sec:stabilization_dc}; split-method experiments in Chapter~\ref{ch:experiments} & Recovery of the stream difference; convexity and monotonicity are stated for the exact streams. \\
-Transformer \acs{dc} implementation & Reconstruction of outputs and gradients to machine precision & Section~\ref{app:transformer_dc_numeric} & Nine float64 runs on pretrained ViT-B/16. \\
-Conditioned ViT SplitCAM & Attribution results with fixed attention and LayerNorm & Section~\ref{sec:vit-extension} & Exploratory comparison of complete attribution pipelines. \\
-\acs{sg} and \acs{rg} anchors & Recovery of gradients and of the stated $\alpha\beta$-\acs{lrp} rule & Chapter~\ref{ch:game_theory}; Sections~\ref{app:rebuttal-sg} and~\ref{app:rebuttal-rg} & Stated propagation conventions; benchmark readouts and deformed modes are specified separately. \\
-Hellinger diagnostics & Exact comparison of the specified routing laws & Section~\ref{sec:probabilistic_foundations}; Chapter~\ref{ch:trajectory} & Routing probabilities of the diagnostic processes, which omit the bias action for the \acs{rg}; discounts are not part of the compared law. \\
-\bottomrule
-\end{tabularx}
-}%
-\caption[Map of guarantees and evidence]{Map of guarantees and evidence: what is established for each object of the thesis, where the evidence is, and the scope of the statement.}
-\label{tab:guarantee_map}
-\end{table}
-
 \section{Positioning within the Literature}\label{sec:related_work}
 
 This brief section positions the thesis along its three research questions; additional chapter-opening discussions cover related work regarding games and propagation rules (Section~\ref{sec:related_work_games}) and Transformer interpretability (Section~\ref{sec:related_work_transformers}).

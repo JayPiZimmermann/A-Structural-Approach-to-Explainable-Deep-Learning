@@ -143,7 +143,7 @@ To check the extension, run `lake build HiddenMonotonicity.TransformerLinearCost
 and `lake env lean checks/transformer_linear_cost_audit.lean` from this directory.
 
 The original decomposition sources build cleanly at
-`14b54c2d3d9ee33bb29f538a0398ab3266e38357`, covering 167 modules, 490 selected
+`86afca49d6bc4031f0098c3bfe9242e98bff6ed4`, covering 167 modules, 490 selected
 contracts and 3,640 imported project theorem constants. The 216 generated source
 links are pinned to that revision.
 
