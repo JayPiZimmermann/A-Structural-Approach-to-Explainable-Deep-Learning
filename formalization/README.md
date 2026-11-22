@@ -143,7 +143,7 @@ To check the extension, run `lake build HiddenMonotonicity.TransformerLinearCost
 and `lake env lean checks/transformer_linear_cost_audit.lean` from this directory.
 
 The original decomposition sources build cleanly at
-`1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06`, covering 167 modules, 490 selected
+`14b54c2d3d9ee33bb29f538a0398ab3266e38357`, covering 167 modules, 490 selected
 contracts and 3,640 imported project theorem constants. The 216 generated source
 links are pinned to that revision.
 
@@ -259,7 +259,7 @@ The accepted foundational axioms are `propext`, `Classical.choice`, and
 The unpublished `TrajectoryHellinger` addition is checked separately with
 `lake build Thesis.TrajectoryHellinger` and
 `lake env lean checks/trajectory_hellinger_audit.lean`. The equation links to
-a source snapshot under `../docs/draft-proofs/`. Keep that directory beside the
+a source snapshot under `draft-proofs/`. Keep that directory beside the
 PDF. Existing published links and the pinned `All` root remain unchanged.
 
 The local development checkout may reuse a mathlib cache through an ignored

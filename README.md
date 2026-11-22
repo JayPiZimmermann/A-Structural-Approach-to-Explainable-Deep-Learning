@@ -15,8 +15,8 @@ formalization of the mathematics in Lean 4.
 
 ## Repository layout
 
-- `docs/thesis.pdf`: the compiled thesis. `docs/draft-proofs/` holds rendered
-  Lean files that the PDF links to.
+- `formalization/thesis.pdf`: the compiled thesis. `formalization/draft-proofs/`
+  holds rendered Lean files that the PDF links to.
 - `tex/`: LaTeX sources of the thesis; the root file is `tex/main.tex`.
 - `formalization/`: the Lean 4 / mathlib formalization (see
   `formalization/README.md`).
@@ -32,7 +32,7 @@ makeindex main.nlo -s nomencl.ist -o main.nls
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-Then copy `tex/main.pdf` to `docs/thesis.pdf`.
+Then copy `tex/main.pdf` to `formalization/thesis.pdf`.
 
 ## Check the Lean proofs
 

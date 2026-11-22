@@ -149,7 +149,7 @@ formalization/build.log
 formalization/audit.log
 
 # The compiled thesis and the figure PDFs belong to the repository.
-!docs/thesis.pdf
+!formalization/thesis.pdf
 !tex/figures/**/*.pdf
 
 # Local TeX metadata
