@@ -10,7 +10,28 @@ We tune the split-method attribution layers and formulas on a custom validation 
 
 The game methods and their baselines use 50 validation and 565 disjoint test images from ImageNet-S at the same resolution, with annotated-class targets. Pascal VOC 2012~\parencite{Everingham2010voc} tests cross-dataset transfer. The data filters and pixel-mask protocol are specified in Section~\ref{ptnb:app:protocol}.
 
-Quantus~\parencite{Hedstrom2023} measures localization through Attribution Localization (AL), Pointing Game (PG) and Top-$k$ Intersection (TK), all $\uparrow$; faithfulness through Pixel Flipping (PF) and Selectivity (Sel; $\downarrow$); and robustness through Maximum and Average Sensitivity (MaxS, AvgS; $\downarrow$). Section~\ref{app:metrics} defines these metrics. The split tables report Pixel Flipping as score-drop AUC (PF$^{\mathrm{drop}}_5$, PF$^{\mathrm{drop}}_{20}$; $\uparrow$), perturbing 112 scalar input features per step, and Maximum Sensitivity with 25 random perturbations per image. The game campaign reports remaining-logit AUC (PF$_5$, PF$_{20}$; $\downarrow$), with 1,568 scalar features per step, and sensitivity with 50 perturbations on a common 200-image test subset. Both Pixel-Flipping implementations broadcast spatial attribution over color channels, indexing the flattened $C\times H\times W$ input: $150{,}528$ features for RGB images at this resolution.
+Quantus~\parencite{Hedstrom2023} measures localization through Attribution Localization (AL), Pointing Game (PG) and Top-$k$ Intersection (TK), all $\uparrow$; faithfulness through Pixel Flipping (PF) and Selectivity (Sel; $\downarrow$); and robustness through Maximum and Average Sensitivity (MaxS, AvgS; $\downarrow$). Section~\ref{app:metrics} defines these metrics. The split tables report Pixel Flipping as score-drop AUC (PF$^{\mathrm{drop}}_5$, PF$^{\mathrm{drop}}_{20}$; $\uparrow$), perturbing 112 scalar input features per step, and Maximum Sensitivity with 25 random perturbations per image. The game campaign reports remaining-logit AUC (PF$_5$, PF$_{20}$; $\downarrow$), with 1,568 scalar features per step, and sensitivity with 50 perturbations on a common 200-image test subset. Both Pixel-Flipping implementations broadcast spatial attribution over color channels, indexing the flattened $C\times H\times W$ input: $150{,}528$ features for RGB images at this resolution. Table~\ref{tab:campaign_protocols} lists the differences between the two campaigns; scores are compared within a campaign.
+
+\begin{table}[htbp]
+\TableContent{
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & Split campaign & Game campaign \\
+\midrule
+Models & VGG-16, ResNet-18 & VGG-16, ResNet-50, ViT-B/16 \\
+Validation / test images & 50 / 566 & 50 / 565 \\
+Explanation target & Predicted class & Annotated class \\
+Pixel Flipping quantity & Score-drop AUC ($\uparrow$) & Remaining-logit AUC ($\downarrow$) \\
+Scalar features per step & 112 & 1{,}568 \\
+Sensitivity perturbations & 25 per image & 50 per image, 200-image subset \\
+\bottomrule
+\end{tabular}
+}%
+\caption[Protocols of the two evaluation campaigns]{Protocols of the split-method and game-method campaigns on ImageNet-S. The Transformer \acs{dc} extension of Section~\ref{sec:vit-extension} follows the game campaign's ViT-B/16 protocol.}
+\label{tab:campaign_protocols}
+\end{table}
 
 Method abbreviations (Section~\ref{subsec:visual_attribution_related}) are GCAM (Grad-CAM), GCAM++ (Grad-CAM++), LCAM (LayerCAM), IntGrad (Integrated Gradients), SmGrad (SmoothGrad), and Guided GCAM (Guided Grad-CAM). Dark blue shading and bold type mark the best values within each caption's comparison; n/r means unreported in the source paper, and n/a means inapplicable.
 
@@ -19,7 +40,7 @@ Method abbreviations (Section~\ref{subsec:visual_attribution_related}) are GCAM 
 \input{figures/experiments/vgg_saliency_comparison_main}
 
 \paragraph{Qualitative analysis.}
-Figure~\ref{fig:vgg_saliency_comparison_main} qualitatively compares saliency maps from our split methods with their baseline counterparts at the best-performing layers. Mid-layer SplitCAM shares key visual characteristics with classical $\gamma$-\ac{lrp} from earlier layers. Compared to standard LayerCAM on the same layer it assigns more weight to object pixels, while still marking the key object features as especially important. For $\alpha \ll 0.5$, SplitGrad yields less focused yet finely aligned gradients that closely follow image details. We attribute this to the Maxout activation retaining preactivation information, unlike ReLU, which discards it in inactive neurons. Overall, mid-layer SplitCAM offers an effective balance between interpretability and focus (low entropy).
+Figure~\ref{fig:vgg_saliency_comparison_main} qualitatively compares saliency maps from our split methods with their baseline counterparts at the best-performing layers. Mid-layer SplitCAM shares key visual characteristics with classical $\gamma$-\ac{lrp} from earlier layers. Compared to standard LayerCAM on the same layer it assigns more weight to object pixels, while still marking the key object features as especially important. For $\alpha \ll 0.5$, SplitGrad yields less focused yet finely aligned gradients that closely follow image details. We attribute this to the Maxout activation retaining pre-activation information, unlike ReLU, which discards it in inactive neurons. Overall, mid-layer SplitCAM offers an effective balance between interpretability and focus (low entropy).
 
 \input{tables/eval_vgg_main}
 
@@ -40,7 +61,7 @@ On ResNet-18 (Table~\ref{tab:eval_res_main}), SplitCAM achieves the lowest repor
 
 \paragraph{Backward stabilization.}\label{subsec:alpha_ablation}
 
-Table~\ref{tab:alpha_ablation_main} presents the performance of one selected SplitGrad and one SplitCAM configuration across different shifting parameters $\alpha$, evaluated on our custom ImageNet-S test split. As explained in Section~\ref{sec:stabilization_dc}, $\alpha$ controls backward pass stabilization: $\alpha = 0$ means no stabilization and $\alpha = 0.5$ yields scaled original gradients (Theorem~\ref{thm:closed_formula_shift}). Reducing $\alpha$ from $0.5$ to $0.4$ improves both configurations' Pointing Game and Attribution Localization, while SplitCAM's PF$^{\mathrm{drop}}_{20}$ falls from $1.607$ to $1.585$. SplitGrad peaks in PF$^{\mathrm{drop}}_{20}$ at $\alpha = 0.4$ and localization at $\alpha = 0.35$; SplitCAM's Pointing Game and Attribution Localization peak at $0.4$ and $0.35$, respectively. \begin{changed}Overall, intermediate values $\alpha=0.35$--$0.45$ give the best localization and Pixel Flipping results in these configurations, while $\alpha=0$ minimizes Maximum Sensitivity.\end{changed} Section~\ref{app:ablation} (Table~\ref{tab:alpha_comparison_by_method}) gives the full grid and compares convex with winner-takes-it-all max-pooling.
+Table~\ref{tab:alpha_ablation_main} presents the performance of one selected SplitGrad and one SplitCAM configuration across different shifting parameters $\alpha$, evaluated on our custom ImageNet-S test split. As explained in Section~\ref{sec:stabilization_dc}, $\alpha$ controls backward pass stabilization: $\alpha = 0$ means no stabilization and $\alpha = 0.5$ yields scaled original gradients (Theorem~\ref{thm:closed_formula_shift}). Reducing $\alpha$ from $0.5$ to $0.4$ improves both configurations' Pointing Game and Attribution Localization, while SplitCAM's PF$^{\mathrm{drop}}_{20}$ falls from $1.607$ to $1.585$. SplitGrad peaks in PF$^{\mathrm{drop}}_{20}$ at $\alpha = 0.4$ and localization at $\alpha = 0.35$; SplitCAM's Pointing Game and Attribution Localization peak at $0.4$ and $0.35$, respectively. \begin{changed}Overall, intermediate values $\alpha=0.35$--$0.45$ give the best localization and Pixel Flipping results in these configurations, while $\alpha=0$ minimizes Maximum Sensitivity.\end{changed} Section~\ref{app:ablation} (Table~\ref{tab:alpha_comparison_by_method}) gives the full grid and compares convex with winner-take-all max-pooling. The $\alpha$ grid was computed in a separate evaluation run from Tables~\ref{tab:eval_vgg_main} and~\ref{tab:xai_eval_comprehensive_vgg}. For the configurations contained in both, the two runs agree to within $0.01$ on every shared metric and to within $0.001$ in Attribution Localization, which independently confirms the reported values.
 
 \input{tables/alpha_ablation_main}
 
@@ -52,6 +73,11 @@ After randomizing VGG-16's last three fully connected layers, every reported Spl
 
 \paragraph{Runtime.}
 SplitCAM takes $0.33$--$0.44$\,s per image; Table~\ref{tab:timing_comparison} gives the full runtime comparison and Section~\ref{app:p1_timing} its measurement scope.
+
+% VIT_EXTENSION_INSERT_HERE
+% BEGIN VIT_EXTENSION_GENERATED
+\input{tables/vit_extension/generated/integration}
+% END VIT_EXTENSION_GENERATED
 
 \section{Directly Trained Difference-of-Convex Models on MNIST}\label{sec:dcinns}
 
@@ -70,7 +96,7 @@ Three implementation choices matter in practice.
 	\item \emph{Regularization.} To limit activation growth, we use small initial weights and weight decay, reported as $10^{-3}$ in \textcite{hiddenMono}.
 \end{itemize}
 
-We train two base architectures on MNIST: \texttt{cnn\_maxout}, a \ac{cnn} with four convolutional layers (32, 64, 128 and 128 channels with batch normalization) followed by three fully connected layers, roughly $1.2$ million parameters in total, and \texttt{mlp\_maxout}, a wide four-layer \ac{mlp} ($784 \to 800 \to 800 \to 800 \to 10$) with roughly $4.2$ million parameters --- each in eight variants: unconstrained (None), single-stream constrained (IC, Mon), and difference-of-two models (DIC, DM, DICIN, DMIN, and an unconstrained difference baseline, \texttt{Diff\_None}).
+We train two base architectures on MNIST: \texttt{cnn\_maxout}, a \ac{cnn} with four convolutional layers (32, 64, 128 and 128 channels with batch normalization) followed by three fully connected layers ($6272 \to 1024 \to 256 \to 10$ including the Maxout expansion), roughly $7.0$ million parameters per stream, and \texttt{mlp\_maxout}, a wide four-layer \ac{mlp} ($784 \to 800 \to 800 \to 800 \to 10$) with roughly $3.8$ million parameters per stream --- each in eight variants, whose difference-of-two models combine two such streams: unconstrained (None), single-stream constrained (IC, Mon), and difference-of-two models (DIC, DM, DICIN, DMIN, and an unconstrained difference baseline, \texttt{Diff\_None}).
 
 \input{tables/model_accuracy}
 
@@ -285,7 +311,7 @@ Table~\ref{tab:cdinn_acc} reports the median test accuracy of all eight variants
 
 
 \paragraph{Protocol.}
-Methods are evaluated under a two-stage protocol that treats baselines and our games alike. Stage~1 runs a validation grid search for every tunable method, including DAVE (Table~\ref{ptnb:tab:main-search-grid}; \nValGrid{} configurations in total). Stage~2 independently selects the localization and faithfulness rank-sum configurations and evaluates both once on the test split. Confidence intervals and Holm-corrected paired comparisons follow Section~\ref{ptnb:app:stats}. The \ac{rg}/\ac{rg}+Eq anchors additionally represent $\alpha\beta$-\ac{lrp} exactly (Theorem~\ref{ptnb:thm:lrp-recovery}). Table~\ref{ptnb:tab:eval-vit} reports the paper's selected localization configurations and anchors, with their original testing family. Table~\ref{ptnb:tab:test-ci-vit} in Appendix~\ref{ptnb:app:test-ci} gives both selections, further baselines and confidence intervals. Reporting faithfulness-selected rows separately preserves the distinction between mask agreement and faithfulness.
+Methods are evaluated under a two-stage protocol. The same validation/test separation and selection objectives apply to baselines and our games; the method-specific grids differ. Stage~1 runs a validation grid search for every tunable method, including DAVE (Table~\ref{ptnb:tab:main-search-grid}; \nValGrid{} configurations in total). Stage~2 independently selects the localization and faithfulness rank-sum configurations and evaluates both once on the test split. Confidence intervals and Holm-corrected paired comparisons follow Section~\ref{ptnb:app:stats}. The \ac{rg}/\ac{rg}+Eq anchors additionally represent $\alpha\beta$-\ac{lrp} exactly (Theorem~\ref{ptnb:thm:lrp-recovery}). Table~\ref{ptnb:tab:eval-vit} reports the paper's selected localization configurations and anchors, with their original testing family. Table~\ref{ptnb:tab:test-ci-vit} in Appendix~\ref{ptnb:app:test-ci} gives both selections, further baselines and confidence intervals. Reporting faithfulness-selected rows separately preserves the distinction between mask agreement and faithfulness.
 
 \input{tables/eval_vit_main}
 \input{figures/experiments/vit_saliency_comparison_main}
@@ -293,8 +319,8 @@ Methods are evaluated under a two-stage protocol that treats baselines and our g
 \paragraph{ViT-B/16 (Table~\ref{ptnb:tab:eval-vit}).}
 Figure~\ref{fig:vit_saliency_comparison_main} compares the selected methods on six images.
 Under the localization-selected protocol, the \ac{rg} family beats every baseline on attribution
-localization, including the prior transformer-specific backward methods
-AttnLRP~\parencite{Achtibat2024AttnLRP}, our DAVE implementation~\parencite{Wrobel2024} (Section~\ref{ptnb:app:baselines}),
+localization, including the prior Transformer-specific backward methods
+AttnLRP~\parencite{Achtibat2024AttnLRP}, our DAVE variant DAVE$^{*}$~\parencite{Wrobel2024} (Section~\ref{ptnb:app:baselines}),
 \ac{ptnbTIBAV}~\parencite{Chefer2021GenericAttention} and \ac{ptnbGAE}~\parencite{Chefer2021ICCV}: the selected mode
 reaches AL \vitRGlocAL{} against \vitBestBaseAL{} for the best baseline (\vitBestBaseALname), and
 \ac{rg}+Eq \vitRGEqlocAL{}, both significantly ahead of every baseline row after Holm correction.
@@ -315,7 +341,7 @@ averaging is the only expensive variant (\vitRGEqTime\,s), exceeding even the pe
 KernelSHAP (\vitSHAPTime\,s). We follow DAVE's transform-averaging strategy~\parencite{Wrobel2024} with 50 transformed inputs for \ac{rg}+Eq (Section~\ref{ptnb:app:equivariant}); we did not test smaller averaging counts. Detailed timings and their measurement scope are in Section~\ref{app:game_timing}.
 
 \paragraph{Higher $\tau$ spreads attribution into context.}
-The localization-optimal modes place mass on the few patches that align with the segmentation mask. As $\tau$ increases, routing spreads over more predecessors: the displayed examples retain object focus while extending attribution into context, without establishing which contextual features the model uses. Around the selected ViT-B/16 setting (Table~\ref{ptnb:tab:vit-temperature}), AL peaks at $0.723$ for $\tau{=}0.3$ and decreases to $0.461$ at $\tau{=}1$; lowering $\tau$ further to $0.2$ gives AL $0.699$ and PG $0.720$. Faithfulness is non-monotonic. High $\tau$ shows how localization scores favor concentrated maps within the same game. User-perceived informativeness remains untested.
+The localization-optimal modes place mass on the few patches that align with the segmentation mask. As $\tau$ increases, routing spreads over more predecessors: the displayed examples retain object focus while extending attribution into context, without establishing which contextual features the model uses. Around the selected ViT-B/16 setting (Table~\ref{ptnb:tab:vit-temperature}), AL peaks at $0.723$ for $\tau{=}0.3$ and decreases to $0.461$ at $\tau{=}1$; lowering $\tau$ further to $0.2$ gives AL $0.699$ and PG $0.720$. Faithfulness is non-monotonic. The temperature sweep illustrates how AL rewards concentration of attribution mass within object masks. User-perceived informativeness remains untested.
 
 \input{tables/vit_temperature_main}
 \input{figures/experiments/vit_temperature_main}
@@ -355,7 +381,7 @@ One-factor mode ablations around validation-selected configurations (Section~\re
 
 \paragraph{Gradient-fallback attention.}\label{ptnb:app:abl-gradient-fallback}
 
-The \ac{rg} backward holds the realized attention policy fixed and routes relevance only through the Value path, with zero gradient on $Q$, $K$, as in CP-LRP~\parencite{Ali2022AttnLRP} (Section~\ref{ptnb:app:vit-implementation}). Gradient fallback uses pure autograd through attention, recovering zennit-style $\varepsilon$-\ac{lrp}; Value-routing risk $\lambda_\text{sm}$ is inactive. Fallback lowers all three localization metrics in every configuration (AL and TK significantly throughout) and worsens every PF$_5$, PF$_{20}$ and Sel cell, significantly in four of nine.
+The \ac{rg} backward holds the realized attention policy fixed and routes relevance only through the Value path, with zero gradient on $Q$, $K$, as in CP-LRP~\parencite{Ali2022AttnLRP} (Section~\ref{ptnb:app:vit-implementation}). Gradient fallback applies the $\varepsilon$-rule to the first operand of both attention products and ordinary backpropagation to the second operand and the softmax; Value-routing risk $\lambda_\text{sm}$ is inactive. Fallback lowers all three localization metrics in every configuration (AL and TK significantly throughout) and worsens every PF$_5$, PF$_{20}$ and Sel cell, significantly in four of nine.
 
 \subsection{Additional Experimental Controls}\label{sec:additional-controls}
 
@@ -370,11 +396,6 @@ A second faithfulness control removes or restores all three color channels of ea
 \paragraph{Isolating the effect of risk aversion.}
 On all 565 ViT test images, the validation-selected risk setting reduces Maximum Sensitivity from $0.6850$ to $0.6013$, while AL decreases from $0.6706$ to $0.5204$. For VGG-16, we hold the activation-gating rule fixed to distinguish the risk term's effect from gate smoothing: Maximum Sensitivity falls from $0.5265$ to $0.4865$, with AL changing from $0.6207$ to $0.6107$. Table~\ref{tab:rebuttal-risk} separates the effects of smoothing, risk aversion, and their combination.
 
-% VIT_EXTENSION_INSERT_HERE
-% BEGIN VIT_EXTENSION_GENERATED
-\input{tables/vit_extension/generated/integration}
-% END VIT_EXTENSION_GENERATED
-
 \section{Experimental Conclusions}\label{sec:experimental_conclusions}
 
-The two papers demonstrate complementary benefits of structural attribution. The DC decomposition improves localization and Selectivity through SplitCAM, while SplitLRP achieves the lowest Maximum Sensitivity in the VGG-16 comparison, without retraining the underlying model. The game framework turns changes of routing into strong ViT localization methods: RG and RG+Eq lead the original localization-selected comparison, and their lead transfers to Pascal VOC without retuning. The controls explain these gains more precisely: map concentration, feature ranking, and robustness measure different properties. Together with the verified gradient and relevance identities and the trajectory diagnostics, these results establish a mathematical and empirical basis for understanding, deriving, and improving backward attribution methods.
+The two papers demonstrate complementary benefits of structural attribution. The DC decomposition improves localization and Selectivity through SplitCAM, while SplitLRP achieves the lowest Maximum Sensitivity in the VGG-16 comparison, without retraining the underlying model. The game framework turns changes of routing into strong ViT localization methods: RG and RG+Eq lead the original localization-selected comparison, and their lead transfers to Pascal VOC without retuning. The controls explain these gains more precisely: map concentration, feature ranking, and robustness measure different properties. The game methods provide controllable routing and strong localization under the stated protocol, and the sharpening and full-curve controls show that this localization lead does not carry over to perturbation faithfulness, where the \ac{lrp} rules remain ahead. Together with the verified gradient and relevance identities and the trajectory diagnostics, these results establish a mathematical and empirical basis for understanding, deriving, and improving backward attribution methods.

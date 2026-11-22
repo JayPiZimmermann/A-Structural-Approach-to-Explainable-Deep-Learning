@@ -2,7 +2,7 @@
 
 The project uses Lean 4 and mathlib v4.35.0, with dependencies pinned in
 `lean-toolchain` and `lake-manifest.json`. This remains a partial formalization
-of the thesis. The coverage map records the exact scope of each source theorem;
+of the thesis. The thesis states the exact scope of each source theorem;
 proved components do not silently count as an entire source theorem.
 
 ## Start with the definitions
@@ -137,23 +137,15 @@ activation/special-function evaluations have unit cost; stored values and fixed
 parameters are accessed in constant time, and fixed parameter-derived constants
 are precomputed. The count is not a bit-complexity or floating-point guarantee.
 The original recursive expression evaluator is a functional specification; the
-new cost theorem applies to the materialized shared evaluator. The local build,
-exact-type audit and independent scope review are recorded under
-`reports/verification/transformer-linear-cost/` at the repository root.
+new cost theorem applies to the materialized shared evaluator.
 
 To check the extension, run `lake build HiddenMonotonicity.TransformerLinearCost`
 and `lake env lean checks/transformer_linear_cost_audit.lean` from this directory.
 
-The original decomposition sources passed independent exact-type, axiom, source and boundary reviews
-and the complete clean production gate at
-`1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06`. The gate checked 167 modules,
-490 selected contracts and 3,640 imported project theorem constants; all 168
-commands exited zero and the bound source snapshot remained unchanged. Read
-[the receipt](../reports/verification/commit-1f886dd/receipt.json) and
-[the Lean handover](../HANDOVER_LEAN.md) for the verified source and remaining
-coverage limits. The 216 generated source links are pinned to that local commit.
-Contracts and review evidence are under `../reports/evidence/dc-generalization/`,
-`../reports/evidence/softmax-dc/` and `../reports/evidence/transformer-dc/`.
+The original decomposition sources build cleanly at
+`1f886dd524d0c9f3b38192a55fd7cfa5a20dfe06`, covering 167 modules, 490 selected
+contracts and 3,640 imported project theorem constants. The 216 generated source
+links are pinned to that revision.
 
 The theorem is an exact real-arithmetic construction. Its arithmetic-cost bound
 does not establish floating-point stability or attribution faithfulness.
@@ -169,8 +161,7 @@ and gradient differences to approximately `1e-15`, but it does not compute the
 unchanged individual convex-head derivatives. SplitCAM at alpha 0.4 is within
 0.0040–0.279% relative L2 of the ordinary activation-times-gradient control. This
 empirical result is not a kernel certificate for the stabilization and establishes
-no attribution-quality advantage. See the root README for the exact campaign
-commit, receipt and heatmaps.
+no attribution-quality advantage.
 
 ## Main modules
 
@@ -244,42 +235,30 @@ the canonical global equilibrium with pure activation choices and stochastic
 routing for the actual ReLU network, using the original log-space preferences.
 Every activation log tie selects stopping. This equilibrium theorem and the older
 alpha-beta path-recovery theorem use separate trajectory encodings in the public
-root. A six-module routing-history extension has passed independent review but
-remains unimported; see `../reports/routing-bridge-handover.md` for its exact
-input/intermediate occupation and forced-readout scope and promotion steps. The unrestricted signed
+root. A six-module routing-history extension remains unimported. The unrestricted signed
 affine readout and a global game for signed smooth activations are not included
 in that routing equilibrium theorem.
 
-`coverage_map.json` and `claim_inventory.json` identify remaining gaps, including
+Remaining gaps include
 architectural extensions, geometry, equilibrium claims, and randomization
 asymptotics. The Lean proofs do not certify Python implementations, floating-point
 behavior, empirical tables, or the correctness of every prose claim.
 
-## Build and audit
+## Build and check
 
 From this directory, with `elan` installed:
 
 ```sh
 lake exe cache get
 lake build All
-python3 scripts/inventory.py
-python3 scripts/verify.py
 ```
 
-`scripts/verify.py` requires a committed clean closure, builds the complete
-`All` root, checks the independently reviewed types in `verification.json`, and
-enumerates every imported project theorem through Lean itself for its axiom audit.
-It records commands, exit codes, exact source hashes, the commit and generated
-Lean checks in `reports/verification/current`. Use `--diagnostic` during development;
-that output is explicitly labelled as development evidence. The readable secondary
-`Audit.lean` can still be regenerated with `python3 scripts/audit.py`.
 The accepted foundational axioms are `propext`, `Classical.choice`, and
 `Quot.sound`. No `sorry`, `admit`, or custom axioms are used.
 
 The unpublished `TrajectoryHellinger` addition is checked separately with
 `lake build Thesis.TrajectoryHellinger` and
-`lake env lean checks/trajectory_hellinger_audit.lean`. Its local receipt is
-`../reports/verification/trajectory-hellinger/receipt.json`; the equation links to
+`lake env lean checks/trajectory_hellinger_audit.lean`. The equation links to
 a source snapshot under `../docs/draft-proofs/`. Keep that directory beside the
 PDF. Existing published links and the pinned `All` root remain unchanged.
 
@@ -289,20 +268,8 @@ the development symlink is not needed.
 
 ## Source links
 
-`tex_links.json` maps source labels in both the main thesis and technical
-supplement to declarations. The main PDF has 139 pages, within its 150-page cap,
-and the supplement has 85 pages. Their 157 and 59 Lean annotations cover all 135
-unique source targets across 216 occurrences. The complete source-reference
-inventory is distributed across both roots; supporting proofs moved without
-changing the verified Lean source. The publication guard
-`python3 reports/evidence/page-budget/verify_publication.py`, run from the
-repository root after copying both PDFs, checks both documents and every bound
-proof-source hash. The passed result is recorded in
-`../reports/evidence/page-budget/publication-checks.json`; the accompanying
-`final-editorial-audit.json` covers editorial checks. The root script
-`scripts/generate_lean_links.py` locates each declaration in a committed source
-snapshot, checks its exact file contents, and generates permanent GitHub links
-with real line numbers. `lean_links.json` records the commit and file hashes.
+Statements in the thesis carry numbered Lean references that link to the
+corresponding declarations in this repository at a fixed revision, with exact
+line numbers.
 A **Lean variant** badge links a complete theorem under the stated formal
 model's assumptions; **Lean components** links part of a broader statement.
-See the corresponding coverage-map entry for the exact distinction.

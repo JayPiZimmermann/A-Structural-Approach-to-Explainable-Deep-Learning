@@ -37,7 +37,7 @@ In Table~\ref{tab:randomization_sanity_check}, every reported SplitCAM and Split
 
 Table~\ref{tab:timing_comparison} reports mean attribution times on the custom 50-image ImageNet-S validation subset for ResNet-18 and VGG-16. Splitting times, averaged separately over 20 setups, are 0.033\,s and 0.030\,s, respectively. SplitCAM and SplitGrad take 0.33--0.44\,s per image, versus 0.28--0.31\,s for Guided Grad-CAM; the split methods are much faster than the reported Feature Ablation and Occlusion configurations.
 
-These timings describe the implementation and evaluation setup reported in \emph{Hidden Monotonicity}~\parencite{hiddenMono}.
+These timings describe the implementation and evaluation setup reported in \emph{Hidden Monotonicity}~\parencite{hiddenMono}. The per-image timer covers the attribution call with its post-processing and the copy of the map to the CPU, with GPU synchronization before and after the call. Model and image loading, device transfer, the forward pass that selects the predicted class, and model splitting lie outside the timer; images are processed one at a time, without warm-up.
 
 \input{tables/appendix/timing_comparison}
 
@@ -46,7 +46,7 @@ These timings describe the implementation and evaluation setup reported in \emph
 \paragraph{Mode selection and cost.}
 Start at the anchor, vary $\tau$ at negligible cost, add risk aversion with input variance $\sigma^2$ to discount high-variance units ($\lambda$ for \acp{cnn}, $\lambda_{\mathrm{sm}}$ for \acp{vit}), then use \ac{rg}+Eq averaging for ViT token-grid artifacts. The validation selections of Section~\ref{ptnb:app:val-selection} show which combination the protocol picks per model and criterion. The VGG-16 \ac{sg} configuration also uses the noisy-observation gate.
 
-Median times on one A100 GPU at batch size 1 show little temperature overhead, from $0.035$ to $0.037$\,s/image for VGG-16 and from $0.089$ to $0.094$\,s/image for ResNet-50. Risk aversion adds one \ac{ptnbADF} pass, from $0.089$ to $0.140$\,s/image on ResNet-50; the noisy gate also requires this pass for $\sigma$. Changing $(\alpha,\beta)$, $\varepsilon$ or the fan-in entropy bias has negligible overhead. Equivariant averaging requires $N$ attribution passes; the ViT timings below use $N=50$.
+Runtimes are medians over the first 50 test images on one A100 GPU at batch size 1, after five untimed warm-up calls and with GPU synchronization before and after each timed attribution call; data loading, device transfer and method construction lie outside the timer, and for \ac{rg}+Eq the complete averaging call is timed. They show little temperature overhead, from $0.035$ to $0.037$\,s/image for VGG-16 and from $0.089$ to $0.094$\,s/image for ResNet-50. Risk aversion adds one \ac{ptnbADF} pass, from $0.089$ to $0.140$\,s/image on ResNet-50; the noisy gate also requires this pass for $\sigma$. Changing $(\alpha,\beta)$, $\varepsilon$ or the fan-in entropy bias has negligible overhead. Equivariant averaging requires $N$ attribution passes; the ViT timings below use $N=50$.
 
 \paragraph{ViT-B/16 attribution runtime.} For the localization-selected or fixed configurations in Table~\ref{ptnb:tab:test-ci-vit}, seconds per image on one GPU were: Gradient $0.02$, SmoothGrad $1.12$, LRP-$\gamma$ $0.08$, AttnLRP $0.10$, TIBAV $0.15$, GAE $0.03$, KernelSHAP $6.71$, RG anchor $0.10$, RG $0.17$, RG+Eq anchor $4.93$, and RG+Eq $8.66$. The anchors are the exact $\alpha\beta$-\ac{lrp} representations of Theorem~\ref{ptnb:thm:lrp-recovery}; hardware and timing scope are specified in Section~\ref{ptnb:app:compute-resources}.
 
@@ -56,7 +56,7 @@ These ablation studies examine the effect of the proposed stabilization techniqu
 
 \subsection{Backward-Pass Stabilization}\label{app:backward_ablation}
 
-Table~\ref{tab:alpha_comparison_by_method} gives the full $\alpha$ grid underlying Section~\ref{subsec:alpha_ablation}. Layer-14 configurations show smaller or adverse changes in some metrics. Convex and winner-takes-it-all max-pooling differ little near $\alpha=0.5$ and more at lower values; their ranking depends on configuration and metric.
+Table~\ref{tab:alpha_comparison_by_method} gives the full $\alpha$ grid underlying Section~\ref{subsec:alpha_ablation}. This grid is a second, independent evaluation run. For the configurations it shares with the full evaluation of Table~\ref{tab:xai_eval_comprehensive_vgg}, such as SplitCAM with scaling at $\alpha=0.4$ on layers 14 and 26, Pointing Game, PF$^{\mathrm{drop}}_{20}$ and Maximum Sensitivity agree to within $0.01$ and Attribution Localization to within $0.001$: the second run reproduces the reported results. Layer-14 configurations show smaller or adverse changes in some metrics. Convex and winner-take-all max-pooling differ little near $\alpha=0.5$ and more at lower values; their ranking depends on configuration and metric.
 
 \input{tables/appendix/alpha_combined}
 
@@ -74,15 +74,15 @@ Tables~\ref{tab:alpha_comparison_none} and~\ref{tab:alpha_comparison_shift} repo
 The validation, test and VOC tables are generated by one pipeline from the declared grids and the selection rules of Section~\ref{ptnb:app:protocol}.
 
 \paragraph{Configuration symbols.}\label{ptnb:app:config-symbols}
-Parameter grids and baseline recipes appear in Table~\ref{ptnb:tab:main-search-grid}. The configuration columns use the following parameters. \ac{rg}, \ac{rg}+Eq and \ac{sg}: temperature $\tau$, activation-side risk aversion $\lambda$, attention-logit risk aversion $\lambda_{\mathrm{sm}}$, \ac{ptnbADF} input variance $\sigma^2$, \ac{lrp} stabilizer $\varepsilon$, stream weights $(\alpha,\beta)$, noisy-observation gate $\tilde\Phi$, and the number $N$ of transformed inputs averaged by \ac{rg}+Eq. SmoothGrad: $N$ noisy samples with noise standard deviation $\sigma$ relative to the input range ($\sigma/\mathrm{range}$). Integrated Gradients: $N_{\mathrm{steps}}$ integration steps. DAVE: $N$ transformed inputs with rotations up to $\theta_{\max}$ degrees, shifts up to $s_{\max}$ of the image extent, and variance-preserving Gaussian noise of interpolation weight up to $t_{\max}$. AttnLRP: $\gamma$-rule parameters $\gamma_{\mathrm{conv}}$ and $\gamma_{\mathrm{lin}}$ of the convolutional and linear layers and the stabilizer $\varepsilon_{\mathrm{attn}}$ of the attention layers. LIME and KernelSHAP: $N$ perturbation samples. Row labels in parentheses give the selection criterion (\texttt{loc}, \texttt{faith}); single-configuration methods have no criterion. Two row labels denote implementation variants throughout the game-method tables: \emph{DAVE} is our DAVE variant, which additionally freezes the LayerNorm mean, and \emph{SG} is the positive-component (\texttt{pp}) readout of the \ac{sg}, not the signed occupation difference that equals the gradient (Section~\ref{ptnb:app:baselines}).
+Parameter grids and baseline recipes appear in Table~\ref{ptnb:tab:main-search-grid}. The configuration columns use the following parameters. \ac{rg}, \ac{rg}+Eq and \ac{sg}: temperature $\tau$, activation-side risk aversion $\lambda$, attention-logit risk aversion $\lambda_{\mathrm{sm}}$, \ac{ptnbADF} input variance $\sigma^2$, \ac{lrp} stabilizer $\varepsilon$, stream weights $(\alpha,\beta)$, noisy-observation gate $\tilde\Phi$, and the number $N$ of transformed inputs averaged by \ac{rg}+Eq. SmoothGrad: $N$ noisy samples with noise standard deviation $\sigma$ relative to the input range ($\sigma/\mathrm{range}$). Integrated Gradients: $N_{\mathrm{steps}}$ integration steps. DAVE: $N$ transformed inputs with rotations up to $\theta_{\max}$ degrees, shifts up to $s_{\max}$ of the image extent, and variance-preserving Gaussian noise of interpolation weight up to $t_{\max}$. AttnLRP: $\gamma$-rule parameters $\gamma_{\mathrm{conv}}$ and $\gamma_{\mathrm{lin}}$ of the convolutional and linear layers and the stabilizer $\varepsilon_{\mathrm{attn}}$ of the attention layers. LIME and KernelSHAP: $N$ perturbation samples. Row labels in parentheses give the selection criterion (\texttt{loc}, \texttt{faith}); single-configuration methods have no criterion. Two markers denote implementation variants throughout the game-method tables and figures: DAVE$^{*}$ is our DAVE variant, which additionally freezes the LayerNorm mean, and SG$^{\mathrm{pp}}$ is the positive-component (\texttt{pp}) readout of the \ac{sg}, not the signed occupation difference that equals the gradient (Section~\ref{ptnb:app:baselines}).
 
-\subsection{Validation selections}\label{ptnb:app:val-selection}
+\subsection{Validation Selections}\label{ptnb:app:val-selection}
 
 Table~\ref{ptnb:tab:val-selection-all} gives both rank-sums for each validation choice on the 50-image split. The full test tables identify the selected configurations.
 
 \begin{table}[htbp]
     \centering
-    \caption[Validation selection on ViT-B/16, VGG-16 and ResNet-50]{ViT-B/16, VGG-16 and ResNet-50: validation rank-sums within each method, lower is better. Each pair reports localization and faithfulness rank-sums for the row selected by the named criterion (Section~\ref{ptnb:app:selection}); anchors are fixed reference configurations.}
+    \caption[Validation selection on ViT-B/16, VGG-16 and ResNet-50]{ViT-B/16, VGG-16 and ResNet-50: validation rank-sums within each method, lower is better. Each pair reports localization and faithfulness rank-sums for the row selected by the named criterion (Section~\ref{ptnb:app:selection}); anchors are fixed reference configurations. Variant markers: Section~\ref{ptnb:app:config-symbols}.}
     \label{ptnb:tab:val-selection-all}
 \TableContent{
     \small
@@ -94,7 +94,7 @@ Table~\ref{ptnb:tab:val-selection-all} gives both rank-sums for each validation 
 \AliasLabel{ptnb:tab:val-selection-vgg}{ptnb:tab:val-selection-all}
 \AliasLabel{ptnb:tab:val-selection-resnet}{ptnb:tab:val-selection-all}
 
-\subsection{Test results with confidence intervals}\label{ptnb:app:test-ci}
+\subsection{Test Results with Confidence Intervals}\label{ptnb:app:test-ci}
 
 Table~\ref{ptnb:tab:test-ci-vit} and Tables~\ref{ptnb:tab:test-ci-vgg}--\ref{ptnb:tab:test-ci-resnet} report all 565-image test rows: \texttt{loc}/\texttt{faith} selections, anchors and fixed configurations. Confidence intervals and highlighting follow Table~\ref{ptnb:tab:test-ci-vit}; ViT-B/16 runtimes appear in Section~\ref{app:game_timing}.
 
@@ -103,7 +103,7 @@ Table~\ref{ptnb:tab:test-ci-vit} and Tables~\ref{ptnb:tab:test-ci-vgg}--\ref{ptn
     \captionsetup{hypcap=false}
     \captionof{table}[ViT-B/16: full ImageNet-S results with confidence intervals]{ViT-B/16, ImageNet-S test split: all rows with 95\% bootstrap confidence
     intervals (MaxS/AvgS: the fixed 200-image subset). Metrics: Section~\ref{ptnb:app:metrics}; configuration symbols and row labels:
-    Section~\ref{ptnb:app:config-symbols}. DAVE rows are our frozen-LayerNorm-mean variant and SG rows the positive-component readout. Bold/dark shading marks the best row; $^{\approx}$/light shading marks no significant difference from it under the full-table comparison (Section~\ref{ptnb:app:stats}).}
+    Section~\ref{ptnb:app:config-symbols}, which also defines the variant markers DAVE$^{*}$ and SG$^{\mathrm{pp}}$. Bold/dark shading marks the best row; $^{\approx}$/light shading marks no significant difference from it under the full-table comparison (Section~\ref{ptnb:app:stats}).}
     \label{ptnb:tab:test-ci-vit}
 \end{center}
 \captionsetup{hypcap=true}
@@ -169,7 +169,7 @@ Every ViT-B/16 baseline configuration in Table~\ref{ptnb:tab:main-search-grid} i
 \providecommand{\absval}[2]{
 \begin{tabular}[c]{@{}c@{}}#1\\\textcolor{gray!70}{\scriptsize #2}\end{tabular}}
 
-\subsection{One-factor ablations}\label{ptnb:app:abl-one-factor}\label{ptnb:app:tradeoff-sweeps}\label{ptnb:app:dual-sweeps}\label{app:dual-sweeps}
+\subsection{One-Factor Ablations}\label{ptnb:app:abl-one-factor}\label{ptnb:app:tradeoff-sweeps}\label{ptnb:app:dual-sweeps}\label{app:dual-sweeps}
 Tables~\ref{ptnb:tab:ablations-vit}--\ref{ptnb:tab:ablations-resnet} vary one parameter at a time around each validation-selected configuration of \ac{rg}, \ac{rg}+Eq and \ac{sg}, over the values of the declared grid; all other parameters stay at their selected values. Each selected center appears once in bold; the notes retain every selected factor value. The rows are evaluated on the 565-image test split with the localization and faithfulness metrics and never feed back into the selection. On ViT-B/16, ``+Eq'' evaluates \ac{rg}+Eq at the parameters of the selected \ac{rg} row. Configurations inadmissible on validation (Section~\ref{ptnb:app:selection}) are excluded.
 
 \appneedspace{8\baselineskip}
@@ -186,7 +186,7 @@ Tables~\ref{ptnb:tab:ablations-vit}--\ref{ptnb:tab:ablations-resnet} vary one pa
 \begin{center}
     \captionsetup{hypcap=false}
     \captionof{table}[VGG-16: one-factor ablations on ImageNet-S]{VGG-16, ImageNet-S test split: one-factor ablations around the selected
-    configurations, as in Table~\ref{ptnb:tab:ablations-vit}.}
+    configurations, as in Table~\ref{ptnb:tab:ablations-vit}. SG$^{\mathrm{pp}}$ marks the positive-component readout (Section~\ref{ptnb:app:config-symbols}).}
     \label{ptnb:tab:ablations-vgg}
 \end{center}
 \captionsetup{hypcap=true}
@@ -202,7 +202,7 @@ Tables~\ref{ptnb:tab:ablations-vit}--\ref{ptnb:tab:ablations-resnet} vary one pa
 \captionsetup{hypcap=true}
 {\small\appinputgenlt{tables/integrated/ablations_resnet50_longtable}}
 
-\subsection{Pointing game at matched granularity}\label{ptnb:app:pg-granularity}
+\subsection{Pointing Game at Matched Granularity}\label{ptnb:app:pg-granularity}
 
 The pointing game of Quantus counts a hit whenever any pixel attaining the map maximum lies in the mask. A piecewise-constant maximum spans hundreds to thousands of pixels for superpixel and $14{\times}14$ attention maps, versus usually one for pixel-level maps. Table~\ref{ptnb:tab:pg-granularity} reports the median maximum-set size, the expected hit rate of a uniformly drawn maximum pixel (PG$_{1\mathrm{px}}$), and Pointing Game after average-pooling all maps to a common $16{\times}16$-pixel grid (PG$_{16\mathrm{px}}$). Drawing a single maximum pixel removes most of the advantage of the superpixel methods LIME and KernelSHAP. At common granularity, leaders move closer: LRP-$\gamma$ and AttnLRP lead on ViT-B/16; localization-selected \ac{sg} and faithfulness-selected \ac{rg} are not significantly below Grad-CAM++, the best VGG-16 baseline; Grad-CAM, LayerCAM and LRP-$\gamma$ lead on ResNet-50 (McNemar tests against the best baseline).
 
@@ -213,7 +213,7 @@ The pointing game of Quantus counts a hit whenever any pixel attaining the map m
     PG$_{1\mathrm{px}}$: expected hit rate of one pixel drawn uniformly from that set;
     PG$_{16\mathrm{px}}$: PG after average-pooling the map to $16{\times}16$-pixel cells. Rows: the
     \texttt{loc}-selected or fixed configuration of every method, plus the \texttt{faith} rows of our
-    games. \textbf{Bold}: best per model and column.}
+    games. \textbf{Bold}: best per model and column. Variant markers: Section~\ref{ptnb:app:config-symbols}.}
     \label{ptnb:tab:pg-granularity}
 \TableContent{
     \small
@@ -221,7 +221,7 @@ The pointing game of Quantus counts a hit whenever any pixel attaining the map m
 }%
 \end{table}
 
-\subsection{Qualitative comparison}\label{ptnb:app:qualitative}\label{app:qualitative}
+\subsection{Qualitative Comparison}\label{ptnb:app:qualitative}\label{app:qualitative}
 The six-image ViT-B/16 qualitative comparison is presented in Figure~\ref{fig:vit_saliency_comparison_main} in the main case study.
 
 

@@ -4,7 +4,7 @@
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.05}
 \LongTableContent{
-\caption[Comprehensive interpretability evaluation: VGG-16]{Comprehensive interpretability evaluation results (VGG-16; representative configurations, best per method). \emph{wta} denotes winner-takes-it-all max-pooling, and \emph{sc} forward scaling (Section~\ref{sec:stabilization_dc}); layer brackets follow the split-method upper indices of Section~\ref{sec:split_attribution_concept}. For each method configuration the best metric values across the considered layer configurations are highlighted in bold with dark blue shading. PF$^{\mathrm{drop}}$ is score-drop AUC; n/r denotes a result not reported in the paper, and n/a an inapplicable entry.}
+\caption[Comprehensive interpretability evaluation: VGG-16]{Comprehensive interpretability evaluation results (VGG-16; representative configurations, best per method). \emph{wta} denotes winner-take-all max-pooling, and \emph{sc} forward scaling (Section~\ref{sec:stabilization_dc}); layer brackets follow the split-method upper indices of Section~\ref{sec:split_attribution_concept}. For each method configuration the best metric values across the considered layer configurations are highlighted in bold with dark blue shading. PF$^{\mathrm{drop}}$ is score-drop AUC; n/r denotes a result not reported in the paper, and n/a an inapplicable entry. Attribution Localization is computed on the signed maps unless \emph{Abs} is set, so it can be negative; the original-image baseline uses the normalized input as its map.}
     \label{tab:xai_eval_comprehensive_vgg}%
 }{%
 \begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.6cm}cc cccccc@{}}
@@ -89,7 +89,7 @@
     \multicolumn{9}{c}{\textit{Baseline Methods}} \\
     \midrule
     Baseline: Binary Mask & 0 & y & 6.011 & 1.000 & 1.000 & 0.091 & 1.054 & n/r \\
-    Baseline: Original Image & 0 & y & 8.770 & -1.699 & 0.572 & 0.061 & 0.619 & n/r \\
+    Baseline: Original Image & 0 & n & 8.770 & -1.699 & 0.572 & 0.061 & 0.619 & n/r \\
     Random Baseline & 0 & y & 3.570 & 0.425 & 0.458 & 0.203 & 1.585 & n/r \\
     \midrule
 \end{longtable}%

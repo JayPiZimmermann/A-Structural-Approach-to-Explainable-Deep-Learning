@@ -55,7 +55,7 @@ Process each operation after its inputs have been decomposed and construct its s
 
 Theorem~\ref{thm:polarized_multiplicative_split} covers the signed projections, products and residual additions in attention. Combining it with Theorem~\ref{thm:softmax_dc_split}'s softmax pair, the smooth-activation pairs of Section~\ref{sec:closed_form_dc_activations}, and the LayerNorm construction below gives a DC decomposition of the full deterministic Transformer.
 
-\subsection{Layer normalization with positive epsilon}
+\subsection{Layer Normalization with Positive Epsilon}
 
 For $\varepsilon>0$ and $d\ge1$, LayerNorm on $u\in\RR^d$ uses
 \begin{equation}
@@ -94,7 +94,7 @@ The pieces meet with derivative $-M$; their second derivatives are $0$ and $3/(4
 
 To split~\eqref{eq:layernorm_dc_definition}, split affine centering, square each centered pair using~\eqref{eq:polarized_product_pair}, and average streams to obtain $v=v^+-v^-$. Apply~\eqref{eq:reciprocal_sqrt_pair}: recovered $v\ge0$ makes its extension exactly the normalization factor. Multiply by each centered pair using polarization, then apply signed scale and bias. These operations preserve non-negative convex monotone streams on the input orthant; $\varepsilon>0$ covers every input, including constant vectors.
 
-\subsection{An explicit pre-normalization architecture}
+\subsection{An Explicit Pre-Normalization Architecture}
 
 Tokens $t\in\{1,\dots,T\}$ have features in $\RR^d$, with $T,d\ge1$. All matrices and biases below are fixed real parameters of either sign.
 
@@ -141,7 +141,7 @@ For any finite depth $K\ge0$, define
 The optional final norm is tokenwise with positive epsilon. Depth zero retains only the positional map, optional norm and readout; zero readout weights outside one token give a class-token logit. Fixed coordinate scalings can represent a fixed dropout mask in this deterministic inference computation.
 \end{definition}
 
-\subsection{The full Transformer construction}
+\subsection{The Full Transformer Construction}
 
 Use the canonical affine and ReLU splits throughout the network, add residual branches componentwise, and apply the product pair~\eqref{eq:polarized_product_pair}, the smooth activation pairs of Section~\ref{sec:closed_form_dc_activations}, softmax Theorem~\ref{thm:softmax_dc_split}, and the LayerNorm recipe above, retaining its input-dependent statistics.
 
@@ -178,11 +178,11 @@ Each scalar split uses a bounded number of operations; softmax and LayerNorm sha
 
 Numerical stability is separate: repeated products and the LayerNorm factor $M=(2\varepsilon^{3/2})^{-1}$ can amplify common stream values and cause floating-point cancellation. Appendix~\ref{app:transformer_dc_numeric} reports machine-precision gradient recovery for the stabilized implementation on the full pretrained ViT-B/16, whose pre-normalization arrangement matches Definition~\ref{def:prenorm_transformer}. The completed SplitCAM benchmark uses the stabilized, conditioned variant (Section~\ref{sec:vit-extension}).
 
-\section{Attention via a detached-logit oracle}\label{ptnb:sec:attention}\label{ptnb:app:vit-extension}\label{sec:attention_routing_game}\label{ptnb:app:attention-subgame}\label{app:supp_attention}
+\section{Attention via a Detached-Logit Oracle}\label{ptnb:sec:attention}\label{ptnb:app:vit-extension}\label{sec:attention_routing_game}\label{ptnb:app:attention-subgame}\label{app:supp_attention}
 
 We now derive the conditioned Value-routing rule used in the ViT experiments. Its LayerNorm rule fixes both mean and scale, giving a pointwise affine map; CP-LRP and DAVE retain linear centering while fixing the scale~\parencite{Ali2022AttnLRP,Wrobel2024}. The QK-softmax block is replaced by an \emph{oracle game} emitting a detached reference policy, with occupation-measure trajectories flowing only through the Value route. Theorem~\ref{ptnb:thm:attn-ab-recovery} identifies their signed discounted occupations with composite $\alpha\beta$-\ac{lrp}. This attribution question conditions on attention, LayerNorm statistics and \acs{ptnbGELU} gates; the full DC construction above retains their input dependence.
 
-\subsection{The conditioned map and target rule}\label{ptnb:app:attention-kl-routing}\label{ptnb:app:attention-target-rule}
+\subsection{The Conditioned Map and Target Rule}\label{ptnb:app:attention-kl-routing}\label{ptnb:app:attention-target-rule}
 
 We focus on a single attention head with output/query token $t$, key token $k\in\{1,\dots,S\}$, feature $d\in\{1,\dots,d_h\}$, and input embedding coordinate $e\in\{1,\dots,D\}$. For signed inputs $X$, shared per-token weights $W_v$ and bias $b_v$, and detached row-stochastic attention $A\ge0$,
 \begin{align}
@@ -232,7 +232,7 @@ For incoming relevance $R^O$, the composite rule~\eqref{ptnb:eq:lrp-ab} factors 
 \end{align}
 The bias share is absorbed. Substitution cancels positive intermediate masses; when an intermediate or output mass is zero, both forms vanish by~\eqref{ptnb:eq:attn-zero-ratio}. Thus the factorization holds in every case.
 
-\subsection{KL routing and the attention game}\label{ptnb:app:kl-legendre-fenchel}
+\subsection{KL Routing and the Attention Game}\label{ptnb:app:kl-legendre-fenchel}
 
 \begin{lemmaenv}[Legendre--Fenchel transform of KL divergence, \LeanResult{ptnb:lem:kl-legendre-fenchel}]\label{ptnb:lem:kl-legendre-fenchel}
 For a finite set $\mathcal X$, full-support reference $\bar\pi\in\Delta(\mathcal X)$ and real payoff $r$, let $Z=\sum_x\bar\pi(x)e^{r(x)}$. Then
@@ -292,7 +292,7 @@ Apply the logit specialization~\eqref{ptnb:eq:kl-lf-linearized} with $u(k)=\tild
 \end{proof}
 Together with the surrounding equilibrium, these local maximizing policies form an SPNE by backward induction.
 
-\subsection{Occupation-measure recovery}\label{ptnb:app:attention-recovery}
+\subsection{Occupation-Measure Recovery}\label{ptnb:app:attention-recovery}
 
 For the discounted occupations $\Gamma_x$ of \S\ref{ptnb:app:routing-attribution}, define player differences
 \begin{align}
@@ -327,7 +327,7 @@ For each $(t,d,k,e)$, the two routing probabilities multiply to $A_{t,k}[X_{k,e}
 Subtracting the $r=-$ recursion from $r=+$ gives~\eqref{ptnb:eq:attn-ab-recovery}; with $\Gamma^O=R^O$, this is the composite target rule. Summing matching input and bias masses gives $\tilde v_{k,d}^\kappa$, proving the Value-entry equality. Linearity gives the arbitrary-seed claim.
 \end{proof}
 
-\subsection{The reference as the policy of a QK oracle player}\label{ptnb:app:attention-oracle}
+\subsection{The Reference as the Policy of a QK Oracle Player}\label{ptnb:app:attention-oracle}
 
 The cached reference $A_{t,\cdot}$ suffices for Value routing. It is itself the entropy-regularized best response of an auxiliary \emph{oracle} player whose payoff is the detached query--key logit $e_{tk}=Q_tK_k^\top/\sqrt{d_h}$: by~\eqref{ptnb:eq:gibbs-lse}, at temperature $1$,
 \begin{equation}\label{ptnb:eq:attn-qk-oracle}
@@ -351,11 +351,11 @@ With \ac{ptnbADF} variance propagation, the implementation uses $s_{tk}=\hat\sig
 \end{align}
 More-negative values penalize high scores more strongly: $\sum_k\tilde\pi_t(k)s_{tk}$ is non-decreasing in $\lambda_{\mathrm{sm}}$, while entropy may rise or fall. The shift is computed in the AV-backward hook from cached pre-softmax logits, so the forward pass and model predictions remain unchanged. Unlike activation-side $\lambda$, which lowers values by $|\lambda|\sigma$, this risk aversion changes routing rather than utility curvature.
 
-\subsection{Implementation details}\label{ptnb:app:vit-implementation}\label{sec:vit_implementation}
+\subsection{Implementation Details}\label{ptnb:app:vit-implementation}\label{sec:vit_implementation}
 
-Our ViT-B/16 \ac{rg} implementation applies this rule to the attention product and the Value projection as one composite step, with bias and stabilizer absorption. A full-gradient attention fallback reduces localization from \vitRGlocAL{} to $0.624$ at the localization-selected configuration. Four operator conventions specify the conditioned pass:
+Our ViT-B/16 \ac{rg} implementation applies this rule to the attention product and the Value projection as one composite step, with bias and stabilizer absorption. A gradient-fallback attention rule without Value-routing risk reduces localization from \vitRGlocAL{} to $0.624$ at the localization-selected configuration; the composite rule at $\lambda_{\mathrm{sm}}=0$ reaches $0.671$. Four operator conventions specify the conditioned pass:
 \begin{itemize}
-    \item \emph{LayerNorm detachment.}\label{ptnb:app:dave-conditioned} Standard gradients through data-dependent mean $m(x)$ and scale $s(x)$ couple features within each token and can violate \ac{lrp} conservation~\parencite{Ali2022AttnLRP}. With $c=x.\text{detach}()$, use the pointwise affine map $x\mapsto w_{\mathrm{LN}}\odot(x-m(c))/s(c)+b_{\mathrm{LN}}$. Both mean and scale are fixed; CP-LRP and DAVE fix only the scale~\parencite{Wrobel2024}.
+    \item \emph{LayerNorm detachment.}\label{ptnb:app:dave-conditioned} Standard gradients through data-dependent mean $m(x)$ and scale $s(x)$ couple features within each token and can violate \ac{lrp} conservation~\parencite{Ali2022AttnLRP}. With $c=x.\text{detach}()$, use the pointwise affine map $x\mapsto w_{\mathrm{LN}}\odot(x-m(c))/s(c)+b_{\mathrm{LN}}$. Both mean and scale are fixed; CP-LRP and DAVE fix only the scale~\parencite{Wrobel2024}. The \ac{rg} backward passes relevance through this map unchanged.
     \item \emph{GELU gate detachment.} Use $x\Phi(c)$, with $c=x.\text{detach}()$ and standard normal CDF $\Phi$. Its backward scaling by constant $\Phi(c)$ realizes the elementwise LRP identity rule in modified Gradient$\times$Input implementations~\parencite[Appendix~D.3]{Arras2025CloseLook}.
     \item \emph{Softmax detachment.} Softmax outputs are fully detached. The cached softmax row $A_{t,\cdot}$ is supplied as a fixed input to the Value-routing player by the optional QK oracle.
     \item \emph{QK gradient detachment.}\label{ptnb:app:attention-grad-detach} The softmax and QK-matmul backward hooks return zero gradients. Value routing uses~\eqref{ptnb:eq:attn-value-policy} and~\eqref{ptnb:eq:attn-V-routing-policy}, applying $(\alpha,\beta)$ once per block. The released code's sole rule, \texttt{av\_rule='merged'}, is checked against an independent reference for~\eqref{ptnb:eq:attn-target-input} by Section~\ref{ptnb:app:code-tests}'s identity tests.
@@ -367,4 +367,4 @@ To suppress artifacts from $16{\times}16$ patch tokenization, \ac{rg}+Eq uses th
 \begin{equation}\label{ptnb:eq:equivariant-average}
     \mathcal M_N(x)=\frac1N\sum_{n=1}^N T_n^{-1}[\mathcal M(T_nx)].
 \end{equation}
-Here $\mathcal M$ is the \ac{rg} attribution, $N=50$, and $T_n$ are i.i.d.\ rotations (uniform in $\pm10^\circ$), translations (up to $\pm5\%$ per image axis), and horizontal flips (probability $0.5$), without input noise. The conditioned pass separates operator variation from the effective transformation, following DAVE's argument. The transforms do not form a group, so this Monte-Carlo Reynolds average is an optional smoothing mode without an exactness claim.
+Here $\mathcal M$ is the \ac{rg} attribution, $N=50$, and $T_n$ are i.i.d.\ rotations (uniform in $\pm10^\circ$), translations (up to $\pm5\%$ per image axis), and horizontal flips (probability $0.5$), without input noise. The conditioned pass separates operator variation from the effective transformation, following DAVE's argument. The transforms do not form a group, so this Monte Carlo Reynolds average is an optional smoothing mode without an exactness claim.

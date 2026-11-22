@@ -12,7 +12,7 @@
         & {\scriptsize Grad}
         & {\scriptsize SmGrad}
         & {\scriptsize IntGrad}
-        & {\scriptsize DAVE}
+        & {\scriptsize DAVE$^{*}$}
         & {\scriptsize LRP-$\gamma$}
         & {\scriptsize AttnLRP}
         & {\scriptsize TIBAV} \\[2pt]
@@ -91,7 +91,7 @@
     \end{tabular}
     }
     }%
-\caption[ViT-B/16 qualitative comparison on six ImageNet-S examples]{Six ImageNet-S examples for ViT-B/16 at the localization-selected configurations of Table~\ref{ptnb:tab:eval-vit}; Gradient and TIBAV are fixed. Maps explain the dataset label, also the top-1 prediction except for the kuvasz (predicted: English setter). The first image is from the test split, the other five from validation. Red and blue show positive and negative attribution before the absolute-value reduction used for evaluation. Each sign is divided by its image-wide 99th percentile and clipped, saturating the top 1\%; all methods use this display transform. TIBAV is upsampled by nearest neighbor.}
+\caption[ViT-B/16 qualitative comparison on six ImageNet-S examples]{Six ImageNet-S examples for ViT-B/16 at the localization-selected configurations of Table~\ref{ptnb:tab:eval-vit}; Gradient and TIBAV are fixed. Maps explain the dataset label, also the top-1 prediction except for the kuvasz (predicted: English setter). The first image is from the test split, the other five from validation. Red and blue show positive and negative attribution before the absolute-value reduction used for evaluation. Each sign is divided by its image-wide 99th percentile and clipped, saturating the top 1\%; all methods use this display transform. TIBAV is upsampled by nearest neighbor. DAVE$^{*}$ is our DAVE variant with frozen LayerNorm mean (Section~\ref{ptnb:app:baselines}).}
     \label{fig:vit_saliency_comparison_main}
     \label{ptnb:fig:qualitative}
 \end{figure}

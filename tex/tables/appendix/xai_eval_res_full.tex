@@ -6,7 +6,7 @@
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.05}
 \LongTableContent{
-\caption[Comprehensive interpretability evaluation: ResNet-18]{Comprehensive interpretability evaluation results (ResNet-18; representative configurations, best per method). Abbreviations as in Table~\ref{tab:xai_eval_comprehensive_vgg}; triples $x.y.z$ identify the internal convolutional attribution layer. For each method configuration the best metric values across the considered layer configurations are highlighted in bold with dark blue shading. PF$^{\mathrm{drop}}$ is score-drop AUC; n/r denotes a result not reported in the paper, and n/a an inapplicable entry.}
+\caption[Comprehensive interpretability evaluation: ResNet-18]{Comprehensive interpretability evaluation results (ResNet-18; representative configurations, best per method). Abbreviations as in Table~\ref{tab:xai_eval_comprehensive_vgg}; triples $x.y.z$ identify the internal convolutional attribution layer. For each method configuration the best metric values across the considered layer configurations are highlighted in bold with dark blue shading. PF$^{\mathrm{drop}}$ is score-drop AUC; n/r denotes a result not reported in the paper, and n/a an inapplicable entry. Attribution Localization is computed on the signed maps unless \emph{Abs} is set, so it can be negative; the original-image baseline uses the normalized input as its map.}
     \label{tab:xai_eval_comprehensive_res}%
 }{%
 \begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.6cm}cc cccccc@{}}
@@ -81,7 +81,7 @@
     \midrule
     \multicolumn{9}{c}{\textit{Baseline Methods}} \\
     \midrule
-    Baseline: Original Image & conv1 & y & 8.351 & -1.699 & 0.572 & 0.049 & 0.435 & n/r \\
+    Baseline: Original Image & conv1 & n & 8.351 & -1.699 & 0.572 & 0.049 & 0.435 & n/r \\
     Baseline: Binary Mask & conv1 & y & 5.964 & 1.000 & 1.000 & 0.067 & 0.739 & n/r \\
     Random Baseline & n/a & y & 4.071 & 0.425 & 0.440 & 0.147 & 1.067 & n/r \\
     \midrule

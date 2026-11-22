@@ -48,7 +48,7 @@ so that $\Wl{l} = \Wsig{l}{+} - \Wsig{l}{-}$ and $\abs{\Wl{l}} = \Wsig{l}{+} + \
 The activation labels $\act{l}{\sigma}$, $\sigma \in \{+,-\}$, denote the two non-negative \emph{streams} defined in Section~\ref{sec:general_decomposition_def}, distinct from the entrywise parts $\posneg{\actl{l}}{\sigma}$.
 \end{remark}
 
-\subsection*{Continuous piecewise linear functions}
+\subsection*{Continuous Piecewise Linear Functions}
 
 \begin{definition}[Convexity, {\parencite[Sections~2.1 and~3.1]{BoydVandenberghe2004}}]\label{def:convexity}
 A set $C\subseteq\RR^d$ is \emph{convex} if $\lambda x+(1-\lambda)y\in C$ for all $x,y\in C$ and $\lambda\in[0,1]$. A function $f:C\to\RR$ on a convex set is \emph{convex} if
@@ -127,7 +127,7 @@ Let $q_i$ be the affine formula of $f$ on each full-dimensional cell $Q_i$. Let 
 \[
 g(x)=\sum_{(i,j)\in V}\max\{q_i(x),q_j(x)\},\qquad h(x)=g(x)-f(x).
 \]
-A maximum of affine functions is convex, and sums preserve convexity, so $g$ is convex. Extend each shared facet of the cells $Q_i$ to the hyperplane containing it, and cut all cells along these hyperplanes. On this \emph{common refinement}, $f$ and every summand of $g$ are affine on each smaller cell. Choose a line that crosses the distinct hyperplanes one at a time: it is not parallel to any of them and passes through no point where two meet. At every positive slope jump of $f$, the corresponding summand contributes exactly that jump to $g$; all other summands contribute nonnegative jumps. Negative jumps of $f$ become positive jumps of $-f$, and additional cuts contribute only nonnegative jumps from $g$. Thus $h$ has nondecreasing slopes along this line. Any line segment can be approximated by segments on such lines; continuity therefore gives convexity on every segment. Both functions are \ac{cpwl} and convex, and together with $f=g-h$, this proves~\eqref{eq:cpwl_dc_representation}.
+A maximum of affine functions is convex, and sums preserve convexity, so $g$ is convex. Extend each shared facet of the cells $Q_i$ to the hyperplane containing it, and cut all cells along these hyperplanes. On this \emph{common refinement}, $f$ and every summand of $g$ are affine on each smaller cell. Choose a line that crosses the distinct hyperplanes one at a time: it is not parallel to any of them and passes through no point where two meet. At every positive slope jump of $f$, the corresponding summand contributes exactly that jump to $g$; all other summands contribute non-negative jumps. Negative jumps of $f$ become positive jumps of $-f$, and additional cuts contribute only non-negative jumps from $g$. Thus $h$ has non-decreasing slopes along this line. Any line segment can be approximated by segments on such lines; continuity therefore gives convexity on every segment. Both functions are \ac{cpwl} and convex, and together with $f=g-h$, this proves~\eqref{eq:cpwl_dc_representation}.
 \end{proof}
 
 Figure~\ref{fig:cpwl_convex_folds} illustrates how convex folds contribute to $g$ and concave folds to $-h$ in one dimension.
@@ -278,7 +278,7 @@ The first inequality uses convexity of $u$ and monotonicity of $\varphi$; the se
 With $\Wl{1}\ge0$, an \ac{icnn} is both monotone and convex by Propositions~\ref{prop:monotone_represents} and~\ref{prop:icnn_convex}. ReLU and the maximum operation are convex and coordinatewise non-decreasing. Section~\ref{sec:dc_splitting_relu} therefore constructs $g,h$ as monotone networks on a signed input embedding, convex in the original input. Non-negative-weight ReLU networks represent only convex functions; broader monotone architectures add concave activation counterparts \parencite{Runje_2023}.
 \end{remark}
 
-\subsection*{Maxout units}
+\subsection*{Maxout Units}
 
 \begin{definition}[Maxout unit and Maxout network, \parencite{Goodfellow2013Maxout}]\label{def:maxout}
 A \emph{rank-$k$ Maxout unit} with weights $w_1, \ldots, w_k \in \RR^{d}$ and biases $\beta_1, \ldots, \beta_k \in \RR$ computes
@@ -338,7 +338,7 @@ Our games use \emph{state-dependent} discounts $\gamma(s)\ge0$ that may exceed $
 restores the mass after normalizing row $i$ of $\abs{\Wl{l}}$ into transition probabilities. Although contraction is unavailable, \emph{layered acyclic} graphs ensure finite trajectories and value sums. Backward induction gives a unique value and optimal policies, possibly nonunique at ties, as the two-player theorem below shows.
 \end{remark}
 
-\subsection*{Zero-sum turn-based games}
+\subsection*{Zero-Sum Turn-Based Games}
 
 Two-player games enter because a decomposed network carries two interacting streams: a player $P^{+}$ who collects positive evidence and a player $P^{-}$ who collects negative evidence. We use the following conventions throughout: $p, q, r \in \{+, -\}$ denote player, turn, or sign labels; $\opp{p}$ denotes the opponent ($\opp{+} = -$, $\opp{-} = +$); the \emph{sign-XOR} $p \oplus q$ is $+$ if $p = q$ and $-$ otherwise; and $\xi_{p} \in \{+1, -1\}$ is the numerical sign of the label $p$, so that $\xi_{p}\, \xi_{q} = \xi_{p \oplus q}$.
 
@@ -448,7 +448,7 @@ The \ac{sg} retains Definition~\ref{def:relu_net_game}'s per-neuron states index
 
 \section{Probability Distances and Layered Markov Processes}\label{sec:probabilistic_foundations}\label{ptnb:app:path-divergence}
 
-The finite-set probability distances and finite Markov-process notions in this section are standard. We specialize the Bhattacharyya-overlap recursion of \textcite{Kazakos1978} to common-start layered processes with a cemetery state, and derive terminal-state and survival-conditioned Hellinger diagnostics used to compare backward game trajectories in Chapter~\ref{ch:trajectory}.
+The finite-set probability distances and finite Markov-process notions in this section are standard. We specialize the Bhattacharyya-overlap recursion of \textcite{Kazakos1978} to common-start layered processes with a cemetery state, and derive terminal-state and survival-conditioned Hellinger diagnostics used to compare backward game trajectories in Chapter~\ref{ch:trajectory}. Chapters~\ref{ch:decompositions}--\ref{ch:experiments} do not depend on this section; it can be deferred until Chapter~\ref{ch:trajectory}.
 
 \subsection{Distances and Divergences on Finite Sets}\label{sec:probability_distances}
 

@@ -100,7 +100,7 @@ AttnLRP~\parencite{Achtibat2024AttnLRP} also propagates through the softmax and 
 All these rules share one structure: a backward recursion that routes mass from each neuron to its
 inputs. The games below make the routing explicit.
 
-\subsection{Notation and boundary conventions}\label{ptnb:app:notation}\label{ptnb:app:notation-identities}
+\subsection{Notation and Boundary Conventions}\label{ptnb:app:notation}\label{ptnb:app:notation-identities}
 Use Section~\ref{sec:game_theory_mdp_foundations}'s player and sign-XOR conventions: $p'$ denotes the opponent of $p$,
 $\delta_{p,q}=\1[p=q]$ and $\xi_{p,q}=2\delta_{p,q}-1$.
 We retain Definition~\ref{def:ffn_relu}'s ReLU convention at zero and choose the smallest-index max-pooling
@@ -372,7 +372,7 @@ policies, opening a continuous family of deformations.
 
 The Routing Game places activation-dependent routing in the players' policies. Its entropy-regularized log-space subgames have a Gibbs SPNE for every $\tau>0$; at $\tau=1$, their occupations recover $\alpha\beta$-\ac{lrp} under the assumptions of Theorem~\ref{ptnb:thm:ab-recovery}. This global construction assumes non-negative activation outputs. The later GELU discussion concerns local gates conditioned on a fixed forward pass.
 
-\subsection{States, values, and equilibrium}\label{ptnb:app:routing-kernel}
+\subsection{States, Values, and Equilibrium}\label{ptnb:app:routing-kernel}
 
 Use the Shannon entropy and Gibbs identity~\eqref{eq:legendre_fenchel} at routing temperature $\tau>0$,
 for $n\geq1$ and finite scores $r\in\RR^n$~\parencite{Geist2019regularized}.
@@ -464,6 +464,30 @@ Backward induction solves each linear subgame by~\eqref{ptnb:eq:gibbs-lse} on it
 For the anchor, induct on $l$. The first layer uses the fused masses $[x_iW_{ij}^{(1)}]^\kappa$; subsequently, $a_i^{(l-1)}\geq0$ gives $Q_q=\ell(a_i^{(l-1)}W_{ij}^{(l,\kappa)})$ by the induction hypothesis. The linear log-sum-exp is therefore $\ell(\Sigma_j^{(l,\kappa)}+\varepsilon)$. At activation states the two $\varepsilon$ terms cancel, leaving $D_p=\Sigma_j^{(l,+)}-\Sigma_j^{(l,-)}=z_j^{(l)}$. The selected gate gives $a_j^{(l)}=\relu(z_j^{(l)})$; its opponent receives $-\infty$ whether the gate continues or stops. This proves all four identities.
 \end{proof}
 
+\begin{remark}[Utilities of arbitrary profiles and the equilibrium notion]\label{ptnb:rem:routing-utilities}
+The \ac{rg} is a finite two-player game with perfect information on the layered computation graph: each activation state is controlled by the player in turn and each linear state by its routing player. Its utilities are recursive, rather than expected sums of additive payoffs as in Definition~\ref{def:turn_based_game}. A \emph{profile} $\pi=(\pi_+,\pi_-)$ fixes a pure stop/continue action at every activation state and a mixture at every linear state, including states that are not reached. Replacing the maxima in Definition~\ref{ptnb:def:routing-recursion} by these choices defines values $V_+^\pi,V_-^\pi\colon S\to\RR\cup\{-\infty\}$ by backward recursion from the input layer; the utility of player $r$ in the subgame starting at $s$ is $V_r^\pi(s)$. A profile is an SPNE if, in every subgame, no alternative strategy of one player increases that player's utility.
+
+Local optimality implies this property through one signed quantity. At every state at most one player has a finite value, so the signed mass
+\[
+ U^\pi(s)\coloneqq e^{V_+^\pi(s)}-e^{V_-^\pi(s)}
+ \qquad\text{satisfies}\qquad
+ V_+^\pi(s)=\ell\bigl(U^\pi(s)\bigr),\quad V_-^\pi(s)=\ell\bigl(-U^\pi(s)\bigr).
+\]
+By~\eqref{ptnb:eq:routing-activation-continue}, $U^\pi$ at an activation state is the sum of its values at the two successor linear states if the controlling player continues, and $0$ if it stops. At a linear state $s=s_{j,q,\kappa}^{(l,\mathrm{lin})}$ with mixture $\nu$, \eqref{ptnb:eq:routing-linear-action} and~\eqref{ptnb:eq:optimal-linear} give
+\[
+ U^\pi(s)=\xi_q\exp\Bigl(\sum_a\nu(a)\,Q_q^\pi(s,a)+\tau\Entropy(\nu)\Bigr),
+ \qquad
+ Q_q^\pi(s,i)=\ell\Bigl(W_{ij}^{(l,\kappa)}\bigl[\xi_qU^\pi\bigl(s_{i,q}^{(l-1,\mathrm{act})}\bigr)\bigr]^+\Bigr)\quad(l\ge2),
+\]
+while first-layer, bias and outside actions keep their fixed gains. Both recursions are non-decreasing in the successor values of $U^\pi$. Player $P^+$ thus maximizes and $P^-$ minimizes the single quantity $U^\pi$, and the saddle-point induction of Theorem~\ref{thm:shapley_bellman} carries over with these monotone recursions in place of expected payoffs: for the canonical profile $\pi^\star$, all states $s$ and all strategies $\pi_+,\pi_-$,
+\[
+ U^{(\pi_+,\pi_-^\star)}(s)\;\le\;U^{\pi^\star}(s)\;\le\;U^{(\pi_+^\star,\pi_-)}(s).
+\]
+Since $\ell$ is non-decreasing, neither player can raise its log-space utility in any subgame, whatever the number of states at which it deviates. The choices of Definition~\ref{ptnb:def:routing-recursion} are the local optimizers of $U$: the controlling player continues exactly when $D_p>0$, and the Gibbs mixture maximizes the routed mass by~\eqref{ptnb:eq:gibbs-lse}.
+
+A value of $-\infty$ means that the player's signed mass is non-positive. Where every action of the controlling player gives $-\infty$---an activation state with $D_p\le0$, or a linear state whose stream is empty---that player is indifferent; stopping at ties and the absorbing outside action select the canonical profile among these equilibria (Remark~\ref{ptnb:rem:routing-spne-uniqueness}). The Lean development linked at Theorem~\ref{ptnb:thm:routing-forward} defines the utilities of all profiles and proves subgame perfection in this sense.
+\end{remark}
+
 \begin{remark}[Uniqueness]\label{ptnb:rem:routing-spne-uniqueness}
 Strict concavity makes Gibbs routing unique when finite-score support is nonempty; otherwise every mixture is optimal and the selected outside action absorbs the trajectory. At an activation state, $D_p\leq0$ makes both active-player action values $-\infty$, so multiple best responses exist. Our \emph{stop-at-tie-breaks} convention resolves these ties as well as empty streams. At $\tau=1$ it selects the activation-vector entry $\chi_j^{(l)}(x)$.
 \end{remark}
@@ -475,7 +499,7 @@ Strict concavity makes Gibbs routing unique when finite-score support is nonempt
  \label{ptnb:fig:Routing-Game-illustration}
 \end{figure}
 
-\subsection{Addition and max pooling}\label{ptnb:app:routing-skip}
+\subsection{Addition and Max Pooling}\label{ptnb:app:routing-skip}
 
 Use Section~\ref{ptnb:app:skip-connections}'s addition Oracle (uniform operands, player retained, value discount $2$) and max-pooling decision (player retained, value discount $1$, smallest-index winner). Their log values are
 \begin{equation}\label{ptnb:eq:routing-add-max}
@@ -484,7 +508,7 @@ Use Section~\ref{ptnb:app:skip-connections}'s addition Oracle (uniform operands,
 \end{equation}
 At $\tau=1$, for the active player and non-negative operand activations, these equal $\ell(a_x+a_y)$ and $\ell(\max_k a_{x_k})$, extending forward equivalence. Addition's \emph{trajectory} discount is $1$, so each operand receives half its incoming occupation. More generally, an Oracle with probabilities $(\rho,1-\rho)$, $0<\rho<1$, and value discounts $(1/\rho,1/(1-\rho))$ preserves forward values but splits relevance as $(\rho,1-\rho)$: uniform splitting is a routing convention. The implementation instead sends full relevance to both operands (trajectory discount $2$). Every input-reaching trajectory in the evaluated ResNet/\ac{vit} crosses each of its $B$ addition nodes once, so this multiplies input occupations by $2^B$ and preserves normalized maps.
 
-\subsection{Occupation measures and relevance recovery}\label{ptnb:app:routing-attribution}
+\subsection{Occupation Measures and Relevance Recovery}\label{ptnb:app:routing-attribution}
 
 Let $\Pi_x$ start at $s_{u,+}^{(L,\mathrm{act})}$ with unit mass. For $\alpha,\beta\geq0$ with $\alpha-\beta=1$, use Definition~\ref{ptnb:def:occupation} with the \emph{entered-state} trajectory discounts
 \begin{equation}\label{ptnb:eq:routing-edge-discount}
@@ -536,7 +560,7 @@ The assumption $f(x)>0$ belongs to the ReLU-gated output root; Section~\ref{ptnb
 \paragraph{A two-input example.}
 For the introductory example $f(x)=\relu(2x_1-x_2)$ at $x=(2,1)$ of Section~\ref{ptnb:sec:game}, the Stopping Decomposition gives $(4,1)$ and $f(x)=3$. SG routes to the inputs with probabilities $(2/3,1/3)$ and discount $3$, giving signed occupations $(2,-1)=\nabla f(x)$. RG at $\tau=1$, $\varepsilon=0$ and $(\alpha,\beta)=(2,1)$ chooses each sign branch with probability $1/2$; discounts $(4,2)$ give signed occupations $(2,-1)$ and output-scaled relevance $(6,-3)$. The same decomposed computation thus supports different routing laws and attribution readouts.
 
-\subsection{Temperature as a policy deformation}\label{ptnb:app:routing-temp}
+\subsection{Temperature as a Policy Deformation}\label{ptnb:app:routing-temp}
 
 Solving every subgame at $\tau>0$ yields an SPNE, with exact forward recovery and the relevance correspondence above at $\tau=1$. In practice, we deform $\tau$ only \emph{locally} through the \emph{myopic} policy
 \begin{equation}\label{ptnb:eq:routing-gibbs-general-tau}
@@ -548,7 +572,7 @@ The players are therefore \emph{unaware} of the $\tau$-deformation: their decisi
 \begin{changed}Figure~\ref{fig:vit_temperature} compares the resulting heatmaps at four temperatures with all other settings fixed; Table~\ref{ptnb:tab:vit-temperature} quantifies their localization and Pixel Flipping performance.\end{changed}
 The implementation raises activations, weights and bias-node masses to the power $1/\tau$ but keeps the outside-option weight at $\varepsilon$ rather than $\varepsilon^{1/\tau}$. On ResNet-50 it redistributes global-average-pool relevance uniformly and merges batch normalization into the preceding convolution with an $\varepsilon$-stabilized rule. These are additional implementation conventions beyond the addition and activation-gate rules above; VGG-16 (identity average pool at $224\times224$) and ViT-B/16 are unaffected.
 
-\subsection{Signed affine output logits}\label{ptnb:app:affine-readout}
+\subsection{Signed Affine Output Logits}\label{ptnb:app:affine-readout}
 
 The theorems above use a ReLU at the scalar output. A classifier logit instead has an ungated affine
 readout from non-negative last-hidden activations $h_j$:
@@ -616,7 +640,7 @@ independent numerical recovery checks are reported in Appendix~\ref{app:rebuttal
 
 Game-theoretic concepts like risk aversion and entropy regularization map back to novel modes of the backward rules for probing and tuning explanation properties. The exact \ac{sg} and \ac{rg} anchors recover gradients and $\alpha\beta$-\ac{lrp}; temperature, risk aversion, gate smoothing and equivariant averaging deform the backward rule and recover the anchor at their defaults. Replacing ReLU by Softplus or applying the fan-in entropy bias changes the explained network's forward pass. Here $(\alpha,\beta)$ denotes the \ac{lrp} discount pair with $\alpha-\beta=1$, distinct from the backward shift $\alpha\in[0,\tfrac12]$ of Section~\ref{subsec:backward_stabilization}. Section~\ref{ptnb:app:dual-sweeps} reports the empirical sweeps.
 
-\subsection{Modes and defaults}\label{ptnb:app:mode-guide}
+\subsection{Modes and Defaults}\label{ptnb:app:mode-guide}
 
 Table~\ref{ptnb:tab:modes} summarizes the modes and their defaults. Measured costs and the validation-selection protocol are reported in Section~\ref{sec:results_vit}.
 
@@ -652,7 +676,7 @@ low $\tau$ concentrates routing on dominant predecessors; high $\tau$ spreads ma
 cemetery while leaving strong-evidence ones near-unaffected (Theorem~\ref{ptnb:thm:ab-recovery}).
 
 \paragraph{Equivariant averaging.}\label{subsec:technicalities}
-The $16\times16$ patch tokenization breaks translation equivariance. Following DAVE's transform-averaging strategy~\parencite{Wrobel2024}, \ac{rg}+Eq computes explanations on transformed inputs, maps each explanation back to the original image coordinates, and averages the aligned maps (a Monte-Carlo Reynolds average). Sections~\ref{sec:vit_implementation} and~\ref{ptnb:app:equivariant} specify the conditioned operators and spatial transforms.
+The $16\times16$ patch tokenization breaks translation equivariance. Following DAVE's transform-averaging strategy~\parencite{Wrobel2024}, \ac{rg}+Eq computes explanations on transformed inputs, maps each explanation back to the original image coordinates, and averages the aligned maps (a Monte Carlo Reynolds average). Sections~\ref{sec:vit_implementation} and~\ref{ptnb:app:equivariant} specify the conditioned operators and spatial transforms.
 
 \subsection{Activation-Side Risk Aversion \texorpdfstring{$\lambda$}{lambda} via ADF Variance Propagation}\label{ptnb:app:adf-variance}
 
@@ -671,7 +695,7 @@ standard deviation (Section~\ref{ptnb:app:risk-attn}).
 
 \begin{changed}The validation-selected ViT attention-risk mode reduces both sensitivity metrics on 565 test images, with a substantial localization cost (Table~\ref{tab:rebuttal-risk}). This motivates separating the intended effect of a risk penalty from its measured effects on different attribution criteria.\end{changed}
 
-\subsection{Regularized activation gates}\label{ptnb:app:regularized-gates}
+\subsection{Regularized Activation Gates}\label{ptnb:app:regularized-gates}
 
 Softplus and the noisy-observation gate arise from regularizing the same stop/continue decision, using Shannon entropy and a Gaussian-based regularizer, respectively.
 
@@ -691,7 +715,7 @@ players zero. Entropy-regularize only the active player's binary decision:
 \begin{align}
     V_q^\pi(s)&=\max_{\rho\in[0,1]}\{\rho\Delta(s)+\theta\Entropy(\rho)\},\label{ptnb:eq:softplus-soft-bellman}\\
     \pi_q^\star(\mathrm{cont}\mid s)&=\mathrm{sp}'_\theta(\Delta(s)),\qquad
-    V_q^\pi(s)=\mathrm{sp}_\theta(\Delta(s)),\label{ptnb:eq:softplus-policy}
+    V_q^\pi(s)=\mathrm{sp}_\theta(\Delta(s)).\label{ptnb:eq:softplus-policy}
 \end{align}
 Here $\mathrm{sp}_\theta$ denotes the Softplus function of Remark~\ref{rem:softplus_game}. All transition and immediate-payoff rules
 \eqref{ptnb:eq:adf-kernel-stop}--\eqref{ptnb:eq:adf-q-cont} remain; policies become mixed and the
@@ -809,7 +833,7 @@ mode carries no exactness claim.\par}
 Replacing $\theta\Entropy$ by $\RegBonus_\Phi$ in the binary game gives value $z\Phi(z)+\phi(z)$, continuation $\Phi(z)$, and bonus $\phi(z)$ (Lemma~\ref{ptnb:lem:noisy-gate-dual}). The Softplus proofs then apply to Gaussian-smoothed-ReLU networks and their gradients.
 
 
-\subsection{\texorpdfstring{Fan-in entropy bias $\lambda_{\mathrm{ent}}$}{Fan-in entropy bias lambda\_ent}}\label{ptnb:app:entropy-mode}
+\subsection{\texorpdfstring{Fan-In Entropy Bias $\lambda_{\mathrm{ent}}$}{Fan-In Entropy Bias lambda\_ent}}\label{ptnb:app:entropy-mode}
 
 Fan-in entropy lowers the continuation bias (\ac{sg}) or bias-node payoff (\ac{rg}) for diffuse
 fan-in, using $b_j^{(l)}\mapsto b_j^{(l)}-\lambda_{\mathrm{ent}}\tilde{\Entropy}_j^{(l)}$, where

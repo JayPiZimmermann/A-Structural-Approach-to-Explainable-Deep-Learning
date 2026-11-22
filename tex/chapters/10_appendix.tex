@@ -7,11 +7,11 @@ This appendix specifies the evaluation and reproduction protocols. Appendix~\ref
 
 \subsection{Published Split-Method Results}\label{app:hm_artifact_scope}
 
-The Split-Method results and their evaluation protocol in this appendix are from \emph{Hidden Monotonicity}~\parencite{hiddenMono}. The paper evaluates pretrained VGG-16 and ResNet-18 models on ImageNet-S-50, using a 50-image validation subset and a 566-image test subset. Attributions target each model's predicted class, including on misclassified images, and localization uses the annotated object masks. The thesis's separate game-method evaluation protocol is specified below.
+The split-method results and their evaluation protocol in this appendix are from \emph{Hidden Monotonicity}~\parencite{hiddenMono}. The paper evaluates pretrained VGG-16 and ResNet-18 models on ImageNet-S50, using a 50-image validation subset and a 566-image test subset. Attributions target each model's predicted class, including on misclassified images, and localization uses the annotated object masks. The thesis's separate game-method evaluation protocol is specified below.
 
 \section{Evaluation Protocol}\label{ptnb:app:protocol}
 
-\subsection{Data and splits}
+\subsection{Data and Splits}
 
 The game-method campaign uses the released ImageNet-S50 validation annotations~\parencite{gao2022luss},
 which contain $752$ images from $50$ classes. We exclude $136$ images whose annotation class
@@ -25,7 +25,7 @@ population and target convention belong to the game-method protocol and need not
 the split-method campaign. The Pascal VOC 2012 transfer split is described in
 Section~\ref{ptnb:app:voc-cross-data}.
 
-\subsection{Metric definitions}\label{ptnb:app:metrics}\label{app:metrics}
+\subsection{Metric Definitions}\label{ptnb:app:metrics}\label{app:metrics}
 
 Let $x \in \RR^{C \times H \times W}$ be an image, let $y$ be its target class, and let $a \in
     \RR^{H \times W}$ be the scalar attribution map produced by an explanation method after channel
@@ -41,25 +41,25 @@ vector by $\bar{a}$. All metrics below use $\bar{a}$; faithfulness metrics use r
 softmax) to avoid saturation effects, and perturbations use the Quantus per-sample mean replacement
 baseline.
 
-\paragraph{Attribution localization (AL).} We adapt \textcite{Kohlbrenner2020}'s positive-relevance ratio within ground-truth boxes to absolute mass, pixel masks, and a stabilized denominator:
+\paragraph{Attribution Localization (AL).} We adapt \textcite{Kohlbrenner2020}'s positive-relevance ratio within ground-truth boxes to absolute mass, pixel masks, and a stabilized denominator:
 \begin{align}
     \text{AL}(a, m) = \frac{\sum_{i=1}^d \bar{a}_i m_i}{\sum_{i=1}^d \bar{a}_i + 10^{-9}}.
 \end{align}
 
-\paragraph{Pointing game (PG).} We use the pointing-game criterion of~\textcite{Zhang2018pointinggame}; our configuration applies \texttt{abs=true} without normalization. Let $M(a) \coloneqq \{i \in \{1, \dots, d\} :
+\paragraph{Pointing Game (PG).} We use the pointing-game criterion of~\textcite{Zhang2018pointinggame}; our configuration applies \texttt{abs=true} without normalization. Let $M(a) \coloneqq \{i \in \{1, \dots, d\} :
     \bar{a}_i = \max_j \bar{a}_j\}$ contain all maximizers. Then
 \begin{align}
     \text{PG}(a, m) = \1\bigl\{M(a) \cap \{i : m_i = 1\} \neq \varnothing\bigr\}.
 \end{align}
 Ties are scored as a hit whenever at least one maximizer lies inside the object mask. PG is binary per image--class record; its ImageNet-S test mean is a multiple of $1/565$.
 
-\paragraph{Top-$k$ intersection (TK).} Following~\textcite{Theiner2021}, with $k = 1000$ and the permutation $\pi$ that sorts
+\paragraph{Top-$k$ Intersection (TK).} Following~\textcite{Theiner2021}, with $k = 1000$ and the permutation $\pi$ that sorts
 $\bar{a}$ in descending order:
 \begin{align}
     \text{TK}(a, m) = \frac{1}{1000} \sum_{r=1}^{1000} m_{\pi_r}.
 \end{align}
 
-\paragraph{Pixel-flipping AUC (PF$_5$, PF$_{20}$).} Pixel flipping~\parencite{Bach2015,Samek2017evaluating} removes the most relevant features first
+\paragraph{Pixel Flipping AUC (PF$_5$, PF$_{20}$).} Pixel Flipping~\parencite{Bach2015,Samek2017evaluating} removes the most relevant features first
 and tracks the class score. The evaluator uses \texttt{pixel\_flipping\_abs} with
 \texttt{features\_in\_step = 1568} and \texttt{perturb\_baseline = mean}. Unlike the spatial
 localization metrics above, pixel flipping operates on $D \coloneqq CHW$ scalar input features.
@@ -94,7 +94,7 @@ For every tunable method, baselines and ours alike, two configurations are selec
 The game-method test tables report 95\% percentile bootstrap confidence
 intervals~\parencite{Efron1993bootstrap} using $B=10{,}000$ resamples and seed~$0$. On ImageNet-S,
 the sampling units are images, with the same resampled image indices used across method rows.
-MaxS and AvgS intervals resample the fixed 200-image subset of Section~\ref{ptnb:app:metrics}.
+MaxS and AvgS intervals use the same resamples and average the drawn members of the fixed 200-image subset of Section~\ref{ptnb:app:metrics}.
 Continuous metrics use a two-sided paired bootstrap test of the mean per-image difference: the
 bootstrap distribution is centered at zero, and $p$ is the fraction of centered resampled
 differences at least as large in absolute value as the observed difference. Binary PG uses
@@ -143,17 +143,17 @@ terms. The Pascal VOC 2012 images are subject to the Flickr terms of use,
 as stated by the dataset providers\footnote{\url{https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/}, Database Rights.}. The checkpoints are distributed with torchvision
 and were trained on ImageNet-1K. Libraries: PyTorch and torchvision (BSD-3-Clause), Quantus
 (GPL-3.0), zennit (GPL-3.0/LGPL-3.0), lxt, captum and scikit-image (BSD-3-Clause), pytorch-grad-cam
-(MIT); the reference code of \acs{ptnbTIBAV} and \acs{ptnbGAE} (MIT) is included with its license notice.
+(MIT); the reference code of \acs{ptnbTIBAV} (MIT) is included with its license notice, and \acs{ptnbGAE} is re-implemented from its published rules.
 
 \subsection{Methods}\label{ptnb:app:baselines}\label{app:baselines}
 
 Baselines use lxt, zennit, captum, pytorch-grad-cam, and the authors' TIBAV/GAE code, with reference settings and the declared grids~\parencite{Achtibat2024AttnLRP,Anders2021Zennit,kokhlikyan2020captum,Gildenblat2021gradcam,Chefer2021GenericAttention,Chefer2021ICCV}.
 
 \paragraph{Gradient-based block.}
-\textbf{Gradient} is the raw input-gradient saliency map~\parencite{Simonyan2014}, the maximum over color channels of the absolute gradient. \textbf{SmGrad} is SmoothGrad, i.e.\ an average over noisy gradient maps~\parencite{Smilkov2017}. \textbf{IntGrad} is Integrated Gradients~\parencite{Sundararajan2017} with a black-image baseline. \textbf{DeepLIFT} propagates activation differences relative to a reference input with the Rescale rule~\parencite{Shrikumar2017} (CNNs only). \textbf{DAVE} is the distribution-aware ViT gradient decomposition of~\textcite{Wrobel2024}; our implementation additionally freezes the LayerNorm mean, whereas published DAVE differentiates through mean-centering. \textbf{SG} is our \ac{sg}: signed occupation differences recover the gradient (Theorem~\ref{ptnb:thm:deriv-occ}), whereas the reported benchmark uses the positive-player/positive-input component (\texttt{pp}) summed over RGB channels. Appendix~\ref{app:rebuttal-sg} separates this readout from signed-gradient verification.
+\textbf{Gradient} is the raw input-gradient saliency map~\parencite{Simonyan2014}, the maximum over color channels of the absolute gradient. \textbf{SmGrad} is SmoothGrad, i.e.\ an average over noisy gradient maps~\parencite{Smilkov2017}. \textbf{IntGrad} is Integrated Gradients~\parencite{Sundararajan2017} with a black-image baseline. \textbf{DeepLIFT} propagates activation differences relative to a reference input with the Rescale rule~\parencite{Shrikumar2017} (CNNs only). \textbf{DAVE} is the distribution-aware ViT gradient decomposition of~\textcite{Wrobel2024}; our implementation additionally freezes the LayerNorm mean, whereas published DAVE differentiates through mean-centering; result rows of this variant are labeled DAVE$^{*}$. \textbf{SG} denotes our Stopping Game: signed occupation differences recover the gradient (Theorem~\ref{ptnb:thm:deriv-occ}), whereas the reported benchmark uses the positive-player/positive-input component (\texttt{pp}) summed over RGB channels, labeled SG$^{\mathrm{pp}}$ in the result tables. Appendix~\ref{app:rebuttal-sg} separates this readout from signed-gradient verification.
 
 \paragraph{LRP / relevance-propagation block.}
-\textbf{LRP-$\varepsilon$} denotes the stabilized Layer-wise Relevance Propagation rule~\parencite{Bach2015}. \textbf{LRP-$\gamma$} is the positive-weight-amplified LRP variant~\parencite{Montavon_2022_gammaLRP}. \textbf{AttnLRP} is transformer LRP that propagates relevance through the softmax and the bilinear attention product as well as the Value path~\parencite{Achtibat2024AttnLRP}. \textbf{RG} is our \ac{rg}. \textbf{RG+Eq} is the same method with equivariant Reynolds averaging, used mainly on ViT to suppress tokenization-grid artifacts. \textbf{TIBAV}~\parencite{Chefer2021GenericAttention}, \textbf{GAE}~\parencite{Chefer2021ICCV} and Attention Rollout (\textbf{AR}) are the transformer-specific attention-map baselines.
+\textbf{LRP-$\varepsilon$} denotes the stabilized Layer-wise Relevance Propagation rule~\parencite{Bach2015}. \textbf{LRP-$\gamma$} is the positive-weight-amplified LRP variant~\parencite{Montavon_2022_gammaLRP}. \textbf{AttnLRP} is Transformer LRP that propagates relevance through the softmax and the bilinear attention product as well as the Value path~\parencite{Achtibat2024AttnLRP}. \textbf{RG} denotes our Routing Game attribution method. \textbf{RG+Eq} is the same method with equivariant Reynolds averaging, used mainly on ViT to suppress tokenization-grid artifacts. \textbf{TIBAV}~\parencite{Chefer2021GenericAttention}, \textbf{GAE}~\parencite{Chefer2021ICCV} and Attention Rollout (\textbf{AR}) are the transformer-specific attention-map baselines.
 
 \paragraph{CAM block.}
 \textbf{GCAM} is Grad-CAM~\parencite{Selvaraju2017}, \textbf{GCAM++} is Grad-CAM++~\parencite{Chattopadhay2018}, and \textbf{LCAM} is LayerCAM, which weights class-activation evidence per location~\parencite{Jiang2021LayerCAM}. All three are computed at the last convolutional block of the CNNs and upsampled bilinearly.
@@ -161,7 +161,7 @@ Baselines use lxt, zennit, captum, pytorch-grad-cam, and the authors' TIBAV/GAE 
 \paragraph{Perturbation block.}
 \textbf{LIME} is Local Interpretable Model-agnostic Explanations~\parencite{Ribeiro2016}. \textbf{KernelSHAP} denotes the model-agnostic weighted-regression estimator of SHAP values~\parencite{LundbergLee2017}. Both perturb SLIC superpixels~\parencite{Achanta2012slic}, explaining predictions by perturbing the input and fitting a local surrogate; they are separated from the backward-propagation methods above.
 
-\subsection{Declared validation grids}\label{ptnb:app:grids}
+\subsection{Declared Validation Grids}\label{ptnb:app:grids}
 
 Table~\ref{ptnb:tab:main-search-grid} lists every method's grid. Functionally duplicate rows (e.g.\ different $\sigma^2$ when $\lambda = \lambda_{\mathrm{sm}} = 0$) are evaluated once, yielding \nValGrid{} configurations. On ViT-B/16, activation-side $\lambda$ is fixed to $0$, keeping GELU gates conditioned (Section~\ref{ptnb:sec:attention}). At attention--Value products, \ac{rg} applies $\alpha\beta$-\ac{lrp}-$\varepsilon$ to the composite attention-product/Value-projection map (Theorem~\ref{ptnb:thm:attn-ab-recovery}; Section~\ref{ptnb:app:vit-implementation}). Baselines without grids use their reference implementations' settings.
 
@@ -221,10 +221,10 @@ Table~\ref{ptnb:tab:main-search-grid} lists every method's grid. Functionally du
 }%
 \end{table}
 
-\subsection{Compute resources}\label{ptnb:app:compute-resources}
+\subsection{Compute Resources}\label{ptnb:app:compute-resources}
 The attribution evaluations are inference-only. The main cost is the repeated backward attribution pass over the validation and test images across the method grids, including the equivariant-Reynolds and noise-averaged configurations. Runtime measurements were taken on a single NVIDIA A100-SXM4-40GB with batch size 1; evaluation sweeps were distributed over several GPUs of the same type, with up to two evaluation processes per GPU. The full pipeline (validation grids, test evaluation, robustness, Pascal VOC, ablations and randomization diagnostics) required about 450 GPU-hours.
 
-\subsection{\texorpdfstring{\ch{Code and correctness tests}}{Code and correctness tests}}\label{ptnb:app:code-tests}
+\subsection{\texorpdfstring{\ch{Code and Correctness Tests}}{Code and Correctness Tests}}\label{ptnb:app:code-tests}
 
 \begingroup\emergencystretch=3em
 \ch{The code (\coderepo) tests the thesis's backward rules. In float64, \texttt{tests/\allowbreak test\_attention\_ab\_recovery.py} compares \ac{rg} at $\tau=1$ with an independent $\alpha\beta$-\ac{lrp}-$\varepsilon$ implementation of $X\mapsto A(XW_v^\top+b_v)$ (Theorem~\ref{ptnb:thm:attn-ab-recovery}, \eqref{ptnb:eq:attn-target-input}). Single-head and \texttt{nn.MultiheadAttention}-layout blocks use signed inputs, Value bias and $\varepsilon>0$. The test also distinguishes the sequential variant of Section~\ref{ptnb:app:attention-target-rule}, unavailable in the release (\texttt{av\_rule} accepts only \texttt{'merged'}).
@@ -256,7 +256,7 @@ The source inventory lists statements outside the checked scope. Proofs and corr
 
 We evaluate the stabilized DC implementation on pretrained ViT-B/16 at $224\times224$ resolution, including all twelve encoder blocks with the pre-normalization arrangement of Definition~\ref{def:prenorm_transformer}. Attention, Query/Key paths and LayerNorm statistics remain input-dependent. The float64 CPU check uses three annotated ImageNet-S validation images at three backward-shift settings, giving nine runs. An independent ordinary-model computation supplies the comparison gradients at the input and all twelve pre-attention LayerNorm readouts. Gradient repairs are disabled; forward stabilization anchors each split-pair's difference to a cached ordinary activation.
 
-All nine runs pass. Maximum absolute errors are $2.22\times10^{-16}$ for the output, $2.36\times10^{-15}$ for the input gradient, and $7.81\times10^{-16}$ across the twelve readout gradients. This demonstrates gradient recovery to machine precision in the tested pretrained ViT. Input-dependent recentering and scaling do not establish globally convex stabilized split-streams. The completed attribution benchmark uses fixed attention and LayerNorm (Section~\ref{sec:vit-extension}). Image identifiers, settings, checkpoint and source hashes, and per-run errors are recorded in \nolinkurl{reports/evidence/transformer-dc/real-vit-reconstruction.json}.
+All nine runs pass. Maximum absolute errors are $2.22\times10^{-16}$ for the output, $2.36\times10^{-15}$ for the input gradient, and $7.81\times10^{-16}$ across the twelve readout gradients. This demonstrates gradient recovery to machine precision in the tested pretrained ViT. Input-dependent recentering and scaling do not establish globally convex stabilized split-streams. The completed attribution benchmark uses fixed attention and LayerNorm (Section~\ref{sec:vit-extension}). Image identifiers, settings, checkpoint and source hashes, and per-run errors are recorded with the experiment outputs.
 
 \input{appendices/experiments}
 

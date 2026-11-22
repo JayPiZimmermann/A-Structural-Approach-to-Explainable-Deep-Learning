@@ -19,14 +19,10 @@
 
 ## Generated if empty string is given at "Please type another file name for output:"
 *.pdf
-# Keep the upstream paper PDF and any imported paper-v2 figure PDFs.
-!arxive/downloads/playingTheNetworkBackward/*.pdf
 !tex/figures/ptnb_v2/**/*.pdf
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
-# arXiv distributes this paper bibliography as source (no references.bib).
-!arxive/playingTheNetworkBackward/main.bbl
 *.bcf
 *.blg
 *-blx.aux
@@ -151,45 +147,11 @@ __pycache__/
 .venv/
 formalization/build.log
 formalization/audit.log
-# Release artifacts and paper source figures.
+
+# The compiled thesis and the figure PDFs belong to the repository.
 !docs/thesis.pdf
-!docs/thesis-supplement.pdf
-!arxive/**/*.pdf
 !tex/figures/**/*.pdf
 
 # Local TeX metadata
 tex/main.mw
-tex/supplement.mw
 tex/pdfa.xmpi
-
-# Preserve verification evidence referenced by committed receipts.
-!reports/**/*.log
-
-# Recreate the third-party NRM download with scripts/fetch_nrm_source.py.
-/literature/references/normalized_relevance_measure/
-
-# Locally downloaded reference papers and extracted source material.
-# Bibliographic URLs, versions and checksums are recorded in the audit reports.
-/literature/references/
-
-# Locally archived TU Berlin thesis requirements and forms.
-/literature/tu-berlin-thesis-requirements/
-
-# Local ViT completion-watch state and disposable export/build previews.
-/reports/vit-extension/releases/
-/reports/vit-extension/rollback/
-/reports/vit-extension/candidate/
-/reports/vit-extension/baseline-layout-check/
-/reports/vit-extension/*.lock
-/reports/vit-extension/*.pid
-/reports/vit-extension/watcher.log
-/reports/vit-extension/status.json
-/reports/vit-extension/state.json
-/reports/vit-extension/last-attempt.json
-/reports/vit-extension/latest-artifacts.json
-/reports/vit-extension/transaction.json
-/reports/vit-extension/*.tmp-*
-/reports/vit-extension/layout-stress-fixture/*.log
-
-## Internal process records, receipts and logs: local only
-/reports/
