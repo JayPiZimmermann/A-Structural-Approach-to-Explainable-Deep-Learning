@@ -1,6 +1,26 @@
 \chapter{Network Decompositions}\label{ch:decompositions}
 
-Network decompositions separate positive and negative contributions while preserving their difference. The DC decomposition yields convex, monotone split-streams for the attribution methods in Section~\ref{sec:split_attribution_concept}. The stopping decomposition applies the original ReLU gates to both streams, setting both to zero at inactive neurons and retaining the active paths used by the backward games in Chapter~\ref{ch:game_theory}. We compare their retained information and backward calculations, then stabilize them for deep networks. \begin{changed}The MNIST study in Section~\ref{sec:dcinns} illustrates the resulting stream sensitivities on present and candidate missing strokes; Sections~\ref{sec:results_vgg}--\ref{sec:results_resnet} demonstrate gains in localization and faithfulness (Selectivity) from the DC decomposition, without retraining or altering model predictions. Our experiments show that numerical stabilization enables gradient recovery to machine precision even in deep Vision Transformers (Appendix~\ref{app:transformer_dc_numeric}).\end{changed}
+Network decompositions separate positive and negative contributions while preserving their difference. The DC decomposition yields convex, monotone split-streams for the attribution methods in Section~\ref{sec:split_attribution_concept}. The stopping decomposition applies the original ReLU gates to both streams, setting both to zero at inactive neurons and retaining the active paths used by the backward games in Chapter~\ref{ch:game_theory}. We compare their retained information and backward calculations, then stabilize them for deep networks. \begin{changed}The MNIST study in Section~\ref{sec:dcinns} illustrates the resulting stream sensitivities on present and candidate missing strokes; Sections~\ref{sec:results_vgg}--\ref{sec:results_resnet} demonstrate gains in localization and faithfulness (Selectivity) from the DC decomposition, without retraining or altering model predictions. Our experiments show that numerical stabilization enables gradient recovery to machine precision in the tested pretrained ViT-B/16 (Appendix~\ref{app:transformer_dc_numeric}).\end{changed}
+
+\begin{table}[htbp]
+\TableContent{
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}p{0.19\linewidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.23\linewidth}@{}}
+\toprule
+Decomposition & Recovered activation & Structure and retained information & Later attribution or game \\
+\midrule
+DC & Exact ReLU & Globally convex, coordinatewise non-decreasing streams; retains cancelled sub-threshold mass. & SplitCAM, SplitLRP, and SplitGrad (Section~\ref{sec:split_attribution_concept}). \\
+Stopping & Exact ReLU & Shared hard gate keeps active paths and zeros both streams at inactive neurons; monotone on activation cells. & Stopping Game; its occupation measure recovers the Jacobian (Chapter~\ref{ch:game_theory}). \\
+Mixing & Exact ReLU for all $\eta\in[0,1]$ & Interpolates the retained common mass. Each activation pair is monotone in its two inputs, convex at $\eta=1$ and concave at $\eta=0$. & Organizes the alternatives; its $\eta=1$ endpoint supplies the DC methods. \\
+Regularized & $\Omega^*$; exact ReLU only when $\Omega=0$ & Carries gate-weighted stream values, with the regularizer bonus in the $+$ stream; stream-wise convexity and monotonicity are not guaranteed. & Entropy regularization gives Softplus stopping and its game policy (Chapter~\ref{ch:game_theory}). \\
+\bottomrule
+\end{tabularx}
+}%
+\caption[Comparison of network decompositions]{The decompositions in the ReLU case and its regularized extension. DC structure refers to the independent doubled input coordinates; the mixing row describes the local activation pair.}
+\label{tab:decomposition_comparison}
+\end{table}
 
 \section{Generalized Network Decomposition}\label{sec:general_decomposition_def}
 
@@ -9,7 +29,7 @@ Replacing each signed activation by a non-negative pair exposes accumulated supp
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.28\textwidth]{figures/decompositions/network_split.png}
-	\caption[The network splitting procedure]{Illustration of the network splitting procedure. A \ac{relu} network $f$ is decomposed into two monotone and convex streams $g$ and $h$, such that $f = g - h$ (Section~\ref{sec:dc_splitting_relu}).}
+	\caption[The network splitting procedure]{Illustration of the network splitting procedure. A \ac{relu} network $f$ is decomposed into two streams $g$ and $h$ that are monotone and convex in the independent doubled input coordinates, such that $f = g - h$ (Section~\ref{sec:dc_splitting_relu}).}
 	\label{fig:network_split_overview}
 \end{figure}
 
@@ -18,7 +38,7 @@ We use the \ac{mlp} of Definition~\ref{def:ffn_relu}, with a common hidden activ
 \begin{definition}[Decomposition]\label{def:decomposition}
 A \emph{decomposition} of the $L$-layer network of Definition~\ref{def:ffn_relu} propagates non-negative activation pairs $\bigl(\act{l}{+}_i, \act{l}{-}_i\bigr) \in \RR^2_{\ge 0}$ from input to output using only
 \begin{enumerate}
-	\item \textbf{non-negative linear maps}---matrices with non-negative entries together with non-negative bias vectors---and
+	\item \textbf{affine maps with non-negative weights and biases}, and
 	\item \textbf{pairwise activation functions} $\phi \colon \RR^2_{\ge 0} \to \RR^2_{\ge 0}$, $(z^+, z^-) \mapsto (a^+, a^-) = \phi(z^+, z^-)$, applied at every hidden neuron; the final affine readout uses the identity on the pair.
 \end{enumerate}
 Activations are indexed by $l \in \{0,\dots,L\}$, affine parameters by $l \in \{1,\dots,L\}$. The layer-$0$ pair is any non-negative split of the input,
@@ -35,7 +55,7 @@ and each affine layer $l$ maps the preceding activation pair to a non-negative p
 
 \textcite[Proposition~4.2]{hertrich2025neuralnetworksvirtualextended} make each maxout neuron's weights non-negative by adding a common linear term inside its maximum. They compensate for this term in later neurons, eventually obtaining a difference of two monotone networks. Here the decomposed activations keep both contributions explicit at every layer.
 
-\paragraph{Canonical non-negative linear map.}
+\paragraph{Canonical affine map with non-negative weights and biases.}
 Using the entrywise positive and negative parts of the weights and biases from~\eqref{eq:weight_split}, the decomposed pre-activation at neuron $i$ is
 \AliasLabel{eq:canonical_weight_split}{eq:weight_split}
 \begin{align}
@@ -274,7 +294,7 @@ Apply Theorem~\ref{thm:general_dc_network} to each ReLU tail, using~\eqref{eq:sp
 For the doubled input variables, Proposition~\ref{prop:dc_polytope_representation} represents these convex \ac{cpwl} split-streams by two lifted polytopes. Their Newton polytopes follow the sum and maximum rules~\eqref{eq:newton_calculus}; the lifted representation~\eqref{eq:lifted_support} retains biases.
 
 \begin{remark}[Preservation of sub-threshold signals]\label{rem:subthreshold}
-At an inactive neuron, $\preactl{l}_i\le0$, ReLU outputs $\actl{l}_i=0$, discarding the losing pre-activation's magnitude. Downstream computation cannot distinguish degrees of suppression. The activation pair $\bigl(\act{l}{+}_i,\act{l}{-}_i\bigr)=\bigl(\preact{l}{-}_i,\preact{l}{-}_i\bigr)$ has the required zero difference while retaining the cancelled mass $\preact{l}{-}_i$ in both components. These sub-threshold contributions give the streams more information than the original activations, which Section~\ref{sec:split_attribution_concept} exploits. Retaining this common level does not guarantee a nonzero attribution.
+At an inactive neuron, $\preactl{l}_i\le0$, ReLU outputs $\actl{l}_i=0$, discarding the losing pre-activation's magnitude. Downstream computation cannot distinguish degrees of suppression. The activation pair $\bigl(\act{l}{+}_i,\act{l}{-}_i\bigr)=\bigl(\preact{l}{-}_i,\preact{l}{-}_i\bigr)$ has the required zero difference while retaining the cancelled mass $\preact{l}{-}_i$ in both components. These sub-threshold contributions give the streams more information than the original activations, which Section~\ref{sec:split_attribution_concept} exploits.
 \end{remark}
 
 \subsection{Closed formulas for smooth activations}\label{sec:closed_form_dc_activations}
@@ -752,7 +772,14 @@ By~\eqref{eq:delta_complementarity}, each sensitivity pair sums to the exploding
 \label{eq:delta_int_pos}
 \end{equation}
 \AliasLabel{eq:delta_int_neg}{eq:delta_int_pos}
-The negative component is the corresponding negative pullback (\LeanResult{eq:delta_minus_recursion}). We then apply the uniform shift
+The negative component is explicitly
+\begin{align}
+\delta_{\mathrm{int}}^{(l,-,s)}
+&=\delta_{\mathrm{shift}}^{(l+1,+,s)}\bigl(M^{(l+1,+)}\Wsig{l+1}{-}+M^{(l+1,-)}\Wsig{l+1}{+}\bigr)\nonumber\\
+&\quad+\delta_{\mathrm{shift}}^{(l+1,-,s)}\Wsig{l+1}{+}.
+\label{eq:delta_minus_recursion}
+\end{align}
+We then apply the uniform shift
 \begin{equation}
 	\delta_{\mathrm{shift}}^{(l,\sigma,s)} \coloneqq \delta_{\mathrm{int}}^{(l,\sigma,s)} - \alpha^{(l)} \bigl( \delta_{\mathrm{int}}^{(l,+,s)} + \delta_{\mathrm{int}}^{(l,-,s)} \bigr),
 	\label{eq:delta_shift_def}
@@ -863,9 +890,9 @@ Applying the chunk rules in topological order preserves non-negativity and the f
 
 \subsection{PyTorch implementations}\label{subsec:split_implementations}
 
-The CVPR implementation of \textcite{hiddenMono} uses PyTorch FX to build a separate network of split chunks.\footnote{Code: \href{https://github.com/JayPiZimmermann/DC-Decomposition-for-Explanability}{CVPR implementation}; \href{https://github.com/JayPiZimmermann/Playing_The_Network_Backward_Official_Repository}{newer patched engine}.} Explicit caches retain activations and accumulate sensitivities across residual branches. Precision is configurable as \texttt{float16}, \texttt{float32} (default), or \texttt{float64}; the paper reports double precision.
+The split-network implementation accompanying \textcite{hiddenMono} uses PyTorch FX to build a separate network of split chunks.\footnote{Code: \href{https://github.com/JayPiZimmermann/DC-Decomposition-for-Explanability}{split-network implementation}; \href{https://github.com/JayPiZimmermann/Playing_The_Network_Backward_Official_Repository}{newer patched engine}.} Explicit caches retain activations and accumulate sensitivities across residual branches. As described in \textcite{hiddenMono}, intermediate computations use \texttt{torch.float64} for high numerical precision.
 
-The paper's forward scaling configuration multiplies activations by $0.1$ when their maximum absolute entry exceeds $10$, followed by the corrective shifts of Section~\ref{subsec:forward_stabilization}. SplitCAM and SplitGrad use the stabilized backward pass of Section~\ref{subsec:backward_stabilization}; the released implementation upsamples their layer maps by nearest-neighbor interpolation. SplitLRP passes relevance unchanged through paired Maxout gates, routes max-pooling relevance to the winning location, and divides relevance equally across residual branches. Its layer-wise normalization replaces backward shifting; the $\varepsilon$-stabilizer absorbs part of the relevance budget.
+The forward scaling implementation multiplies activations by $0.1$ when their maximum absolute entry exceeds $10$, followed by the corrective shifts of Section~\ref{subsec:forward_stabilization}. SplitCAM and SplitGrad use the stabilized backward pass of Section~\ref{subsec:backward_stabilization}; the released implementation upsamples their layer maps by nearest-neighbor interpolation. SplitLRP passes relevance unchanged through paired Maxout gates, routes max-pooling relevance to the winning location, and divides relevance equally across residual branches. Its layer-wise normalization replaces backward shifting; the $\varepsilon$-stabilizer absorbs part of the relevance budget.
 
 The newer DC engine distributed with \textcite{playingBackward2026} patches module forwards and supplies custom \texttt{autograd.Function} backward rules. For batch size $B$, intermediate tensors pack $[a^+,a^-,a^+,a^-]$ along the batch axis. The pair is duplicated to carry four sensitivities of the chosen rule---one from each output stream $g,h$ to each activation stream $a^+,a^-$---in a single backward pass: autograd requires each returned input gradient to match its forward input's shape. These patches preserve channel counts and parameter shapes. Ordinary addition combines matching blocks, and autograd accumulates residual gradients. FX still exposes functional operations as modules; the default addition module also applies re-centering and optional alignment or sensitivity shifts. Both implementations retain reference caches for numerical alignment.
 

@@ -3,7 +3,7 @@
 
 Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory} derive attribution methods from split-streams and backward games; Chapter~\ref{ch:experiments} evaluates them. Their use in interventions also requires examining the underlying calculation. The equilibrium policies of Chapter~\ref{ch:game_theory} induce backward-trajectory distributions, enabling comparison before projection onto input pixels. We study their Hellinger distance, its exact per-input-state disagreement map, and complete versus survival-conditioned laws. For a fixed image, \textcite{Maess2026Spectral} arrange normalized attribution maps for different target outputs as matrix columns. They use its singular values to measure how strongly backward propagation amplifies output relevance and whether different targets yield distinct maps. Our experiments compare normalized routing under input noise and parameter randomization.
 
-\section{Trajectory Sanity Check}\label{ptnb:sec:hellinger-sanity}\label{ptnb:sec:hellinger}
+\section{Main Findings}\label{ptnb:sec:hellinger-sanity}\label{ptnb:sec:hellinger}
 
 The cascading-randomization sanity check of~\textcite{Adebayo2018sanity} asks whether an explanation meaningfully depends on the learned parameters. We compare normalized backward-trajectory laws $\Pi$ before their model-dependent signed discounted occupation projection into pixel maps: parameter randomization should move $\Pi$ even when its pixel projection remains stable. Section~\ref{ptnb:app:path-divergence} gives the exact linear-time computation and terminal-state decomposition.
 
@@ -27,7 +27,7 @@ Under cascading randomization (layers cumulatively re-initialized output$\to$inp
 
 \paragraph{What the map hides.}\label{ptnb:sec:pixel-sanity}
 Cascading randomization on the maps reproduces~\textcite{Adebayo2018sanity} and \textcite{sixt2020whenexplanationslie}: some methods retain map structure at the cascade endpoint. On ViT-B/16, the \ac{rg} anchor retains Spearman $|\rho| = \sanityVitRGanchorRho$, the highest of all methods, and HOG $r = \sanityVitRGanchorHOG$; on VGG-16, LRP-$\varepsilon$ retains $\sanityVggLRPepsRho$ and $\sanityVggLRPepsHOG$ (Table~\ref{tab:sanity-check}). The localization-selected \ac{rg} modes are slightly more model sensitive than the anchor on all three models. \ch{In Figure~\ref{ptnb:fig:hellinger-sanity}, $\mathrm{H}$ reaches the double-random reference while maps retain structure. The map-level failure remains; $\mathrm{H}$ detects routing changes obscured by the map. Since discounted occupation projections also vary across models, this discrepancy does not isolate loss under a fixed projection.}
-\section{Game Trajectories and Disagreement Maps}\label{sec:trajectory_disagreement}
+\section{Trajectory Laws and Disagreement Maps}\label{sec:trajectory_disagreement}
 
 Section~\ref{sec:probabilistic_foundations} defines the trajectory laws and probability distances. We now specify the game kernels on a common labeled graph, allowing weights, inputs, or both to differ. Algorithm~\ref{ptnb:alg:hellinger} computes their Hellinger distance and Theorem~\ref{ptnb:thm:per-pixel} its terminal-state decomposition; input terminals correspond to pixels with player or routing-sign labels.
 
@@ -86,7 +86,7 @@ This retains differences between paths ending at the same pixel, which endpoint 
 
 \subsection{Experiments}\label{ptnb:sec:lmp-experiments}
 
-With the model fixed, we test sensitivity to input perturbations and separation among ImageNet-S classes and from random noise. We use the Stopping-Game kernel~\eqref{ptnb:eq:adf-T} without risk aversion ($\lambda = 0$; ``ADF'' in code) and Routing-Game kernel~\eqref{ptnb:eq:rg-T-act} at $\tau = 1$. The diagnostic \ac{rg} omits the bias action and renormalizes the remaining branches, so it may differ from the bias-inclusive attribution game.
+With the model fixed, we test sensitivity to input perturbations and summarize pairwise distances for clean and Gaussian inputs. We use the Stopping-Game kernel~\eqref{ptnb:eq:adf-T} without risk aversion ($\lambda = 0$; ``ADF'' in code) and Routing-Game kernel~\eqref{ptnb:eq:rg-T-act} at $\tau = 1$. The diagnostic \ac{rg} omits the bias action and renormalizes the remaining branches, so it may differ from the bias-inclusive attribution game. In every paired comparison, both laws use one shared target: the model's argmax for the first input. Thus the two laws start from the same output state; for clean-vs-random and clean-vs-noisy pairs this is the clean input's target, and for random-vs-random it is the first random input's target.
 
 \subsubsection{Input-Noise Sensitivity}\label{ptnb:sec:input-noise-hellinger}
 
@@ -102,15 +102,15 @@ For each architecture and $\sigma \in \{0.005,\allowbreak 0.01,\allowbreak 0.02,
     \label{ptnb:fig:hellinger-input-noise}
 \end{figure}
 
-\subsubsection{Class Separability and Reference Baselines}\label{ptnb:sec:input-noise-baselines}
+\subsubsection{Input-Noise Reference Baselines}\label{ptnb:sec:input-noise-baselines}
 
-The reference baselines in Table~\ref{ptnb:tab:hellinger-input-random} make class separability architecture- and kernel-specific:
+Table~\ref{ptnb:tab:hellinger-input-random} reports descriptive means and standard deviations over sampled pairs. The mean differences vary by architecture and kernel:
 \begin{itemize}
-    \item On \textbf{VGG-16}, clean-intraclass \ac{sg} $\mathrm{H}=0.513$ sits below clean-interclass $\mathrm{H}=0.607$. The \ac{rg} kernel saturates at $\mathrm{H}=1$ on every row, so it cannot resolve class structure.
-    \item On \textbf{ResNet-50}, the \ac{rg} kernel is the discriminating one: clean-intraclass $\mathrm{H}=0.786$ vs.\ clean-interclass $\mathrm{H}=0.902$. The \ac{sg} kernel does not separate classes (intraclass $0.272$ vs.\ interclass $0.268$).
-    \item On \textbf{ViT-B/16}, the \ac{rg} kernel gives intraclass $0.789$ vs.\ interclass $0.882$; the \ac{sg} gap ($0.422 \pm 0.023$ vs.\ $0.435 \pm 0.017$) is smaller than the spread over pairs, so the \ac{sg} does not separate classes there.
+    \item On \textbf{VGG-16}, the clean-intraclass and clean-interclass \ac{sg} means are $0.513$ and $0.607$; the \ac{rg} mean is $1$ in every row.
+    \item On \textbf{ResNet-50}, the clean-intraclass and clean-interclass means are $0.272$ and $0.268$ for \ac{sg}, and $0.786$ and $0.902$ for \ac{rg}.
+    \item On \textbf{ViT-B/16}, the corresponding means are $0.422$ and $0.435$ for \ac{sg}, and $0.789$ and $0.882$ for \ac{rg}. The \ac{sg} mean difference is $0.013$, against pairwise standard deviations of $0.023$ and $0.017$.
 \end{itemize}
-Random-vs-random is lowest in every nonconstant column, and clean-vs-random is highest in each plain-$\mathrm{H}$ column except the \ac{sg} on ResNet-50 ($0.269$ vs.\ intraclass $0.272$) and the saturated \ac{rg} on VGG-16, consistent with routing Gaussian inputs differently from in-distribution images. The conditioned variant $\mathrm{H}_{\mathrm{surv}}$ is at least $0.99$ throughout VGG-16, ResNet-50, and ViT-B/16 \ac{rg}, so it carries no class-separability signal there. For the \ac{sg} on ViT-B/16 it separates random-vs-random ($0.852$) from the clean rows ($0.957$--$0.968$), but neither intraclass from interclass pairs ($0.963$ vs.\ $0.968$) nor clean-vs-random ($0.957$) from the clean pairs.
+Random-vs-random has the lowest mean in every nonconstant column. Clean-vs-random has the highest mean in each plain-$\mathrm{H}$ column except \ac{sg} on ResNet-50 ($0.269$ vs.\ intraclass $0.272$) and the saturated \ac{rg} on VGG-16. The conditioned variant $\mathrm{H}_{\mathrm{surv}}$ is at least $0.99$ throughout VGG-16, ResNet-50, and ViT-B/16 \ac{rg}, leaving little variation among these baselines. For ViT-B/16 \ac{sg}, the conditioned means are $0.969$ (clean-intraclass), $0.974$ (clean-interclass), $0.963$ (clean-vs-random), and $0.867$ (random-vs-random). The intraclass/interclass mean difference is $0.005$, against pairwise standard deviations of $0.008$ and $0.005$. These standard deviations describe pairwise variability; the table does not report an inferential test of class differences.
 
 \begin{table}[htbp]
 \TableContent{
@@ -124,11 +124,12 @@ Random-vs-random is lowest in every nonconstant column, and clean-vs-random is h
     mean $\pm$ standard deviation over pairs. \textbf{clean-intraclass}: $\mathrm{H}(\Pi_A(x_1),
         \Pi_A(x_2))$ with $x_1, x_2$ from the same ground-truth class; \textbf{clean-interclass}: same,
     with distinct classes; \textbf{clean-vs-random}: one side clean, other Gaussian;
-    \textbf{random-vs-random}: both sides Gaussian.}
+    \textbf{random-vs-random}: both sides Gaussian. Both laws of a pair start from the same output
+    state, the model's argmax class for the first input.}
     \label{ptnb:tab:hellinger-input-random}
 \end{table}
 \par\medskip
-\section{Randomization Sanity Checks}\label{ptnb:app:sanity-check}\label{subsec:hellinger_randomization}
+\section{Parameter-Randomization Experiments}\label{ptnb:app:sanity-check}\label{subsec:hellinger_randomization}
 
 We extend~\textcite{Adebayo2018sanity}'s cascading randomization to trajectory laws, compare attribution maps, and establish double-random and per-image references for Section~\ref{ptnb:sec:hellinger-sanity}. A separate checkpoint-aligned ViT audit on the same 200 images holds Q/K/V projections fixed across map and trajectory measurements: randomizing only the classifier head drops top-1 accuracy from $88.5\%$ to $0$ while RG map similarity remains $0.999998$ and RG Hellinger is $0.769$. At the cascade endpoint, map similarity is $0.377$ and survival-conditioned Hellinger is $1.000$. Local Hellinger response increases with classifier-head perturbation size, but its per-image association with map drift is weak (endpoint Spearman $-0.203$, 95\% CI $[-0.333,-0.072]$), and the head-only interval includes zero. These controls show that routing distance can register changes hidden by the map; they do not establish Hellinger as an accuracy or explanation-quality predictor. See Appendix~\ref{app:rebuttal-randomization} for protocol and tables. They are distinct from the earlier historical attribution and trajectory cascades, whose ViT Q/K/V randomization granularities differ; the earlier per-image comparison remains qualified accordingly.
 
@@ -254,7 +255,7 @@ Our cascade-endpoint reference compares two copies of each architecture with ind
 \paragraph{Protocol.}
 For each architecture, $R = 500$ independent rounds comprise: \emph{(i)} instantiate two copies $A_r, B_r$ of the pretrained checkpoint and re-initialize every \texttt{Conv2d}/\texttt{Linear} layer independently as in the cascade, matching its endpoint. Both retain normalization parameters, packed attention query/key/value projections, positional embedding, and class token. We use checkpoints for all architectures: \texttt{weights=None} gives ViT an identically zero classification head, making trajectory laws trivially indistinguishable. \emph{(ii)} Draw one image index with replacement from the $565$-image ImageNet-S test split ($\drDistinctImages$ distinct images among $500$ draws with our fixed seed). \emph{(iii)} Compute plain $\mathrm{H}(\Pi_{A_r}, \Pi_{B_r})$ and conditioned-survival $\mathrm{H}_{\mathrm{surv}}$ for both Stopping Game and Routing Game kernels using the ground-truth label as target class. Table~\ref{ptnb:tab:double-random-hellinger} reports the round-to-round mean and standard deviation; the variance mixes image choice and the random-pair realization.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \TableContent{
     \centering
     \small
@@ -293,7 +294,7 @@ Figure~\ref{ptnb:fig:hellinger-sanity} gives mean $\mathrm H$ and $\mathrm H_{\m
     layers match on the CNNs; the ViT-B/16 attribution cascade additionally randomizes $Q$, $K$, and $V$.  Left block:
     within-Hellinger cross-correlations of the plain ($\mathrm{H}_{\cdot,\mathrm{pl}}$) and
     survival-conditioned ($\mathrm{H}_{\cdot,\mathrm{surv}}$) distances under the \ac{rg} and \ac{sg}
-    kernels (self-entries shown as $-$; trivially $+1$).  Right block: Hellinger-vs-map
+    kernels (diagonal self-correlations shown as $1.00$). Right block: Hellinger-vs-map
     cross-correlations.}
     \label{ptnb:tab:per-image-corr}
 \end{table}
@@ -301,7 +302,7 @@ Figure~\ref{ptnb:fig:hellinger-sanity} gives mean $\mathrm H$ and $\mathrm H_{\m
 \paragraph{Readings.}
 The Hellinger-vs-map block of Table~\ref{ptnb:tab:per-image-corr} is uniformly near zero ($|\rho| \leq \perImageCrossMax$ across all three architectures): trajectory displacement and map drift have weak observed per-image rank association. Statistical independence and nonlinear dependence remain unresolved; ViT-B/16's unequal interventions further limit conclusions about the diagnostics alone.
 
-Per-image $\mathrm{H}$ carries a stable ordering of the images. Where little trajectory mass reaches the cemetery, plain and conditioned distances rank images almost identically: $\rho = +0.96$ (\ac{rg}) and $+0.99$ (\ac{sg}) on ViT-B/16. VGG-16 \ac{rg} gives identical values because it never routes to dead-neuron states. Under the \ac{sg} on the \ac{relu} backbones the two normalizations decouple ($\rho = -0.30$ VGG-16, $+0.16$ ResNet-50): the cemetery share of plain $\mathrm{H}$ varies with the input-dependent inactive entries of the ReLU activation vectors, which renormalization by $1/\sqrt{Z_A Z_B}$ removes. The conditioned distances of the two games agree strongly on the \ac{relu} backbones ($\rho = +0.85$ VGG-16, $+0.89$ ResNet-50) and only weakly on ViT-B/16 ($+0.28$), where the two kernels read partly different per-image structure.
+The two normalizations show strong demonstrated agreement for ViT-B/16: their per-image distances have Spearman $\rho=+0.96$ (\ac{rg}) and $+0.99$ (\ac{sg}). VGG-16 \ac{rg} gives identical values because it never routes to dead-neuron states. Under the \ac{sg} on the \ac{relu} backbones the normalizations agree weakly or negatively ($\rho=-0.30$ VGG-16, $+0.16$ ResNet-50): the cemetery share of plain $\mathrm{H}$ varies with the input-dependent inactive entries of the ReLU activation vectors, which renormalization by $1/\sqrt{Z_A Z_B}$ removes. The conditioned distances of the two games agree strongly on the \ac{relu} backbones ($\rho=+0.85$ VGG-16, $+0.89$ ResNet-50) and only weakly on ViT-B/16 ($+0.28$), where the two kernels read partly different per-image structure.
 
 Spearman $\rho(|a|)$ and HOG within a single attribution method agree well ($\rho=0.65$--$0.82$ from the same per-image joins), but Gradient and $\alpha\beta$-\ac{rg} similarities barely agree across images ($\rho$ between $-0.10$ and $+0.30$, depending on architecture and metric). Alongside the weak trajectory--map association, this shows that the attribution method changes which images a pixel-level sanity check flags.
 \par\medskip

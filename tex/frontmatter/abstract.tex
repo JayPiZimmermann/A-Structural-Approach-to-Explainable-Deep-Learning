@@ -1,6 +1,12 @@
 \chapter*{Abstract}
 \begin{otherlanguage}{english}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Attribution has shifted from a tool for inspecting model decisions to a practical mechanism for improving and controlling models: explanations now guide model correction, training, and inference. However, their interpretation depends on understanding the backward calculations that produce them. This thesis develops structural and game-theoretic representations of trained neural networks that make these calculations explicit and provide a principled basis for designing and evaluating attribution methods.
+
+Its first part decomposes pretrained networks into pairs of convex, monotone streams whose difference recovers the original function. Stabilized forward and backward passes make these representations usable for attribution without retraining or changing model predictions. The construction extends from ReLU networks to smooth activations and to an exact DC decomposition of Transformers, including GELU, softmax, and LayerNorm; using its individual streams for attribution at depth additionally requires numerical stabilization, which we develop and evaluate on ViT-B/16.
+
+Its second part represents backward attribution through games on the network graph. Gradients and $\alpha\beta$-LRP arise as signed discounted occupation measures of optimal policies in a two-player game: a Stopping Game recovers gradients, and an entropy-regularized Routing Game recovers $\alpha\beta$-LRP. Routing temperature, risk aversion, and policy regularization then become explicit ways to modify backward rules. The induced trajectory distributions can be compared before projection into attribution maps; Hellinger diagnostics reveal routing changes that map similarity can obscure.
+
+On vision models, split-based methods improve localization and Selectivity on pretrained CNNs, game-derived methods achieve strong localization on ViT-B/16, with the advantage transferring to Pascal VOC without retuning, and directly trained difference models on MNIST illustrate opposing-stream sensitivities. Together, these results establish network decomposition and backward games as mathematical and practical tools for understanding and adapting attribution.
 \\[2ex]
 \textbf{Keywords:} \itshape \englishkeywords
 \end{otherlanguage}

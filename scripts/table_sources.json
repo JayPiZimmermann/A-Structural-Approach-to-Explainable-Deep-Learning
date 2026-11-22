@@ -48,11 +48,6 @@
             "description": "Combined alpha ablation"
           },
           {
-            "paper_source": "arxive/hiddenMonotonicity/appendix/table_lrp_scale_shift_comparison.tex",
-            "thesis_table": "tex/tables/appendix/lrp_scale_shift.tex",
-            "description": "LRP scale versus shift"
-          },
-          {
             "paper_source": "arxive/hiddenMonotonicity/appendix/table_alpha_none.tex",
             "thesis_table": "tex/tables/appendix/alpha_none.tex",
             "description": "Alpha ablation without shift"

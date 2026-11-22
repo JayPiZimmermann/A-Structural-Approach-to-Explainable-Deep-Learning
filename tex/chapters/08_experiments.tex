@@ -1,6 +1,6 @@
 \chapter{Experiments and Evaluation}\label{ch:experiments}
 
-This chapter evaluates attribution from split-streams and game-based backward routing through localization, faithfulness, robustness, and computational cost. It brings together the two papers' experiments and additional controls for numerical accuracy, perturbation protocols, and attribution-map sharpening. The split and game methods use different models and attribution targets, specified below; their benchmark scores are compared within the corresponding experiment.
+This chapter evaluates attribution from split-streams and game-based backward routing through localization, faithfulness, robustness, and computational cost. It brings together the two papers' experiments and additional controls for numerical accuracy, perturbation protocols, and attribution-map sharpening.
 
 \section{Experimental Setup}\label{sec:experimental_setup}\label{sec:quantus_evaluation}
 
@@ -19,7 +19,7 @@ Method abbreviations (Section~\ref{subsec:visual_attribution_related}) are GCAM 
 \input{figures/experiments/vgg_saliency_comparison_main}
 
 \paragraph{Qualitative analysis.}
-Figure~\ref{fig:vgg_saliency_comparison_main} qualitatively compares saliency maps from our split methods with their baseline counterparts at the best-performing layers. Mid-layer SplitCAM shares key visual characteristics with classical $\gamma$-\ac{lrp} from earlier layers. Compared to standard LayerCAM on the same layer it focuses more weight to all object pixels, while still marking the key object features as especially important. For $\alpha \ll 0.5$, SplitGrad yields less focused yet finely aligned gradients that closely follow image details. We attribute this to the Maxout activation retaining preactivation information, unlike ReLU, which discards it in inactive neurons. Overall, mid-layer SplitCAM offers an effective balance between interpretability and focus (low entropy).
+Figure~\ref{fig:vgg_saliency_comparison_main} qualitatively compares saliency maps from our split methods with their baseline counterparts at the best-performing layers. Mid-layer SplitCAM shares key visual characteristics with classical $\gamma$-\ac{lrp} from earlier layers. Compared to standard LayerCAM on the same layer it assigns more weight to object pixels, while still marking the key object features as especially important. For $\alpha \ll 0.5$, SplitGrad yields less focused yet finely aligned gradients that closely follow image details. We attribute this to the Maxout activation retaining preactivation information, unlike ReLU, which discards it in inactive neurons. Overall, mid-layer SplitCAM offers an effective balance between interpretability and focus (low entropy).
 
 \input{tables/eval_vgg_main}
 
@@ -28,13 +28,13 @@ Tables~\ref{tab:eval_vgg_main} and~\ref{tab:eval_res_main} compare selected attr
 
 Overall, the considered backpropagation-based attribution methods heavily depend on the selected network layer; see Section~\ref{app:ablation} for extensive ablation.
 
-VGG-16 gains depend on metric and configuration. Table~\ref{tab:eval_vgg_main} gives SplitCAM Pointing Game $0.938$ versus Guided Backprop's $0.887$, Attribution Localization $0.651$ versus Guided Backprop's $0.632$, and Selectivity $2.727$ versus LayerCAM's $2.792$, from different SplitCAM layers. LayerCAM has the highest displayed Pixel Flipping score-drop AUCs, $0.317$ and $2.474$, versus SplitCAM's $0.300$ and $2.404$. SplitLRP has the lowest Maximum Sensitivity, $0.282$, versus Guided Backprop's $0.375$, and higher Pointing Game but lower Attribution Localization and Pixel Flipping scores than the displayed classical $\gamma$-\ac{lrp} configurations.
+On VGG-16, SplitCAM achieves strong localization and Selectivity results: Pointing Game $0.938$ versus Guided Backprop's $0.887$, Attribution Localization $0.651$ versus Guided Backprop's $0.632$, and Selectivity $2.727$ versus LayerCAM's $2.792$, with the SplitCAM values drawn from different layers. LayerCAM has the highest displayed Pixel Flipping score-drop AUCs, $0.317$ and $2.474$, versus SplitCAM's $0.300$ and $2.404$. SplitLRP achieves the lowest Maximum Sensitivity, $0.282$, versus Guided Backprop's $0.375$, and improves Pointing Game over the displayed classical $\gamma$-\ac{lrp} configurations.
 
 \section{Split Methods: ResNet-18}\label{sec:results_resnet}
 
 \input{tables/eval_res_main}
 
-On ResNet-18 (Table~\ref{tab:eval_res_main}), SplitCAM has the lowest reported Selectivity, $3.503$, versus $3.517$ for the strongest baseline, Guided Backprop. SplitCAM and SplitGrad reach Pointing Game $0.972$ versus LayerCAM's $0.971$. Attribution Localization is $0.673$ for SplitCAM and $0.664$ for LayerCAM; Guided Grad-CAM leads the full comparison at $0.742$ (Table~\ref{tab:xai_eval_comprehensive_res}). Baselines retain the best Pixel Flipping and Maximum Sensitivity scores: the gains are metric-specific.
+On ResNet-18 (Table~\ref{tab:eval_res_main}), SplitCAM achieves the lowest reported Selectivity, $3.503$, compared with $3.517$ for Guided Backprop. SplitCAM and SplitGrad reach Pointing Game $0.972$ versus LayerCAM's $0.971$. SplitCAM's Attribution Localization is $0.673$ versus LayerCAM's $0.664$, while Guided Grad-CAM leads the full comparison at $0.742$ (Table~\ref{tab:xai_eval_comprehensive_res}).
 
 \section{Split-Method Stabilization and Sanity Checks}\label{sec:ablations}
 
@@ -45,17 +45,17 @@ Table~\ref{tab:alpha_ablation_main} presents the performance of one selected Spl
 \input{tables/alpha_ablation_main}
 
 \paragraph{Forward stabilization.}
-Without forward stabilization, late VGG-16 SplitCAM activations reach the order of $10^{18}$, with reconstruction errors of order $10^9$ despite per-layer correction. Scaling and shifting trade localization, faithfulness and robustness differently across layers (Section~\ref{app:forward_ablation}).
+Without forward stabilization, late VGG-16 SplitCAM activations reach the order of $10^{18}$, with reconstruction errors of order $10^9$ despite per-layer correction. Section~\ref{app:forward_ablation} reports SplitCAM without forward stabilization and with shifting.
 
 \paragraph{Randomization sanity checks.}
 After randomizing VGG-16's last three fully connected layers, every reported SplitCAM and SplitGrad configuration has lower SSIM than every listed baseline, while HOG and Spearman comparisons are mixed (Section~\ref{app:p1_sanity}).
 
 \paragraph{Runtime.}
-SplitCAM takes $0.33$--$0.44$\,s per image, approximately $14$--$29$ times the ordinary Grad-CAM and LayerCAM timings; Table~\ref{tab:timing_comparison} gives the full runtime comparison and Section~\ref{app:p1_timing} its measurement scope.
+SplitCAM takes $0.33$--$0.44$\,s per image; Table~\ref{tab:timing_comparison} gives the full runtime comparison and Section~\ref{app:p1_timing} its measurement scope.
 
 \section{Directly Trained Difference-of-Convex Models on MNIST}\label{sec:dcinns}
 
-To study mechanisms exposed by the \ac{dc} decomposition of pretrained networks (Sections~\ref{sec:split_cam}--\ref{sec:split_grad}), we directly train small DC input neural networks (DCINNs) and their monotone relatives on MNIST. Their shared opposing-stream structure provides a controlled setting for examining class-dependent sensitivities on present and candidate missing strokes, with a modest, architecture-dependent accuracy cost.
+To study mechanisms exposed by the \ac{dc} decomposition of pretrained networks (Sections~\ref{sec:split_cam}--\ref{sec:split_grad}), we directly train small DC input neural networks (DCINNs) and their monotone relatives on MNIST. Their shared opposing-stream structure provides a controlled setting for examining class-dependent sensitivities on present and candidate missing strokes.
 
 \paragraph{Architecture and training.}\label{subsec:dcinn_architecture}
 
@@ -67,7 +67,7 @@ Three implementation choices matter in practice.
 \begin{itemize}
 	\item \emph{Activations.} Both streams use convex, monotone rank-2 Maxout units~\parencite{Goodfellow2013Maxout}, which consistently outperformed \ac{relu} streams in the difference setting. Their constrained layers use the same non-negative-weight Maxout building blocks as the split-stream construction in Section~\ref{sec:dc_splitting_relu}.
 	\item \emph{Non-negativity.} Constrained weights are parameterized as $p(\tilde{W})$ with free parameters $\tilde{W}$ and a positivity transform $p$; among softplus, exponential and squaring, $p = \relu$ with absolute-value-of-Gaussian initialization gave the best test accuracy. Positive initialization avoids inactive raw weights: for $\tilde w<0$, the ReLU transform has zero derivative and blocks the task-loss gradient to $\tilde w$. The transform is also applied to biases and to the scale and shift parameters of batch-normalization layers.
-	\item \emph{Regularization.} To limit activation growth, we use small initial weights and weight decay, reported as $10^{-3}$ in \textcite{hiddenMono}. The split-model trainer's default loss additionally penalizes the mean squared outputs of $g$ and $h$ with coefficient $10^{-2}$, limiting common growth that cancels in $g-h$.
+	\item \emph{Regularization.} To limit activation growth, we use small initial weights and weight decay, reported as $10^{-3}$ in \textcite{hiddenMono}.
 \end{itemize}
 
 We train two base architectures on MNIST: \texttt{cnn\_maxout}, a \ac{cnn} with four convolutional layers (32, 64, 128 and 128 channels with batch normalization) followed by three fully connected layers, roughly $1.2$ million parameters in total, and \texttt{mlp\_maxout}, a wide four-layer \ac{mlp} ($784 \to 800 \to 800 \to 800 \to 10$) with roughly $4.2$ million parameters --- each in eight variants: unconstrained (None), single-stream constrained (IC, Mon), and difference-of-two models (DIC, DM, DICIN, DMIN, and an unconstrained difference baseline, \texttt{Diff\_None}).
@@ -80,7 +80,7 @@ For an inverted-input class logit $f(x)=g(x)-h(\1-x)$, the complete gradient at 
 \[
 \nabla f(x)=\nabla g(x)+(\nabla h)(\1-x).
 \]
-The complement and subtraction cancel the two minus signs: a positive entry of $(\nabla h)(\1-x)$ (bright blue pixel) indicates positive local sensitivity of the contribution $-h(\1-x)$ to increasing the original input. It can be outweighed by a negative entry of $\nabla g(x)$, so neither stream alone guarantees an increase in the complete class logit. Even the complete gradient describes only local sensitivity; finite counterfactual claims require evaluating the model under the proposed intervention, and a logit increase need not change the predicted class. The unconstrained first layer means that ICNN gradients need not be non-negative in the original input coordinates.
+The complement and subtraction cancel the two minus signs: a positive entry of $(\nabla h)(\1-x)$ (bright blue pixel) indicates positive local sensitivity of the contribution $-h(\1-x)$ to increasing the original input. The unconstrained first layer means that ICNN gradients need not be non-negative in the original input coordinates.
 
 \begin{figure}[t]
 \QualitativeImageContent{
@@ -127,7 +127,7 @@ The complement and subtraction cancel the two minus signs: a positive entry of $
 		\end{minipage}
 	\end{minipage}
 	}%
-\caption[Stream gradients of the inverted-input DIC model]{Stream gradients of the inverted-input DIC model (\texttt{cnn\_maxout} DICIN) on a correctly classified MNIST test digit ``3'', thresholded and overlaid per class logit. The $g$-stream gradient (red) highlights sensitivities on present strokes, while the $h$-stream gradient (blue) highlights sensitivities at candidate missing-stroke locations. These stream-local maps do not by themselves establish the effect of adding pixels on the complete model. Left: the original digit.}
+\caption[Stream gradients of the inverted-input DIC model]{Stream gradients of the inverted-input DIC model (\texttt{cnn\_maxout} DICIN) on a correctly classified MNIST test digit ``3'', thresholded and overlaid per class logit. The $g$-stream gradient (red) highlights sensitivities on present strokes, while the $h$-stream gradient (blue) highlights sensitivities at candidate missing-stroke locations. Left: the original digit.}
 	\label{fig:mnist_split_ic_saliency}
 \end{figure}
 
@@ -176,13 +176,13 @@ The complement and subtraction cancel the two minus signs: a positive entry of $
 		\end{minipage}
 	\end{minipage}
 	}%
-\caption[Second example of inverted-input DIC stream gradients]{Second correctly classified MNIST test ``3'', using the model, per-class thresholded overlays and color convention of Figure~\ref{fig:mnist_split_ic_saliency}. Left: input. These stream-local maps do not by themselves establish the effect of adding pixels on the complete model.}
+\caption[Second example of inverted-input DIC stream gradients]{Second correctly classified MNIST test ``3'', using the model, per-class thresholded overlays and color convention of Figure~\ref{fig:mnist_split_ic_saliency}. Left: input.}
 	\label{fig:mnist_split_ic_saliency_second}
 \end{figure}
 
-Figure~\ref{fig:mnist_split_ic_saliency} overlays both gradients for each class logit of a test ``3''. The $g$-gradient for the ground-truth class ``3'' follows the digit strokes most accurately. For classes ``6'', ``8'' and ``9'', the $h$-gradients are dense \emph{between the arches} of the ``3'', where added pixels would geometrically close loops. A second correctly classified ``3'' (Figure~\ref{fig:mnist_split_ic_saliency_second}) shows the same qualitative pattern. The gradients of the single \texttt{cnn\_maxout} IC model are mostly positive on the strokes and negative on the background, with less class-dependent directional variation. These examples suggest a role for the difference structure without establishing general disentanglement.
+Figure~\ref{fig:mnist_split_ic_saliency} overlays both gradients for each class logit of a test ``3''. The $g$-gradient for the ground-truth class ``3'' follows the digit strokes most accurately. For classes ``6'', ``8'' and ``9'', the $h$-gradients are dense \emph{between the arches} of the ``3'', at candidate missing-stroke locations that would geometrically close loops. A second correctly classified ``3'' (Figure~\ref{fig:mnist_split_ic_saliency_second}) shows the same qualitative pattern. The gradients of the single \texttt{cnn\_maxout} IC model are mostly positive on the strokes and negative on the background, with less class-dependent directional variation. These examples illustrate class-dependent stream sensitivities in the difference model.
 
-Figure~\ref{fig:mnist_ic_saliency} visualizes input gradients of the \texttt{cnn\_maxout} IC model on representative test samples. The gradients are mostly positive on the strokes and negative on the background.
+Figure~\ref{fig:mnist_ic_saliency} visualizes input gradients of the \texttt{cnn\_maxout} IC model on representative test samples.
 
 \begin{figure}[t]
 \QualitativeImageContent{
@@ -278,7 +278,7 @@ Figure~\ref{fig:mnist_ic_saliency} visualizes input gradients of the \texttt{cnn
 
 \paragraph{Accuracy trade-offs.}\label{subsec:dcinn_accuracy}
 
-Table~\ref{tab:cdinn_acc} reports all eight variants over ten seeds. For the \ac{mlp}, every difference-of-two variant exceeds the unrestricted baseline's median accuracy of $98.39\%$, reaching $98.58\%$ for DICIN. For the \ac{cnn}, IC achieves $99.16\%$, close to the unrestricted model's $99.19\%$; difference-of-two variants reach $97.94$--$98.28\%$.
+Table~\ref{tab:cdinn_acc} reports the median test accuracy of all eight variants over ten seeds. For the \ac{mlp}, every difference-of-two variant exceeds the unrestricted baseline's median accuracy of $98.39\%$, reaching $98.58\%$ for DICIN. For the \ac{cnn}, IC achieves $99.16\%$, close to the unrestricted model's $99.19\%$; difference-of-two variants reach $97.94$--$98.28\%$.
 
 \section{Game-Based Case Study}\label{sec:results_vit}\label{sec:saliency_results}\label{ptnb:sec:experiments}\label{ptnb:sec:case-study}
 
@@ -288,8 +288,10 @@ Table~\ref{tab:cdinn_acc} reports all eight variants over ten seeds. For the \ac
 Methods are evaluated under a two-stage protocol that treats baselines and our games alike. Stage~1 runs a validation grid search for every tunable method, including DAVE (Table~\ref{ptnb:tab:main-search-grid}; \nValGrid{} configurations in total). Stage~2 independently selects the localization and faithfulness rank-sum configurations and evaluates both once on the test split. Confidence intervals and Holm-corrected paired comparisons follow Section~\ref{ptnb:app:stats}. The \ac{rg}/\ac{rg}+Eq anchors additionally represent $\alpha\beta$-\ac{lrp} exactly (Theorem~\ref{ptnb:thm:lrp-recovery}). Table~\ref{ptnb:tab:eval-vit} reports the paper's selected localization configurations and anchors, with their original testing family. Table~\ref{ptnb:tab:test-ci-vit} in Appendix~\ref{ptnb:app:test-ci} gives both selections, further baselines and confidence intervals. Reporting faithfulness-selected rows separately preserves the distinction between mask agreement and faithfulness.
 
 \input{tables/eval_vit_main}
+\input{figures/experiments/vit_saliency_comparison_main}
 
 \paragraph{ViT-B/16 (Table~\ref{ptnb:tab:eval-vit}).}
+Figure~\ref{fig:vit_saliency_comparison_main} compares the selected methods on six images.
 Under the localization-selected protocol, the \ac{rg} family beats every baseline on attribution
 localization, including the prior transformer-specific backward methods
 AttnLRP~\parencite{Achtibat2024AttnLRP}, our DAVE implementation~\parencite{Wrobel2024} (Section~\ref{ptnb:app:baselines}),
@@ -313,9 +315,10 @@ averaging is the only expensive variant (\vitRGEqTime\,s), exceeding even the pe
 KernelSHAP (\vitSHAPTime\,s). We follow DAVE's transform-averaging strategy~\parencite{Wrobel2024} with 50 transformed inputs for \ac{rg}+Eq (Section~\ref{ptnb:app:equivariant}); we did not test smaller averaging counts. Detailed timings and their measurement scope are in Section~\ref{app:game_timing}.
 
 \paragraph{Higher $\tau$ spreads attribution into context.}
-The localization-optimal modes place mass on the few patches that align with the segmentation mask. As $\tau$ increases, the same equilibrium spreads routing over more predecessors: the displayed examples retain object focus while extending attribution into context, without establishing which contextual features the model uses. Around the selected ViT-B/16 setting (Table~\ref{ptnb:tab:vit-temperature}), AL decreases monotonically from $0.723$ at $\tau{=}0.3$ to $0.461$ at $\tau{=}1$; faithfulness is non-monotonic. High $\tau$ shows how localization scores favor concentrated maps within the same game. User-perceived informativeness remains untested.
+The localization-optimal modes place mass on the few patches that align with the segmentation mask. As $\tau$ increases, routing spreads over more predecessors: the displayed examples retain object focus while extending attribution into context, without establishing which contextual features the model uses. Around the selected ViT-B/16 setting (Table~\ref{ptnb:tab:vit-temperature}), AL peaks at $0.723$ for $\tau{=}0.3$ and decreases to $0.461$ at $\tau{=}1$; lowering $\tau$ further to $0.2$ gives AL $0.699$ and PG $0.720$. Faithfulness is non-monotonic. High $\tau$ shows how localization scores favor concentrated maps within the same game. User-perceived informativeness remains untested.
 
 \input{tables/vit_temperature_main}
+\input{figures/experiments/vit_temperature_main}
 
 \begin{table}[htbp]
     \centering
@@ -354,13 +357,24 @@ One-factor mode ablations around validation-selected configurations (Section~\re
 
 The \ac{rg} backward holds the realized attention policy fixed and routes relevance only through the Value path, with zero gradient on $Q$, $K$, as in CP-LRP~\parencite{Ali2022AttnLRP} (Section~\ref{ptnb:app:vit-implementation}). Gradient fallback uses pure autograd through attention, recovering zennit-style $\varepsilon$-\ac{lrp}; Value-routing risk $\lambda_\text{sm}$ is inactive. Fallback lowers all three localization metrics in every configuration (AL and TK significantly throughout) and worsens every PF$_5$, PF$_{20}$ and Sel cell, significantly in four of nine.
 
+\subsection{Additional Experimental Controls}\label{sec:additional-controls}
+
+\paragraph{Separating map concentration from feature ranking.}
+Power sharpening replaces a spatial attribution map $a$ by $(|a|/\max|a|)^p$. With $p=1.5$, large scores become more dominant relative to small scores. This can increase AL, which measures the fraction of attribution mass inside the object mask. The pixel order is unchanged, so Pixel Flipping removes the same features in the same order and PF$_{20}$ stays unchanged. Table~\ref{tab:sharpening-control} gives both powers for all four methods in this control. Sharpened AttnLRP reaches AL $0.7153$, close to unsharpened RG's $0.7112$, with PF$_{20}$ $6.1226$ versus $7.4807$; its lower PF$_{20}$ is already present before sharpening. Applying the same sharpening to RG raises its AL to $0.7807$. Appendix~\ref{app:rebuttal-sharpening} gives the validation-matching protocol and paired intervals.
+
+\input{tables/sharpening_control_main}
+
+\paragraph{Deleting and restoring complete pixels.}
+A second faithfulness control removes or restores all three color channels of each pixel together and follows the model score over the entire image, rather than only the initial deletion fraction. Across target-logit and target-probability scores, LRP baselines outperform RG in both deletion and insertion. Table~\ref{tab:rebuttal-full-auc} reports all seven configurations and their confidence intervals.
+
+\paragraph{Isolating the effect of risk aversion.}
+On all 565 ViT test images, the validation-selected risk setting reduces Maximum Sensitivity from $0.6850$ to $0.6013$, while AL decreases from $0.6706$ to $0.5204$. For VGG-16, we hold the activation-gating rule fixed to distinguish the risk term's effect from gate smoothing: Maximum Sensitivity falls from $0.5265$ to $0.4865$, with AL changing from $0.6207$ to $0.6107$. Table~\ref{tab:rebuttal-risk} separates the effects of smoothing, risk aversion, and their combination.
+
 % VIT_EXTENSION_INSERT_HERE
 % BEGIN VIT_EXTENSION_GENERATED
 \input{tables/vit_extension/generated/integration}
 % END VIT_EXTENSION_GENERATED
 
-\paragraph{Interpreting the evaluation.}
-Attribution benchmarks measure complementary properties and carry sampling uncertainty. Our framework makes the routing decisions and contribution weights underlying gradients and $\alpha\beta$-\ac{lrp} explicit, supporting principled modifications (Chapter~\ref{ch:game_theory}). The randomization results in Chapter~\ref{ch:trajectory} show that routing changes can remain hidden in heatmaps.
+\section{Experimental Conclusions}\label{sec:experimental_conclusions}
 
-\paragraph{Additional controls (Appendix~\ref{app:rebuttal-controls}).}
-Sharpening AttnLRP at $p=1.5$ matches RG's localization with lower PF$_{20}$; full spatial-pixel deletion/insertion AUC favors LRP baselines under all four score conventions. Validation-selected ViT risk lowers both sensitivity measures on all 565 test images at a localization cost, with similar trade-offs in the gate-matched VGG controls. Caching original VGG max-pooling indices leaves validation metrics effectively unchanged. The separate signed SG gradient audit tests reconstruction rather than the submitted \texttt{pp} readout. Checkpoint-aligned ViT randomization preserves near-unit map similarity after predictive collapse; local Hellinger distances detect routing changes without establishing explanation quality.
+The two papers demonstrate complementary benefits of structural attribution. The DC decomposition improves localization and Selectivity through SplitCAM, while SplitLRP achieves the lowest Maximum Sensitivity in the VGG-16 comparison, without retraining the underlying model. The game framework turns changes of routing into strong ViT localization methods: RG and RG+Eq lead the original localization-selected comparison, and their lead transfers to Pascal VOC without retuning. The controls explain these gains more precisely: map concentration, feature ranking, and robustness measure different properties. Together with the verified gradient and relevance identities and the trajectory diagnostics, these results establish a mathematical and empirical basis for understanding, deriving, and improving backward attribution methods.

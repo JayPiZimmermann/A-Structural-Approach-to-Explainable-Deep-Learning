@@ -7,7 +7,7 @@ We establish network notation, the \ac{relu}--\ac{cpwl} equivalence and two-poly
 The standard \ac{mlp} architecture serves as the reference model throughout; convolutional and attention-based architectures are treated in Section~\ref{sec:cnn_decompositions} and Chapter~\ref{ch:transformers} as structured special cases and extensions.
 
 \begin{definition}[\acl{mlp}]\label{def:ffn_relu}
-An \emph{\acl{mlp}} (\acs{mlp}) of depth $L\in\NN$ has \emph{layer widths} $d^{(0)},\ldots,d^{(L)}\in\NN$, weights $\Wl{l}\in\RR^{d^{(l)}\times d^{(l-1)}}$, biases $b^{(l)}\in\RR^{d^{(l)}}$, and hidden-layer activation functions $\varrho_l:\RR\to\RR$ for $l=1,\ldots,L-1$. For input $\actl{0}=x\in\RR^{d^{(0)}}$, its \emph{pre-activations} $\preactl{l}$, \emph{activations} $\actl{l}$, and function $f:\RR^{d^{(0)}}\to\RR^{d^{(L)}}$ satisfy
+A \emph{multilayer perceptron} (\acs{mlp}) of depth $L\in\NN$ has \emph{layer widths} $d^{(0)},\ldots,d^{(L)}\in\NN$, weights $\Wl{l}\in\RR^{d^{(l)}\times d^{(l-1)}}$, biases $b^{(l)}\in\RR^{d^{(l)}}$, and hidden-layer activation functions $\varrho_l:\RR\to\RR$ for $l=1,\ldots,L-1$. For input $\actl{0}=x\in\RR^{d^{(0)}}$, its \emph{pre-activations} $\preactl{l}$, \emph{activations} $\actl{l}$, and function $f:\RR^{d^{(0)}}\to\RR^{d^{(L)}}$ satisfy
 \begin{align}
 	\preactl{l} &\coloneqq \Wl{l}\actl{l-1}+b^{(l)}, && l=1,\ldots,L, \label{eq:forward_recursion}\\
 	\actl{l} &\coloneqq \varrho_l\bigl(\preactl{l}\bigr), && l=1,\ldots,L-1, \notag\\
@@ -41,7 +41,7 @@ For a scalar $u \in \RR$ we write $u^{+} \coloneqq \max\{u, 0\}$ and $u^{-} \col
 	\qquad \sigma \in \{+,-\},
 	\label{eq:weight_split}
 \end{equation}
-so that $\Wl{l} = \Wsig{l}{+} - \Wsig{l}{-}$ and $\abs{\Wl{l}} = \Wsig{l}{+} + \Wsig{l}{-}$ entrywise, and both $\Wsig{l}{\sigma}$ are entrywise non-negative. Throughout, a sign index $\sigma$ ranges over $\{+,-\}$; identities indexed by $\sigma$ hold for both choices. Let us denote its numerical value by $\xi_+=1$, $\xi_-=-1$, and $\opp{\sigma}$ denotes the opposite label.
+so that $\Wl{l} = \Wsig{l}{+} - \Wsig{l}{-}$ and $\abs{\Wl{l}} = \Wsig{l}{+} + \Wsig{l}{-}$ entrywise, and both $\Wsig{l}{\sigma}$ are entrywise non-negative. Throughout, a sign index $\sigma$ ranges over $\{+,-\}$; identities indexed by $\sigma$ hold for both choices. Let $\xi_+=1$ and $\xi_-=-1$ denote its numerical value, and let $\opp{\sigma}$ denote the opposite label.
 \end{definition}
 
 \begin{remark}[Pair notation for decomposed activations]\label{rem:pair_notation}
@@ -275,7 +275,7 @@ The first inequality uses convexity of $u$ and monotonicity of $\varphi$; the se
 \end{proof}
 
 \begin{remark}[Monotonicity and convexity combine]\label{rem:monotone_convex_combined}
-With $\Wl{1}\ge0$, an \ac{icnn} is both monotone and convex by Propositions~\ref{prop:monotone_represents} and~\ref{prop:icnn_convex}. ReLU and Maxout meet both activation conditions. Section~\ref{sec:dc_splitting_relu} therefore constructs $g,h$ as monotone networks on a signed input embedding, convex in the original input. Non-negative-weight ReLU networks represent only convex functions; broader monotone architectures add concave activation counterparts \parencite{Runje_2023}.
+With $\Wl{1}\ge0$, an \ac{icnn} is both monotone and convex by Propositions~\ref{prop:monotone_represents} and~\ref{prop:icnn_convex}. ReLU and the maximum operation are convex and coordinatewise non-decreasing. Section~\ref{sec:dc_splitting_relu} therefore constructs $g,h$ as monotone networks on a signed input embedding, convex in the original input. Non-negative-weight ReLU networks represent only convex functions; broader monotone architectures add concave activation counterparts \parencite{Runje_2023}.
 \end{remark}
 
 \subsection*{Maxout units}
@@ -299,7 +299,7 @@ Maxout networks are the natural piecewise-linear generalization of \ac{relu}: a 
 
 \section{Game Theory and Markov Decision Processes}\label{sec:game_theory_mdp_foundations}
 
-Chapter~\ref{ch:game_theory} interprets backward propagation as a two-player zero-sum game on the decomposed network graph. We introduce \acp{mdp}, turn-based games, and their optimality equations, restricting throughout to finite state and action spaces. Standard textbook treatments are \textcite{Puterman1994mdp} for \acp{mdp} and \textcite{OsborneRubinstein1994} for game theory.
+Chapter~\ref{ch:game_theory} interprets backward propagation through two-player games on the decomposed network graph: the Stopping Game optimizes payoff advantages, while the Routing Game uses entropy-regularized log-space utilities (Sections~\ref{ptnb:sec:stopping} and~\ref{ptnb:sec:routing}). We introduce \acp{mdp}, turn-based games, and their optimality equations, restricting throughout to finite state and action spaces. Standard textbook treatments are \textcite{Puterman1994mdp} for \acp{mdp} and \textcite{OsborneRubinstein1994} for game theory.
 
 \begin{definition}[\acl{mdp}]\label{def:mdp}
 A (finite) \emph{\acl{mdp}} (\acs{mdp}) \parencite{Puterman1994mdp,SuttonBarto2018rl} is a tuple $\mathcal{M} = (S, A, \P, R, \gamma)$ consisting of a finite state set $S$, a finite nonempty action set $A(s)$ for each $s \in S$, a \emph{transition kernel} $\P(s' \mid s, a) \ge 0$ with $\sum_{s'} \P(s' \mid s, a) = 1$, a bounded \emph{reward function} $R(s, a) \in \RR$, and a \emph{discount factor} $\gamma \in [0, 1)$. A \emph{(stationary) policy} is a map $\pi$ assigning to each state $s$ a probability distribution $\pi(\cdot \mid s)$ over $A(s)$; $\pi$ is \emph{pure} (deterministic) if each $\pi(\cdot \mid s)$ is a point mass. A policy induces, for every start state, a Markov chain on $S$ and hence a distribution over \emph{trajectories} $(s_0, a_0, s_1, a_1, \ldots)$; the \emph{value function} of $\pi$ is the expected discounted return
@@ -448,7 +448,7 @@ The \ac{sg} retains Definition~\ref{def:relu_net_game}'s per-neuron states index
 
 \section{Probability Distances and Layered Markov Processes}\label{sec:probabilistic_foundations}\label{ptnb:app:path-divergence}
 
-We define distances between finite probability laws and compute Hellinger distance between complete Markov trajectories in linear time. Chapter~\ref{ch:trajectory} applies these results to backward game trajectories.
+The finite-set probability distances and finite Markov-process notions in this section are standard. We specialize the Bhattacharyya-overlap recursion of \textcite{Kazakos1978} to common-start layered processes with a cemetery state, and derive terminal-state and survival-conditioned Hellinger diagnostics used to compare backward game trajectories in Chapter~\ref{ch:trajectory}.
 
 \subsection{Distances and Divergences on Finite Sets}\label{sec:probability_distances}
 

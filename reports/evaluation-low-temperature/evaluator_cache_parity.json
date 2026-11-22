@@ -1,0 +1,74 @@
+{
+  "purpose": "Verify that the full-test tau=0.2 saliency cache matches a fresh run through the current Evaluator-prepared model path.",
+  "checked_at_local": "2026-11-20T15:18:50+01:00",
+  "git_head": "7b5cd387f0a690b0d3451aa60bc8d897bd442a38",
+  "dirty_tree_sha256": "c79a38261706cc19d20df02de87a0d22f722b3295f3593bddb5009be43c5c7b3",
+  "routing_game_source_sha256": "a1518cab5411ae543bae2d5647705070c595bda9330c562654f813590142305e",
+  "row_label": "rg__av-merged__eps-0.1__lam-0__lamsm-m10__tau-0.2__var-5",
+  "params": {
+    "routing_temperature": 0.2,
+    "lrp_alpha": 2.0,
+    "lrp_beta": 1.0,
+    "lrp_eps": 0.1,
+    "adf_lambda": 0.0,
+    "adf_softmax_lambda": -10.0,
+    "adf_input_variance": 5.0,
+    "av_rule": "merged",
+    "attention_mode": "v_only"
+  },
+  "environment": {
+    "python": "/home/jzimmermann/code/hidden-monotonicity-transformer-dc/.venv/bin/python",
+    "torch": "2.5.1+cu121",
+    "torchvision": "0.20.1+cu121",
+    "quantus": "0.6.0",
+    "cuda": "12.1",
+    "device": "NVIDIA TITAN V",
+    "input_split": "canonical ImageNet-S50 test subset, 565 images",
+    "model": "torchvision ViT-B/16 IMAGENET1K_V1",
+    "evaluator_path": "Evaluator.__init__ model decomposition and functional replacement; Evaluator._generate_maps with warmup=1"
+  },
+  "full_cache": {
+    "path": "code/playing_backward/results/low_temperature/full/.saliency_cache/rg__av-merged__eps-0.1__lam-0__lamsm-m10__tau-0.2__var-5.npz",
+    "sha256": "57606aa81b9ac9bfda6cb805969477f547d04582f1b11a3b57e85629978870ca",
+    "n_images": 565
+  },
+  "comparison": {
+    "input_arrays_bitwise_equal": true,
+    "labels_equal": true,
+    "saliency_maps_bitwise_equal": true,
+    "max_abs_map_difference": 0.0,
+    "relative_l2_map_difference": 0.0,
+    "images": [
+      {
+        "image_id": "ILSVRC2012_val_00004677.JPEG",
+        "cache_index": 0,
+        "label": 1,
+        "input_sha256": "8b2d9e3c4d298270ba977888bee6dfc30882baf62d3d16a7c4439f3d5597ad98",
+        "cached_map_sha256": "cd6a498d7cb174d68382293d814caa3ede2a1ad3e1c9b808ad8f007e918724ba",
+        "fresh_evaluator_map_exact_equal": true,
+        "max_abs_difference": 0.0,
+        "relative_l2_difference": 0.0
+      },
+      {
+        "image_id": "ILSVRC2012_val_00006007.JPEG",
+        "cache_index": 1,
+        "label": 1,
+        "input_sha256": "2f9fec458e28634d6e7f95de49fa256293751a09a839084ce5ea2ba500827752",
+        "cached_map_sha256": "0cf0bcf6fdb2ada4870ab82ac9fde068509628382d4eff3503fc8a5055a270ee",
+        "fresh_evaluator_map_exact_equal": true,
+        "max_abs_difference": 0.0,
+        "relative_l2_difference": 0.0
+      },
+      {
+        "image_id": "ILSVRC2012_val_00013623.JPEG",
+        "cache_index": 2,
+        "label": 1,
+        "input_sha256": "b52ed643b2dc30085ceb4658998842502e3d2ce864221a1c2adc1cfa6e143dad",
+        "cached_map_sha256": "cc0d5d5da1de18e15a08edd17a48ae0c656de26de5c1d5edec8c467244f021a3",
+        "fresh_evaluator_map_exact_equal": true,
+        "max_abs_difference": 0.0,
+        "relative_l2_difference": 0.0
+      }
+    ]
+  }
+}

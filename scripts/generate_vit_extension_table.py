@@ -373,6 +373,9 @@ def integration_text(campaigns):
     text = r"""\appneedspace{12\baselineskip}
 \section{Transformer DC Extension Results}
 \label{sec:vit-extension}
+
+Hidden Monotonicity develops SplitCAM for ReLU networks and CNNs, leaving the DC decomposition of Transformers open~\parencite{hiddenMono}. The following experiments are new to this thesis and test whether the GELU split and stabilized Transformer implementation extend SplitCAM's CNN gains to ViTs (Sections~\ref{sec:closed_form_dc_activations} and~\ref{sec:transformer_dc}). We compare SplitCAM with Grad-CAM and LayerCAM, tuning them on the game benchmark's 50 validation images and evaluating on its 565 test images with the same ViT-B/16 and metrics.
+
 \begin{center}
     \captionsetup{hypcap=false}
     \captionof{table}[ViT-B/16: extension results with confidence intervals]{ViT-B/16 extension results on the same ImageNet-S test split (565 images; MaxS/AvgS: the fixed 200-image subset), with 95\% image-bootstrap confidence intervals. Gradient is copied from Table~\ref{ptnb:tab:test-ci-vit}; the other configurations were selected on the same 50 validation images. Labels loc/faith denote the unchanged selection criteria. Bold/dark shading marks the best row; $^{\approx}$/light shading marks no significant difference under Holm adjustment across all row pairs within each metric of this table (Section~\ref{ptnb:app:stats}).}
@@ -380,7 +383,7 @@ def integration_text(campaigns):
 \end{center}
 \captionsetup{hypcap=true}
 \appinputgenci{tables/vit_extension/generated/extension_ci_longtable}
-\noindent $B$ is the one-based block index (LN1 readout). SplitCAM uses the signed paper formulas without ReLU; $F$, $L$ and $U$ denote fixed attention and LayerNorm, fixed LayerNorm only, and both live. Configurations with $p$ use adaptive common-component scaling and the selected backward scale power; the remaining SplitCAM rows use the paper post-shifts. Fixed quantities are recomputed for each perturbed input. CAM baselines retain their library normalization and bilinear resize; SplitCAM retains signed maps and nearest-neighbor resize. All metrics apply their original absolute-value preprocessing. Gradient pairwise tests use archived rounded per-image scores; its original confidence intervals are retained. Three test illustrations were viewed during method development.
+\noindent $B$ is the one-based block index (LN1 readout). SplitCAM uses the signed paper formulas without ReLU; $F$, $L$ and $U$ denote fixed attention and LayerNorm, fixed LayerNorm only, and both live. Configurations with $p$ use adaptive common-component scaling and the selected backward scale power; the remaining SplitCAM rows use the paper post-shifts. Fixed quantities are recomputed for each perturbed input. CAM baselines retain their library normalization and bilinear resize; SplitCAM retains signed maps and nearest-neighbor resize. All metrics apply their original absolute-value preprocessing. This exploratory comparison evaluates complete pipelines, including their different map normalization and resizing, so it does not isolate the DC decomposition's effect. Gradient pairwise tests use archived rounded per-image scores; its original confidence intervals are retained. Three test illustrations were viewed during method development.
 """
     runs = {"cam": "CAM search", "paper": "paper-postshift search", "weaker": "adaptive search"}
     methods = {"paper_splitcam_fixed_both": "$F$", "paper_splitcam_fixed_ln": "$L$",
@@ -389,6 +392,12 @@ def integration_text(campaigns):
         rejected = [methods[r["method"]] for r in campaign["excluded_methods"]]
         if rejected:
             text += "The " + runs[campaign["name"]] + " admitted no validation configuration for " + ", ".join(rejected) + ".\n"
+    text += r"""
+\paragraph{Performance and comparison with the game methods.}
+With fixed attention and LayerNorm, localization-selected SplitCAM at block 11 achieves the highest localization means in Table~\ref{tab:vit-extension}: AL $0.614$, PG $0.827$ and TK $0.741$, compared with LayerCAM's $0.603$, $0.758$ and $0.714$ and Grad-CAM's $0.500$, $0.596$ and $0.563$. It also lowers Maximum Sensitivity to $0.620$, versus LayerCAM's $0.828$. LayerCAM retains better Pixel Flipping scores (PF$_{20}$ $7.73$ versus $7.96$). The faithfulness-selected block-6 SplitCAM configuration performs worse on the test faithfulness metrics than the block-11 configuration.
+
+On these same test images, localization-selected RG and RG+Eq achieve higher AL ($0.711$ and $0.698$) and lower PF$_{20}$ ($7.48$ and $7.80$) than SplitCAM (Table~\ref{ptnb:tab:eval-vit}). SplitCAM's PG $0.827$ is close to RG's $0.825$; its Maximum Sensitivity $0.620$ is lower than RG's $0.729$, but higher than RG+Eq's $0.441$. Thus the Transformer extension improves CAM localization, while the game methods retain the stronger AL--Pixel Flipping results. These cross-table comparisons concern the reported means; the extension table's significance markers cover only its own rows.
+"""
     return text
 
 

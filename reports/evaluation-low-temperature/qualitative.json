@@ -1,0 +1,179 @@
+{
+  "model": "torchvision ViT_B_16_Weights.IMAGENET1K_V1",
+  "examples": {
+    "red_fox_snow": {
+      "filename": "ILSVRC2012_val_00025140.JPEG",
+      "label": 277,
+      "class_name": "red fox",
+      "split": "test",
+      "cache": {
+        "1.0": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/red_fox_snow_tau_1.npy",
+          "sha256": "bdc0170ddc9d59e8e363e2848cff9f110af8dbda27d000730397b4756b32e936",
+          "seconds_this_run": null,
+          "min": 0.18100178241729736,
+          "max": 159.4654083251953,
+          "max_abs": 159.4654083251953,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.7": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/red_fox_snow_tau_0.7.npy",
+          "sha256": "703d9d351d7094c3e6a7d2d0f66c9a0f09075baabb9ba17f7dfecc97f20ad4a0",
+          "seconds_this_run": null,
+          "min": -0.01808544248342514,
+          "max": 0.6381893754005432,
+          "max_abs": 0.6381893754005432,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.4": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/red_fox_snow_tau_0.4.npy",
+          "sha256": "7a398ab48530f95ae4ac078007efe7d68a6ee2a596e4eb7796a2060da739795d",
+          "seconds_this_run": null,
+          "min": -2.5433042338818268e-08,
+          "max": 6.61199948126523e-08,
+          "max_abs": 6.61199948126523e-08,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.2": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/red_fox_snow_tau_0.2.npy",
+          "sha256": "e84d5db8ea636032115d68991cdbcedd40a1542db82cc80f5401f93120826558",
+          "seconds_this_run": null,
+          "min": -1.5007164329804225e-19,
+          "max": 1.590699724953355e-19,
+          "max_abs": 1.590699724953355e-19,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        }
+      }
+    },
+    "kuvasz": {
+      "filename": "ILSVRC2012_val_00024981.JPEG",
+      "label": 222,
+      "class_name": "kuvasz",
+      "split": "validation",
+      "cache": {
+        "1.0": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/kuvasz_tau_1.npy",
+          "sha256": "7557bac457fb134dcb0c509d1c509070bade7920585469349e8d4d899d55b2ca",
+          "seconds_this_run": null,
+          "min": 0.1149434745311737,
+          "max": 129.3076629638672,
+          "max_abs": 129.3076629638672,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.7": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/kuvasz_tau_0.7.npy",
+          "sha256": "99b855974d498bd1403131488fe96204115b4a09074a0dbca9472b7a7e94df38",
+          "seconds_this_run": null,
+          "min": -0.01962248980998993,
+          "max": 0.5990937948226929,
+          "max_abs": 0.5990937948226929,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.4": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/kuvasz_tau_0.4.npy",
+          "sha256": "6a6172dc315b8328014c5991127432d59b28e4cb405d08037f1c80206d30655d",
+          "seconds_this_run": null,
+          "min": -3.478459831285363e-08,
+          "max": 9.551306590083186e-08,
+          "max_abs": 9.551306590083186e-08,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.2": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/kuvasz_tau_0.2.npy",
+          "sha256": "315a6022d2ace97eeef1993730c0825893f5bf96517572637d6170d84cb6ea0f",
+          "seconds_this_run": null,
+          "min": -8.62077129208986e-18,
+          "max": 8.69431592035195e-18,
+          "max_abs": 8.69431592035195e-18,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        }
+      }
+    },
+    "airliner": {
+      "filename": "ILSVRC2012_val_00008292.JPEG",
+      "label": 404,
+      "class_name": "airliner",
+      "split": "validation",
+      "cache": {
+        "1.0": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/airliner_tau_1.npy",
+          "sha256": "6ad2599d39f0bddde2ef36707a64eb991789c47e4097be877e08f28e60eff959",
+          "seconds_this_run": null,
+          "min": 0.208449125289917,
+          "max": 108.97407531738281,
+          "max_abs": 108.97407531738281,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.7": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/airliner_tau_0.7.npy",
+          "sha256": "48e4bf4948fded76dff2ff528ab0e9fa48275218232fc4451f53edbba0644b97",
+          "seconds_this_run": null,
+          "min": -0.010296901687979698,
+          "max": 0.6451629400253296,
+          "max_abs": 0.6451629400253296,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.4": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/airliner_tau_0.4.npy",
+          "sha256": "0c521256663b815d72484a5d323684867e53f19e955be4f617d0fc615f78520f",
+          "seconds_this_run": null,
+          "min": -1.4721450725119212e-07,
+          "max": 2.7907043431696366e-07,
+          "max_abs": 2.7907043431696366e-07,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        },
+        "0.2": {
+          "path": "reports/evaluation-low-temperature/prepared_evaluator_maps/airliner_tau_0.2.npy",
+          "sha256": "5d397bcb2432aef7bd48222e5235930811ab4802278771e2640dd9ae4cef0ccd",
+          "seconds_this_run": null,
+          "min": -1.3306020871179468e-19,
+          "max": 2.566446757658823e-19,
+          "max_abs": 2.566446757658823e-19,
+          "nonzero": true,
+          "all_entries_exactly_zero": false
+        }
+      }
+    }
+  },
+  "temperatures": [
+    1.0,
+    0.7,
+    0.4,
+    0.2
+  ],
+  "fixed_params": {
+    "lrp_alpha": 2.0,
+    "lrp_beta": 1.0,
+    "lrp_eps": 0.1,
+    "adf_lambda": 0.0,
+    "adf_softmax_lambda": -10.0,
+    "adf_input_variance": 5.0,
+    "av_rule": "merged"
+  },
+  "map_generation": "Evaluator._generate_maps on Evaluator-prepared model",
+  "display": "signed 99th-percentile per-image transform; red positive, blue negative",
+  "code_sha256": "df6ae7a31f35e9a287b2f17708006c2b8ea1e981b8ed929527621321a3487a8e",
+  "playing_backward_git_commit": "7b5cd387f0a690b0d3451aa60bc8d897bd442a38",
+  "playing_backward_worktree_diff_sha256": "1481db1ade1882cef55cee6cbe4716b447611dc7a425993fc38d78306141937b",
+  "displayed_temperatures": [
+    1.0,
+    0.7,
+    0.4,
+    0.2
+  ],
+  "figure_sha256": {
+    "png": "9e9feca7dc1e4f30ce59971a6f910296ad897d9c2ba35e432b6a6b9ef611bda5",
+    "pdf": "7b07fab8df9dc2cf6e5e9c4c4c599dfac30a741bc857b330eced2833d8748ada"
+  }
+}

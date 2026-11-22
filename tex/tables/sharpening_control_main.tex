@@ -1,0 +1,10 @@
+\begin{table}[htbp]
+\centering
+\TableContent{
+\small
+\input{tables/rebuttal/same_power_sharpening_tabular}
+}
+\caption[Effect of fixed power sharpening on ViT-B/16 attribution maps]{Effect of fixed power sharpening on ViT-B/16 attribution maps, evaluated on the same 565 test images. LRP-$\gamma$ and AttnLRP use the configurations selected by validation AL proximity to the localization-selected RG row at $p=1.5$, held fixed at both powers; RG anchor and RG (loc) use their anchor and localization-selected configurations. The transform is $(|a|/\max|a|)^p$. PF$_{20}$ is unchanged within each method because its feature ranking is preserved; lower is better.}
+\label{tab:sharpening-control}
+\label{tab:rebuttal-common-power}
+\end{table}

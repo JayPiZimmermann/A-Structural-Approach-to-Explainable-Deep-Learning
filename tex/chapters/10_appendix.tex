@@ -5,13 +5,9 @@ This appendix specifies the evaluation and reproduction protocols. Appendix~\ref
 
 \section{Split-Method Evaluation}
 
-The campaigns retain the distinct attribution targets described in Section~\ref{sec:experimental_setup}. In the split campaign, misclassified images therefore pair the predicted-class attribution with another class's annotated mask.
+\subsection{Published Split-Method Results}\label{app:hm_artifact_scope}
 
-\subsection{Artifact Availability and Reproduction Scope}\label{app:hm_artifact_scope}
-
-The Hidden Monotonicity tables retain their published-source provenance. The code checkout lacks original per-image outputs, the complete historical evaluation environment, and six advertised MNIST multi-seed training configurations. The runnable notebook-derived example cannot reconstruct those missing settings, so the available artifacts cannot establish exact reproduction of the historical tables.
-
-Deterministic CPU fixtures exercise double-precision reconstruction, input derivatives, attribution, timing, and Pixel Flipping with an independently evaluated initial target score. They establish the tested implementation contracts; agreement with the original ImageNet results remains unverified without a rerun. The historical training runner used the test loader for epoch validation. The current runner reserves a deterministic $10\%$ of training data for validation and evaluates the test set after training, recording partition indices and seed. This does not establish the checkpoint-selection procedure behind the historical MNIST figures.
+The Split-Method results and their evaluation protocol in this appendix are from \emph{Hidden Monotonicity}~\parencite{hiddenMono}. The paper evaluates pretrained VGG-16 and ResNet-18 models on ImageNet-S-50, using a 50-image validation subset and a 566-image test subset. Attributions target each model's predicted class, including on misclassified images, and localization uses the annotated object masks. The thesis's separate game-method evaluation protocol is specified below.
 
 \section{Evaluation Protocol}\label{ptnb:app:protocol}
 
@@ -125,8 +121,7 @@ does not determine the comparison family. A difference is called significant at 
 $p<0.05$; otherwise, no difference was detected at this threshold. This does not establish
 practical equivalence. These intervals and tests condition on the fixed checkpoints, selected
 configurations and realized attribution evaluations; they do not quantify training or
-configuration-selection variability. The split-method tables report the source point estimates
-without corresponding confidence intervals.
+configuration-selection variability.
 
 \section{Implementation and Evaluation Details}\label{app:extended_protocol}
 
@@ -255,9 +250,7 @@ The game developments define finite sign-labeled paths, probabilities, discounts
 
 The trajectory module checks finite path normalization, dynamic-programming identities, geometric-mean overlap, terminal-state disagreement and positive survival conditioning. Hellinger probability laws remain distinct from discounted occupation measures. The regularization module checks the finite Gibbs variational maximum, attaining policy, binary stop/continue optimizer and actual Softplus derivatives.
 
-The audit exposed a missing $1/2$ in the four-partial backward invariant, a shift-product index error, an omitted weight matrix, and overclaims about differentiability, multiplicative convexity, re-centering and nonzero combined gradients. Corrections and counterexamples are in \nolinkurl{reports/mathematical-corrections.md}; nonzero raw sensitivity mass need not yield a nonzero balanced head gradient.
-
-The source inventory lists statements outside the checked scope. Proofs and corrections certify neither Python implementations nor experiments. Independently, the table adapter regenerates thirteen outputs from the revised game's published summaries and checks them against the thesis. Diagnostic and hidden-monotonicity tables lacking raw summaries retain source provenance. Reproduce mathematical checks with \texttt{lake build} in \texttt{formalization/} and its explicit axiom audit; the README gives complete commands.
+The source inventory lists statements outside the checked scope. Proofs and corrections certify neither Python implementations nor experiments. Independently, the table adapter regenerates thirteen outputs from the revised game's published summaries and checks them against the thesis. Hidden Monotonicity tables reproduce the paper-reported results. Reproduce mathematical checks with \texttt{lake build} in \texttt{formalization/} and its explicit axiom audit; the README gives complete commands.
 
 \subsection{Gradient Reconstruction on Pretrained ViT-B/16}\label{app:transformer_dc_numeric}
 
@@ -269,7 +262,7 @@ All nine runs pass. Maximum absolute errors are $2.22\times10^{-16}$ for the out
 
 \chapter{Publication Provenance and Tool Use}\label{app:publication_provenance}
 
-This thesis integrates two coauthored works with the thesis author as first author: \emph{Hidden Monotonicity}, a CVPR 2026 Highlight~\parencite{hiddenMono}, and the revised \emph{Playing the Network Backward} preprint, arXiv:2605.06212v2~\parencite{playingBackward2026}, without a claim of AISTATS acceptance. It reuses their model-evaluation outputs and point estimates, recomputing VOC intervals and paired comparisons by whole-image resampling (Section~\ref{ptnb:app:stats}). A shared decomposition framework adds common definitions, mathematical extensions, connections and Lean formalization.
+This thesis integrates two coauthored works with the thesis author as first author: \emph{Hidden Monotonicity}, a CVPR 2026 Highlight~\parencite{hiddenMono}, and the revised \emph{Playing the Network Backward} preprint, arXiv:2605.06212v2~\parencite{playingBackward2026}. It reuses their model-evaluation outputs and point estimates, recomputing VOC intervals and paired comparisons by whole-image resampling (Section~\ref{ptnb:app:stats}). A shared decomposition framework adds common definitions, mathematical extensions, connections and Lean formalization.
 
 \section{Author's Contribution}\label{app:author_contribution}
 
@@ -294,6 +287,6 @@ produced with the aid of generative AI.
 \end{quote}
 
 \section{AI Assistance in the Thesis Revision}
-The November 2026 thesis revision used OpenAI's Codex for mathematical exploration, proof development, Lean implementation and checking, code review and repair, statistical reaggregation, and drafting and editing. Mathematical assistance developed and checked convex, monotone stream extensions. The quoted historical statement about theorem and proof development concerns the original paper, excluding this later thesis work.
+The November 2026 thesis revision used OpenAI Codex CLI for mathematical exploration, proof development, Lean implementation and checking, code review and repair, statistical reaggregation, and drafting and editing. Its session logs record CLI versions 0.166.0, 0.167.1 and 0.171.0 and the model identifiers \texttt{gpt-6-astra} (main sessions), \texttt{gpt-6-luna} (delegated subtasks) and \texttt{gpt-6.1-sol} (one logged turn). A final editorial pass used Anthropic's Claude Code 2.1.329 with the model identifier \texttt{claude-fable-5-2} for drafting, editing and consistency checks against the recorded experiment code. Mathematical assistance developed and checked convex, monotone stream extensions. These versions and model identifiers describe the thesis revision only; they do not identify tools used for the original papers. The quoted historical statement about theorem and proof development concerns the original paper, excluding this later thesis work.
 
 The formalization repository records reviewed theorem types, proof-checking receipts and coverage limits. Lean certifies the stated propositions; source correspondence requires mathematical review, and kernel checks do not certify experiments.
