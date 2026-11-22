@@ -1,6 +1,0 @@
-../reports/evidence/new-frontier-review/Boundary.lean:34:2: warning: `simp` already closes the goal
-
-Hint: Use `simp` instead of `simpa`:
-  [apply] simp at h
-
-Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`

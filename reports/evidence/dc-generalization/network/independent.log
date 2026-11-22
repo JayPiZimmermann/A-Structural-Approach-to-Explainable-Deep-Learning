@@ -1,1 +1,0 @@
-'HiddenMonotonicity.Network.convex_monotone_decomposition' depends on axioms: [propext, Classical.choice, Quot.sound]

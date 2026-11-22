@@ -190,3 +190,6 @@ tex/pdfa.xmpi
 /reports/vit-extension/transaction.json
 /reports/vit-extension/*.tmp-*
 /reports/vit-extension/layout-stress-fixture/*.log
+
+## Internal process records, receipts and logs: local only
+/reports/
