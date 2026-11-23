@@ -1,7 +1,7 @@
 % Latin Symbols
 \nomenclature[L]{$f$}{Network function}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[L]{$g$}{Convex, monotone split-stream added to $f$}{}{\S~\ref{sec:dc_decompositions}}
-\nomenclature[L]{$h$}{Convex, monotone split-stream subtracted from $f$}{}{\S~\ref{sec:dc_decompositions}}
+\nomenclature[L]{$g$}{Convex, monotone split-stream entering $f=g-h$ with coefficient $+1$}{}{\S~\ref{sec:dc_decompositions}}
+\nomenclature[L]{$h$}{Convex, monotone split-stream entering $f=g-h$ with coefficient $-1$}{}{\S~\ref{sec:dc_decompositions}}
 \nomenclature[L]{$W^{(l)}$}{Weight matrix of layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
 \nomenclature[L]{$W^{(l,+)}, W^{(l,-)}$}{Positive and negative parts of weight matrix}{}{Def.~\ref{def:posneg_parts}}
 \nomenclature[L]{$x$}{Network input}{}{\S~\ref{sec:nn_notation_pwl}}
@@ -17,7 +17,7 @@
 \nomenclature[L]{$L$}{Number of affine layers; $L-1$ hidden layers}{}{\S~\ref{sec:nn_notation_pwl}}
 \nomenclature[L]{$d^{(l)}$}{Width of layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
 % Greek Symbols
-\nomenclature[G]{$\chi^{(l)}(x),\chi(x)$}{Layerwise and full activation vectors}{}{Def.~\ref{def:activation_vector}}
+\nomenclature[G]{$\chi^{(l)}(x),\chi(x)$}{Layer-wise and full activation vectors}{}{Def.~\ref{def:activation_vector}}
 \nomenclature[G]{$\alpha$}{Backward shift parameter (DC chapters); positive-stream weight in $\alpha\beta$-LRP (game chapters)}{}{\S~\ref{subsec:backward_stabilization}; \S~\ref{ptnb:sec:background}}
 \nomenclature[G]{$\gamma$}{Discount factor / LRP emphasis parameter}{}{\S~\ref{ptnb:sec:background}; \S~\ref{ptnb:sec:routing}}
 \nomenclature[G]{$\delta$}{Network gradient (sensitivity)}{}{\S~\ref{subsec:gradient_occupation}}
@@ -31,9 +31,9 @@
 \nomenclature[G]{$\varepsilon$}{Numerical stability constant}{}{\S~\ref{ptnb:sec:background}}
 % Operators
 \nomenclature[O]{$\nabla$}{Gradient operator}{}{\S~\ref{subsec:gradient_occupation}}
-\nomenclature[O]{$\operatorname{ReLU}$}{Rectified linear unit}{}{$\max\{0, x\}$}
+\nomenclature[O]{$\operatorname{ReLU}$}{Rectified linear unit, $\max\{0,x\}$}{}{\S~\ref{sec:nn_notation_pwl}}
 
-\nomenclature[O]{$\odot$}{Hadamard (element-wise) product}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[O]{$\odot$}{Hadamard (elementwise) product}{}{\S~\ref{sec:nn_notation_pwl}}
 % Indices
 \nomenclature[I]{$l$}{Layer index}{}{\S~\ref{sec:nn_notation_pwl}}
 \nomenclature[I]{$i,j$}{Neuron indices}{}{\S~\ref{sec:nn_notation_pwl}}

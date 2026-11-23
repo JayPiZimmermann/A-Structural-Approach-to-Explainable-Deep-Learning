@@ -3,9 +3,7 @@
 
 This appendix specifies the evaluation and reproduction protocols. Appendix~\ref{app:supp_experiments} contains the complete results, validation selections, ablations and qualitative examples.
 
-\section{Split-Method Evaluation}
-
-\subsection{Published Split-Method Results}\label{app:hm_artifact_scope}
+\section{Split-Method Evaluation}\label{app:hm_artifact_scope}
 
 The split-method results and their evaluation protocol in this appendix are from \emph{Hidden Monotonicity}~\parencite{hiddenMono}. The paper evaluates pretrained VGG-16 and ResNet-18 models on ImageNet-S50, using a 50-image validation subset and a 566-image test subset. Attributions target each model's predicted class, including on misclassified images, and localization uses the annotated object masks. The thesis's separate game-method evaluation protocol is specified below.
 
@@ -41,7 +39,7 @@ vector by $\bar{a}$. All metrics below use $\bar{a}$; faithfulness metrics use r
 softmax) to avoid saturation effects, and perturbations use the Quantus per-sample mean replacement
 baseline.
 
-\paragraph{Attribution Localization (AL).} We adapt \textcite{Kohlbrenner2020}'s positive-relevance ratio within ground-truth boxes to absolute mass, pixel masks, and a stabilized denominator:
+\paragraph{Attribution Localization (AL).} We adapt the positive-relevance ratio of \textcite{Kohlbrenner2020} within ground-truth boxes to absolute mass, pixel masks, and a stabilized denominator:
 \begin{align}
     \text{AL}(a, m) = \frac{\sum_{i=1}^d \bar{a}_i m_i}{\sum_{i=1}^d \bar{a}_i + 10^{-9}}.
 \end{align}
@@ -82,7 +80,7 @@ point. Lower is better.
 \paragraph{Selectivity (Sel).}
 Following~\textcite{Montavon2018} and its Quantus implementation~\parencite{Hedstrom2023}, $\bar{a}$ is summed over square patches of $39{\times}39$ pixels (side $\lfloor\sqrt{1568}\rfloor$); non-overlapping patches are removed (replaced by the per-sample mean) in decreasing order of their summed attribution, and the target logit is recorded after each removal. Sel is the trapezoidal area under this curve, with the fraction of removed patches on the abscissa. Lower is better.
 
-\paragraph{Max and average sensitivity (MaxS, AvgS).} Following~\textcite{Yeh2019}'s max-sensitivity and its mean analogue, regenerate attributions for both metrics on the same $N_s = 50$ inputs $x + \xi_k$, with uniform noise $\xi_k \sim \mathcal{U}[-r, r]^{C \times H
+\paragraph{Max and average sensitivity (MaxS, AvgS).} Following the max-sensitivity of~\textcite{Yeh2019} and its mean analogue, regenerate attributions for both metrics on the same $N_s = 50$ inputs $x + \xi_k$, with uniform noise $\xi_k \sim \mathcal{U}[-r, r]^{C \times H
     \times W}$, $r = 0.2$. Report the maximum (MaxS) or mean (AvgS) over $k$ of $\|\psi(a(x+\xi_k)) - \psi(a(x))\|_F / \|\psi(a(x))\|_F$; lower values indicate greater stability to input noise. The noise is seeded per image, so every row sees the same perturbed inputs. MaxS and AvgS are computed on a fixed random subset of 200 test images (seed 0) that is identical for all rows and models; all other metrics use the full test split.
 
 \subsection{Selection}\label{ptnb:app:selection}
@@ -234,9 +232,11 @@ The attribution evaluations are inference-only. The main cost is the repeated ba
 
 \section{Formal Verification and Mathematical Audit}\label{app:lean}\label{app:lean_details}
 
-The \href{https://github.com/JayPiZimmermann/A-Structural-Approach-to-Interpretable-Deep-Learning}{thesis repository} contains TeX sources, pinned links to both official code repositories, and a Lean~4 project with mathlib pinned to~4.35.0. Checked statements have explicit assumptions. Formalization remains partial: a related lemma cannot certify an entire theorem or paper.
+The thesis repository, \url{https://github.com/JayPiZimmermann/A-Structural-Approach-to-Interpretable-Deep-Learning}, contains the TeX sources, links to both official code repositories, and a Lean~4 project with mathlib pinned to~4.35.0 in the folder \texttt{formalization/}. Checked statements have explicit assumptions. Formalization remains partial: a related lemma cannot certify an entire theorem or paper.
 
-Numbered \texttt{Lean\_1}, \texttt{Lean\_2}, \ldots{} links in theorem and lemma headings follow the planar-features paper's convention. Each targets the corresponding checked declaration or components, distinguished in \texttt{formalization/coverage\_map.json}, which records exact assumptions and remaining parts by source label. Selected equation numbers link to checked identities or definitions. Following \href{https://arxiv.org/abs/2610.01728}{arXiv:2610.01728}, links pin the Git commit and declaration line, keeping targets stable under default-branch edits.
+Theorem, lemma and definition headings carry references \texttt{Lean\_1}, \texttt{Lean\_2}, \ldots, numbered in order of first appearance. Each reference is a link to the corresponding checked declaration in the repository; selected equation numbers link to checked identities or definitions in the same way. Following \textcite{Zimmermann2026PlanarFeatures}, the links pin the Git commit and the declaration line, so their targets stay stable under later edits of the repository. For the printed thesis, Table~\ref{tab:lean_coverage} resolves every reference to its Lean declaration, which is found by name in \texttt{formalization/}, and records the checked scope of each: the full statement, a component of it, or the encoded definition.
+
+\input{tables/lean_coverage}
 
 Both papers share a finite, varying-width Lean MLP definition: an identity output or an affine layer followed by a smaller network, evaluated with ordinary or paired activations. Local difference preservation suffices algebraically for paired activations; induction proves complete-network recovery. This definition supports ReLU, mixing and Softplus, with a separate affine readout for ungated target logits.
 
@@ -244,13 +244,13 @@ The Transformer development defines signed projections, actual masked Query--Key
 
 A forward trace records actual gates. Each sensitivity row maps an input perturbation linearly to its scalar output change; paired rows describe partial sensitivities to both components of the input pair. Their half-difference is the derivative along the balanced lift $(x/2,-x/2)$. At strict gate comparisons, the recursive Jacobian equals the complete network's Fr\'echet derivative.
 
-The layer-wise shifted backward algorithm equals its closed formula for arbitrary widths and shifts. Source terms are derivatives of explicit $Q$-networks with the original prefix, one minimum and a bias-free linear absolute-weight tail. Checked identities cover shift-coefficient suffix products, sensitivity mass, separate cross-head partials and original-gradient reconstruction. Shifted algorithmic sensitivities remain distinct from derivatives through input-dependent forward re-centering; classical derivatives at gate ties are not asserted.
+The layer-wise shifted backward algorithm equals its closed formula for arbitrary widths and shifts. The correction terms of the closed formula are derivatives of explicit auxiliary networks, called $Q$-networks in the Lean files, which consist of the original network prefix, one minimum and a bias-free linear tail with absolute weights. Checked identities cover shift-coefficient suffix products, sensitivity mass, separate cross-head partials and original-gradient reconstruction. Shifted algorithmic sensitivities remain distinct from derivatives through input-dependent forward re-centering; classical derivatives at gate ties are not asserted.
 
 The game developments define finite sign-labeled paths, probabilities, discounts and occupation sums. Under the stated policies, discounted stopping occupations recover the actual MLP gradient; routing occupations recover the full $\alpha\beta$ recurrence from network contributions. The smooth case includes the full Softplus derivative. Attention uses a fixed matrix and the complete composite Value projection, including its bias; backward recovery alone asserts neither Query/Key differentiation nor global equilibrium. Generic finite layered-game saddle bounds and Bellman uniqueness are checked separately for actual randomized policies.
 
 The trajectory module checks finite path normalization, dynamic-programming identities, geometric-mean overlap, terminal-state disagreement and positive survival conditioning. Hellinger probability laws remain distinct from discounted occupation measures. The regularization module checks the finite Gibbs variational maximum, attaining policy, binary stop/continue optimizer and actual Softplus derivatives.
 
-The source inventory lists statements outside the checked scope. Proofs and corrections certify neither Python implementations nor experiments. Independently, the table adapter regenerates thirteen outputs from the revised game's published summaries and checks them against the thesis. Hidden Monotonicity tables reproduce the paper-reported results. Reproduce mathematical checks with \texttt{lake build} in \texttt{formalization/} and its explicit axiom audit; the README gives complete commands.
+The source inventory lists statements outside the checked scope. Proofs and corrections certify neither Python implementations nor experiments. Independently, the table adapter regenerates thirteen outputs from the revised game paper's published summaries and checks them against the thesis. Hidden Monotonicity tables reproduce the paper-reported results. Reproduce mathematical checks with \texttt{lake build} in \texttt{formalization/} and its explicit axiom audit; the README gives complete commands.
 
 \subsection{Gradient Reconstruction on Pretrained ViT-B/16}\label{app:transformer_dc_numeric}
 
@@ -262,7 +262,30 @@ All nine runs pass. Maximum absolute errors are $2.22\times10^{-16}$ for the out
 
 \chapter{Publication Provenance and Tool Use}\label{app:publication_provenance}
 
-This thesis integrates two coauthored works with the thesis author as first author: \emph{Hidden Monotonicity}, a CVPR 2026 Highlight~\parencite{hiddenMono}, and the revised \emph{Playing the Network Backward} preprint, arXiv:2605.06212v2~\parencite{playingBackward2026}. It reuses their model-evaluation outputs and point estimates, recomputing VOC intervals and paired comparisons by whole-image resampling (Section~\ref{ptnb:app:stats}). A shared decomposition framework adds common definitions, mathematical extensions, connections and Lean formalization.
+This thesis integrates two coauthored works with the thesis author as first author: \emph{Hidden Monotonicity}, a CVPR 2026 Highlight~\parencite{hiddenMono}, and the revised \emph{Playing the Network Backward} preprint, arXiv:2605.06212v2~\parencite{playingBackward2026}. It reuses their model-evaluation outputs and point estimates, recomputing VOC intervals and paired comparisons by whole-image resampling (Section~\ref{ptnb:app:stats}). The thesis presents both in the decomposition framework of the game paper and adds mathematical extensions, connections and a Lean formalization.
+
+Table~\ref{tab:provenance} separates the material taken from each paper from the work added in this thesis.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}X@{}}
+\toprule
+Source & Material and location \\
+\midrule
+\emph{Hidden Monotonicity}~\parencite{hiddenMono} & DC decomposition of ReLU networks and CNNs (Sections~\ref{sec:dc_decompositions} and~\ref{sec:cnn_decompositions}); numerical stabilization and closed formulas for the shifted passes (Section~\ref{sec:stabilization_dc}); SplitCAM, SplitLRP and SplitGrad (Section~\ref{sec:split_attribution_concept}); the VGG-16 and ResNet-18 evaluation with its ablations and sanity check (Sections~\ref{sec:results_vgg}--\ref{sec:ablations}, Appendices~\ref{app:saliency}--\ref{app:ablation}); directly trained difference models on MNIST (Section~\ref{sec:dcinns}). \\
+\addlinespace
+\emph{Playing the Network Backward}~\parencite{playingBackward2026} & Stopping Game and Routing Game with the recovery of gradients and $\alpha\beta$-LRP, and the game-theoretic modes (Chapter~\ref{ch:game_theory}); the attention rule (Section~\ref{ptnb:sec:attention}); the network decomposition framework with its mixing, stopping and regularized families (Sections~\ref{sec:general_decomposition_def} and~\ref{sec:mixing_decomposition}--\ref{sec:regularized_decompositions}); trajectory distributions and Hellinger diagnostics (Chapter~\ref{ch:trajectory}); the evaluation on VGG-16, ResNet-50 and ViT-B/16 with Pascal VOC transfer (Section~\ref{sec:results_vit}, Appendix~\ref{ptnb:app:results}) and its additional controls (Appendix~\ref{app:rebuttal-controls}). \\
+\addlinespace
+Theory added in the thesis & DC decompositions of smooth activations (Sections~\ref{sec:dc_splitting_smooth} and~\ref{sec:closed_form_dc_activations}); the softmax pair (Section~\ref{sec:multivariate_dc_softmax}); product and LayerNorm pairs and the DC decomposition of Transformers (Sections~\ref{sec:multiplicative_splits} and~\ref{sec:transformer_dc}). \\
+\addlinespace
+Experiments and implementation added in the thesis & Reconstruction check of the Transformer decomposition on ViT-B/16 (Section~\ref{app:transformer_dc_numeric}); SplitCAM on ViT-B/16 (Section~\ref{sec:vit-extension}); recomputed Pascal VOC intervals and paired comparisons (Section~\ref{ptnb:app:stats}). \\
+\addlinespace
+Partial formalization & Lean~4 project covering the statements listed in Table~\ref{tab:lean_coverage} (Section~\ref{app:lean}). \\
+\bottomrule
+\end{tabularx}
+\caption[Provenance of the thesis material]{Provenance of the thesis material: what is taken from each of the two papers and what the thesis adds.}
+\label{tab:provenance}
+\end{table}
 
 \section{Author's Contribution}\label{app:author_contribution}
 
@@ -287,6 +310,6 @@ produced with the aid of generative AI.
 \end{quote}
 
 \section{AI Assistance in the Thesis Revision}
-The November 2026 thesis revision used OpenAI Codex CLI for mathematical exploration, proof development, Lean implementation and checking, code review and repair, statistical reaggregation, and drafting and editing. Its session logs record CLI versions 0.166.0, 0.167.1 and 0.171.0 and the model identifiers \texttt{gpt-6-astra} (main sessions), \texttt{gpt-6-luna} (delegated subtasks) and \texttt{gpt-6.1-sol} (one logged turn). A final editorial pass used Anthropic's Claude Code 2.1.329 with the model identifier \texttt{claude-fable-5-2} for drafting, editing and consistency checks against the recorded experiment code. Mathematical assistance developed and checked convex, monotone stream extensions. These versions and model identifiers describe the thesis revision only; they do not identify tools used for the original papers. The quoted historical statement about theorem and proof development concerns the original paper, excluding this later thesis work.
+The November 2026 thesis revision used OpenAI Codex CLI for mathematical exploration, proof development, Lean implementation and checking, code review and repair, statistical reaggregation, and drafting and editing. Its session logs record CLI versions 0.166.0, 0.167.1 and 0.171.0 and the model identifiers \texttt{gpt-6-astra} (main sessions), \texttt{gpt-6-luna} (delegated subtasks) and \texttt{gpt-6.1-sol} (one logged turn). A final editorial pass used Anthropic's Claude Code 2.1.329 with the model identifier \texttt{claude-fable-5-2} for drafting, editing and consistency checks against the recorded experiment code. The division of the mathematical work is as follows. I developed all definitions, theorems and proofs of the two papers myself, and likewise the DC decomposition of smooth activations (Section~\ref{sec:dc_splitting_smooth}). The one mathematical result found by an AI tool is the explicit convex, monotone softmax pair (Theorem~\ref{thm:softmax_dc_split}); I checked its statement and proof. All other mathematical results of the thesis are my own, and for them the AI tools assisted with checking proofs and with the Lean formalization. These versions and model identifiers describe the thesis revision only; they do not identify tools used for the original papers. The quoted historical statement about theorem and proof development concerns the original paper, excluding this later thesis work.
 
 The formalization repository records reviewed theorem types, proof-checking receipts and coverage limits. Lean certifies the stated propositions; source correspondence requires mathematical review, and kernel checks do not certify experiments.

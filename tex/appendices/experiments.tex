@@ -29,7 +29,7 @@ The model-randomization sanity check~\parencite{Adebayo2018sanity} tests depende
 
 \input{tables/appendix/randomization_sanity_check}
 
-In Table~\ref{tab:randomization_sanity_check}, every reported SplitCAM and SplitGrad configuration has lower SSIM than every listed baseline; HOG and Spearman comparisons are mixed. SplitLRP retains high HOG and Spearman similarity (approximately $0.99$ and $1.00$), while SSIM falls to $0.45$--$0.56$. Attenuation by the $\epsilon$-\ac{lrp} rule could explain this pattern.
+In Table~\ref{tab:randomization_sanity_check}, every reported SplitCAM and SplitGrad configuration has lower SSIM than every listed baseline; HOG and Spearman comparisons are mixed. SplitLRP retains high HOG and Spearman similarity (approximately $0.99$ and $1.00$), while SSIM falls to $0.45$--$0.56$. Attenuation by the $\varepsilon$-rule could explain this pattern.
 
 \section{Attribution Runtime}\label{app:attribution_runtime}
 
@@ -48,7 +48,7 @@ Start at the anchor, vary $\tau$ at negligible cost, add risk aversion with inpu
 
 Runtimes are medians over the first 50 test images on one A100 GPU at batch size 1, after five untimed warm-up calls and with GPU synchronization before and after each timed attribution call; data loading, device transfer and method construction lie outside the timer, and for \ac{rg}+Eq the complete averaging call is timed. They show little temperature overhead, from $0.035$ to $0.037$\,s/image for VGG-16 and from $0.089$ to $0.094$\,s/image for ResNet-50. Risk aversion adds one \ac{ptnbADF} pass, from $0.089$ to $0.140$\,s/image on ResNet-50; the noisy gate also requires this pass for $\sigma$. Changing $(\alpha,\beta)$, $\varepsilon$ or the fan-in entropy bias has negligible overhead. Equivariant averaging requires $N$ attribution passes; the ViT timings below use $N=50$.
 
-\paragraph{ViT-B/16 attribution runtime.} For the localization-selected or fixed configurations in Table~\ref{ptnb:tab:test-ci-vit}, seconds per image on one GPU were: Gradient $0.02$, SmoothGrad $1.12$, LRP-$\gamma$ $0.08$, AttnLRP $0.10$, TIBAV $0.15$, GAE $0.03$, KernelSHAP $6.71$, RG anchor $0.10$, RG $0.17$, RG+Eq anchor $4.93$, and RG+Eq $8.66$. The anchors are the exact $\alpha\beta$-\ac{lrp} representations of Theorem~\ref{ptnb:thm:lrp-recovery}; hardware and timing scope are specified in Section~\ref{ptnb:app:compute-resources}.
+\paragraph{ViT-B/16 attribution runtime.} For the localization-selected or fixed configurations in Table~\ref{ptnb:tab:test-ci-vit}, seconds per image on one GPU were: Gradient $0.02$, SmoothGrad $1.12$, LRP-$\gamma$ $0.08$, AttnLRP $0.10$, TIBAV $0.15$, GAE $0.03$, KernelSHAP $6.71$, RG anchor $0.10$, RG $0.17$, RG+Eq anchor $4.93$, and RG+Eq $8.66$. The RG anchor is the $\alpha\beta$-\ac{lrp} representation of Theorem~\ref{ptnb:thm:lrp-recovery} at $\tau=1$, and the RG+Eq anchor is its average over transformed inputs; hardware and timing scope are specified in Section~\ref{ptnb:app:compute-resources}.
 
 \section{Stabilization Ablations for the Split Methods}\label{app:ablation}
 
@@ -204,11 +204,11 @@ Tables~\ref{ptnb:tab:ablations-vit}--\ref{ptnb:tab:ablations-resnet} vary one pa
 
 \subsection{Pointing Game at Matched Granularity}\label{ptnb:app:pg-granularity}
 
-The pointing game of Quantus counts a hit whenever any pixel attaining the map maximum lies in the mask. A piecewise-constant maximum spans hundreds to thousands of pixels for superpixel and $14{\times}14$ attention maps, versus usually one for pixel-level maps. Table~\ref{ptnb:tab:pg-granularity} reports the median maximum-set size, the expected hit rate of a uniformly drawn maximum pixel (PG$_{1\mathrm{px}}$), and Pointing Game after average-pooling all maps to a common $16{\times}16$-pixel grid (PG$_{16\mathrm{px}}$). Drawing a single maximum pixel removes most of the advantage of the superpixel methods LIME and KernelSHAP. At common granularity, leaders move closer: LRP-$\gamma$ and AttnLRP lead on ViT-B/16; localization-selected \ac{sg} and faithfulness-selected \ac{rg} are not significantly below Grad-CAM++, the best VGG-16 baseline; Grad-CAM, LayerCAM and LRP-$\gamma$ lead on ResNet-50 (McNemar tests against the best baseline).
+The Pointing Game of Quantus counts a hit whenever any pixel attaining the map maximum lies in the mask. A piecewise-constant maximum spans hundreds to thousands of pixels for superpixel and $14{\times}14$ attention maps, versus usually one for pixel-level maps. Table~\ref{ptnb:tab:pg-granularity} reports the median maximum-set size, the expected hit rate of a uniformly drawn maximum pixel (PG$_{1\mathrm{px}}$), and Pointing Game after average-pooling all maps to a common $16{\times}16$-pixel grid (PG$_{16\mathrm{px}}$). Drawing a single maximum pixel removes most of the advantage of the superpixel methods LIME and KernelSHAP. At common granularity, leaders move closer: LRP-$\gamma$ and AttnLRP lead on ViT-B/16; localization-selected \ac{sg} and faithfulness-selected \ac{rg} are not significantly below Grad-CAM++, the best VGG-16 baseline; Grad-CAM, LayerCAM and LRP-$\gamma$ lead on ResNet-50 (McNemar tests against the best baseline).
 
 \begin{table}[tbp]
     \centering
-    \caption[Pointing game: Quantus tie rule and matched granularity]{Pointing game under the Quantus tie rule (PG, as in the main tables) and at matched
+    \caption[Pointing Game: Quantus tie rule and matched granularity]{Pointing Game under the Quantus tie rule (PG, as in the main tables) and at matched
     granularity, ImageNet-S test split. max.\ set: median number of pixels attaining the map maximum;
     PG$_{1\mathrm{px}}$: expected hit rate of one pixel drawn uniformly from that set;
     PG$_{16\mathrm{px}}$: PG after average-pooling the map to $16{\times}16$-pixel cells. Rows: the

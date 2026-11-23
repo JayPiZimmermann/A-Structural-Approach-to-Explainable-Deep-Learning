@@ -1,4 +1,4 @@
-% Source: hiddenMonotonicity (Paper 1), appendix/table_timing_comparison.tex — numbers verbatim.
+% Source: hiddenMonotonicity (Paper 1), appendix/table_timing_comparison.tex — numbers rounded to three decimals.
 \begin{table}[htbp]
     \centering
     \caption[Mean attribution and model-splitting times]{Mean attribution time in seconds per image across the custom 50-image validation subset of ImageNet-S. Model Splitting Time is instead seconds per setup, averaged over 20 procedures and excluded from the attribution times. Timer scope and limits of the historical run metadata are described in Section~\ref{app:p1_timing}.}
@@ -9,30 +9,30 @@
     \toprule
     \textbf{Method} & \textbf{ResNet-18} & \textbf{VGG-16} \\
     \midrule
-    Model Splitting Time & 0.0331 & 0.0295 \\
+    Model Splitting Time & 0.033 & 0.030 \\
     \midrule
     \multicolumn{3}{c}{\textit{Split Methods}} \\
     \midrule
-    SplitCAM & 0.4368 & 0.3348 \\
-    SplitGrad & 0.4284 & 0.3309 \\
-    SplitLRP & 0.5711 & 0.3204 \\
+    SplitCAM & 0.437 & 0.335 \\
+    SplitGrad & 0.428 & 0.331 \\
+    SplitLRP & 0.571 & 0.320 \\
     \midrule
     \multicolumn{3}{c}{\textit{Classical Methods}} \\
     \midrule
-    GCAM & 0.0216 & 0.0232 \\
-    GCAM++ & 0.0157 & 0.0155 \\
-    LCAM & 0.0149 & 0.0124 \\
-    Guided GCAM & 0.3102 & 0.2808 \\
-    LRP $\gamma=0.25$ & 0.0599 & 0.0507 \\
-    DeepLIFT & 0.0203 & 0.0210 \\
-    IntGrad & 0.0070 & 0.0121 \\
-    GradientSHAP & 0.0084 & 0.0082 \\
-    Guided Backprop & 0.0253 & 0.0258 \\
-    Deconvolution & 0.0087 & 0.0074 \\
-    Saliency & 0.0060 & 0.0047 \\
-    Input $\times$ Gradient & 0.0055 & 0.0046 \\
-    Feature Ablation & 231.6631 & 192.2602 \\
-    Occlusion & 238.2302 & 201.0051 \\
+    GCAM & 0.022 & 0.023 \\
+    GCAM++ & 0.016 & 0.016 \\
+    LCAM & 0.015 & 0.012 \\
+    Guided GCAM & 0.310 & 0.281 \\
+    LRP $\gamma=0.25$ & 0.060 & 0.051 \\
+    DeepLIFT & 0.020 & 0.021 \\
+    IntGrad & 0.007 & 0.012 \\
+    GradientSHAP & 0.008 & 0.008 \\
+    Guided Backprop & 0.025 & 0.026 \\
+    Deconvolution & 0.009 & 0.007 \\
+    Saliency & 0.006 & 0.005 \\
+    Input $\times$ Gradient & 0.006 & 0.005 \\
+    Feature Ablation & 231.663 & 192.260 \\
+    Occlusion & 238.230 & 201.005 \\
     \bottomrule
     \end{tabular}
 \end{adjustbox}

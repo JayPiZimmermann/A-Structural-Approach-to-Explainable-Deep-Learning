@@ -5,10 +5,10 @@ Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory} derive attribution met
 
 \section{Main Findings}\label{ptnb:sec:hellinger-sanity}\label{ptnb:sec:hellinger}
 
-The cascading-randomization sanity check of~\textcite{Adebayo2018sanity} asks whether an explanation meaningfully depends on the learned parameters. We compare normalized backward-trajectory laws $\Pi$ before their model-dependent signed discounted occupation projection into pixel maps: parameter randomization should move $\Pi$ even when its pixel projection remains stable. Section~\ref{ptnb:app:path-divergence} gives the exact linear-time computation and terminal-state decomposition.
+The cascading-randomization sanity check of~\textcite{Adebayo2018sanity} asks whether an explanation meaningfully depends on the learned parameters. We compare normalized backward-trajectory laws $\Pi$ before their model-dependent signed discounted occupation projection into pixel maps: we test whether the specified parameter randomization changes $\Pi$ when the resulting pixel maps remain similar. Section~\ref{ptnb:app:path-divergence} gives the exact linear-time computation and terminal-state decomposition.
 
 \paragraph{Checkpoint-aligned control.}
-The clearest evidence comes from a checkpoint-aligned ViT-B/16 control that evaluates map and trajectory diagnostics on the same 200 test images, model states and randomization conditions, with the query/key/value projections kept pretrained in both measurements. Randomizing only the classifier head drops top-1 accuracy from $88.5\%$ to $0$ while the rank similarity of the RG maps remains $0.999998$ and RG Hellinger is $0.769$. At the cascade endpoint, map similarity is $0.377$ and survival-conditioned Hellinger is $1.000$. The routing distance thus registers changes that the map does not show (Appendix~\ref{app:rebuttal-randomization}).
+The clearest evidence comes from a checkpoint-aligned ViT-B/16 control that evaluates map and trajectory diagnostics on the same 200 test images, model states and randomization conditions, with the query/key/value projections kept pretrained in both measurements. Randomizing only the classifier head drops top-1 accuracy from $88.5\%$ to $0$ while the rank similarity of the RG maps remains $1.000$ and RG Hellinger is $0.769$. The same number has a second reading: the rank order of the RG map on this model is almost independent of the classifier head, whereas the gradient map's rank similarity falls to $0.658$ (Table~\ref{tab:rebuttal-vit-randomization}). This is consistent with the mechanism of \textcite{sixt2020whenexplanationslie}, in which repeated backward routing through non-negative factors drives the propagated signal towards a direction that no longer depends on the later layers. For a user, the RG map on this ViT therefore shows where evidence enters the network rather than what separates one readout from another; readout-dependent differences appear in the trajectory law, which is why we compare it directly. At the cascade endpoint, map similarity is $0.377$ and survival-conditioned Hellinger is $1.000$. The routing distance thus registers changes that the map does not show (Appendix~\ref{app:rebuttal-randomization}).
 
 \paragraph{Trajectories change, maps need not.}\label{ptnb:sec:hellinger-cascading}
 
@@ -89,7 +89,7 @@ This retains differences between paths ending at the same pixel, which endpoint 
 
 \subsection{Experiments}\label{ptnb:sec:lmp-experiments}
 
-With the model fixed, we test sensitivity to input perturbations and summarize pairwise distances for clean and Gaussian inputs. We use the Stopping-Game kernel~\eqref{ptnb:eq:adf-T} without risk aversion ($\lambda = 0$; ``ADF'' in code) and Routing-Game kernel~\eqref{ptnb:eq:rg-T-act} at $\tau = 1$. The diagnostic \ac{rg} omits the bias action and renormalizes the remaining branches, so it may differ from the bias-inclusive attribution game. In every paired comparison, both laws use one shared target: the model's argmax for the first input. Thus the two laws start from the same output state; for clean-vs-random and clean-vs-noisy pairs this is the clean input's target, and for random-vs-random it is the first random input's target.
+With the model fixed, we test sensitivity to input perturbations and summarize pairwise distances for clean and Gaussian inputs. We use the Stopping Game kernel~\eqref{ptnb:eq:adf-T} without risk aversion ($\lambda = 0$; ``ADF'' in code) and Routing Game kernel~\eqref{ptnb:eq:rg-T-act} at $\tau = 1$. The diagnostic \ac{rg} omits the bias action and renormalizes the remaining branches, so it may differ from the bias-inclusive attribution game. In every paired comparison, both laws use one shared target: the model's argmax for the first input. Thus the two laws start from the same output state; for clean-vs-random and clean-vs-noisy pairs this is the clean input's target, and for random-vs-random it is the first random input's target.
 
 \subsubsection{Input-Noise Sensitivity}\label{ptnb:sec:input-noise-hellinger}
 
@@ -134,7 +134,7 @@ Random-vs-random has the lowest mean in every nonconstant column. Clean-vs-rando
 \par\medskip
 \section{Parameter-Randomization Experiments}\label{ptnb:app:sanity-check}\label{subsec:hellinger_randomization}
 
-We extend~\textcite{Adebayo2018sanity}'s cascading randomization to trajectory laws, compare attribution maps, and establish double-random and per-image references for Section~\ref{ptnb:sec:hellinger-sanity}. In the checkpoint-aligned ViT control introduced there, local Hellinger response increases with classifier-head perturbation size, but its per-image association with map drift is weak (endpoint Spearman $-0.203$, 95\% CI $[-0.333,-0.072]$), and the head-only interval includes zero. These controls show that routing distance can register changes hidden by the map; they do not establish Hellinger as an accuracy or explanation-quality predictor. See Appendix~\ref{app:rebuttal-randomization} for protocol and tables. They are distinct from the earlier historical attribution and trajectory cascades, whose ViT Q/K/V randomization granularities differ; the earlier per-image comparison remains qualified accordingly.
+We extend the cascading randomization of~\textcite{Adebayo2018sanity} to trajectory laws, compare attribution maps, and establish double-random and per-image references for Section~\ref{ptnb:sec:hellinger-sanity}. In the checkpoint-aligned ViT control introduced there, local Hellinger response increases with classifier-head perturbation size, but its per-image association with map drift is weak (endpoint Spearman $-0.203$, 95\% CI $[-0.333,-0.072]$), and the head-only interval includes zero. These controls show that routing distance can register changes hidden by the map; they do not establish Hellinger as an accuracy or explanation-quality predictor. See Appendix~\ref{app:rebuttal-randomization} for protocol and tables. The cascades in the remainder of this section were run earlier and separately for maps and for trajectories, and they randomize the ViT query, key and value projections at different granularities; we therefore read their per-image comparison only qualitatively.
 
 \subsection{Cascading Randomization in Trajectory Space}\label{ptnb:sec:lmp-randomization}
 
@@ -145,7 +145,7 @@ Replacing a weight matrix yields two kernels on the same graph. The Hellinger pa
 If dead states send all mass to the cemetery, an alive/dead mismatch has
 $\sum_{s'\in\mathcal S^{(l-1)}}\widetilde T^{(l)}(s_i,s')=0$.
 Its full geometric-mean row also vanishes when the alive state has no cemetery leakage,
-as in the nondegenerate Stopping-Game kernel.
+as in the nondegenerate Stopping Game kernel.
 \end{lemmaenv}
 \begin{proof}
 The dead row is zero on ordinary successors; the alive row, when nonleaking, is zero at the cemetery. Every corresponding geometric mean therefore vanishes.
@@ -165,9 +165,12 @@ reduction as single \ac{ptnbLMP} layers when these hypotheses hold.
 
 The two theorems below identify sufficient mechanisms for the contraction of trajectory overlap. Their hypotheses, conditional survival for the \ac{sg} and uniform row contraction for the \ac{rg}, are assumptions: they are not derived here for the benchmark architectures, whose behavior the experiments of this section measure directly.
 
-\begin{theoremenv}[Conditional contraction of ordinary Stopping-Game overlap, \LeanResult{ptnb:thm:rand-adf}]\label{ptnb:thm:rand-adf}\label{thm:rand_stopping}
+\begin{theoremenv}[Conditional contraction of ordinary Stopping Game overlap, \LeanResult{ptnb:thm:rand-adf}]\label{ptnb:thm:rand-adf}\label{thm:rand_stopping}
+Let $A$ be a ReLU MLP with input $x$ and target start $s_0$, and let $B$ arise from $A$ by reinitializing the weight layers $l\ge l^*$ with independent i.i.d.\ entries from a continuous law symmetric about zero. Let $\Pi_A,\Pi_B$ be the corresponding Stopping Game trajectory laws and $\mathcal F_{>l}=\sigma(T_B^{(k)}:k>l)$. Assume there is $\delta\in(0,\tfrac12]$ such that
+$\mathbb P_B(i\in\mathrm{alive}^{(l)}_B\mid\mathcal F_{>l})\le1-\delta$
+for every layer $l\ge l^*$ and every neuron $i$, and set $\eta=1-\delta$ and $N=L-l^*+1$. Then
 $\mathbb E_B[\mathrm{BC}^{(0)}_{\mathrm{ord}}(\Pi_A,\Pi_B)]\le\eta^N$.
-For every $z>0$,
+Moreover, for every $z>0$,
 \[
 \begin{aligned}
 \mathbb E_B[\mathrm H^2_{\mathrm{surv}}\,\1\{Z_AZ_B\ge z\}]
@@ -202,14 +205,14 @@ The illustration $q=0.2$, $p=\tfrac12$ gives $\mathrm H\approx0.91$, comparable 
 $\drFloorMin$--$\drFloorMax$ (Table~\ref{ptnb:tab:double-random-hellinger}).
 Conditioning removes this floor: for fixed $z>0$ with $\mathbb P_B(Z_AZ_B\ge z)$ bounded away
 from zero, $\mathbb E_B[\mathrm H^2_{\mathrm{surv}}\mid Z_AZ_B\ge z]\to1$.
-Activation-weighted Routing-Game kernels concentrate overlap on large $|aW|$ contributions,
+Activation-weighted Routing Game kernels concentrate overlap on large $|aW|$ contributions,
 rarely shared dead neurons, explaining the observed practical proximity of $\mathrm H$ and $\mathrm H_{\mathrm{surv}}$.
 \end{remark}
 
-\begin{theoremenv}[Routing-Game overlap under uniform row contraction, \LeanResult{ptnb:thm:rand-routing}]\label{ptnb:thm:rand-routing}\label{thm:rand_routing}
-In the same setup, replace the alive-set assumption by a uniform bound
-$\sum_{s'}\widetilde T^{(l)}(s,s')\le\bar b<1$, $\bar b\ge0$, on every jointly alive row
-at $l\ge l^*$, using temperature $\tau>0$. Then
+\begin{theoremenv}[Routing Game overlap under uniform row contraction, \LeanResult{ptnb:thm:rand-routing}]\label{ptnb:thm:rand-routing}\label{thm:rand_routing}
+Let $A$, $B$, $l^*$ and $N$ be as in Theorem~\ref{ptnb:thm:rand-adf}, and let $\Pi_A,\Pi_B$ be the corresponding Routing Game trajectory laws at temperature $\tau>0$. In place of the alive-set condition, assume there is $\bar b\in[0,1)$ such that
+$\sum_{s'}\widetilde T^{(l)}(s,s')\le\bar b$ on every jointly alive row
+at every layer $l\ge l^*$. Then
 $\mathrm{BC}^{(0)}_{\mathrm{ord}}(\Pi_A,\Pi_B)\le\bar b^N$.
 \end{theoremenv}
 \begin{proof}
@@ -249,13 +252,13 @@ We report complementary similarity measures between attribution maps:
 We omit SSIM. \textcite{Binder2022shortcomings} show that input-dependent structure and activation scales can survive top-down randomization, while low similarity can reflect noise; this noise critique also covers Spearman correlation of absolute attributions. Values average over the 565-image ImageNet-S test split (50 classes). Constant maps receive similarity $0$ by convention: at ResNet-50's cascade endpoint, LIME and KernelSHAP outputs no longer depend on superpixels. Table~\ref{tab:sanity-check} reports this endpoint, with all tested convolutional and linear layers re-initialized and the parameter groups above retained.
 
 \paragraph{Discussion.}
-Gradient and Grad-CAM stay closest to zero on the \acp{cnn} (and LayerCAM on VGG-16), and Gradient, SmoothGrad and \ac{ptnbGAE} on ViT-B/16: they are sensitive to the tested parameters, though this does not imply that they are faithful. LRP-$\varepsilon$ keeps the most rank structure on VGG-16 ($\sanityVggLRPepsRho$); on ResNet-50 the \ac{lrp} rules (LRP-$\gamma$ $\sanityResLRPgammaRho$, LRP-$\varepsilon$ $\sanityResLRPepsRho$) are close to Integrated Gradients and LayerCAM, which keep the most there. LIME and KernelSHAP keep a HOG correlation of about $0.86$ on VGG-16 and ViT-B/16 at low Spearman correlation: their superpixels are computed from the input image, so the maps inherit its edge structure. On ResNet-50, endpoint outputs no longer depend on superpixels, yielding constant maps ($^{\ddagger}$). The \ac{rg} rows lie between Gradient and LRP-$\varepsilon$ on VGG-16, slightly below \ac{lrp} on ResNet-50, and highest in ViT-B/16 Spearman correlation ($\sanityVitRGanchorRho$ for the anchor, $\sanityVitRGlocRho$ for the selected mode). Two maps become anti-correlated rather than unrelated (Grad-CAM++ on ResNet-50, \ac{ptnbTIBAV} on ViT-B/16). \S\ref{ptnb:sec:lmp-randomization} measures divergence of the underlying trajectory distributions rather than pixel-level map similarity.
+Gradient and Grad-CAM stay closest to zero on the \acp{cnn} (and LayerCAM on VGG-16), and Gradient, SmoothGrad and \ac{ptnbGAE} on ViT-B/16: they are sensitive to the tested parameters, though this does not imply that they are faithful. LRP-$\varepsilon$ keeps the most rank structure on VGG-16 ($\sanityVggLRPepsRho$); on ResNet-50 the \ac{lrp} rules (LRP-$\gamma$ $\sanityResLRPgammaRho$, LRP-$\varepsilon$ $\sanityResLRPepsRho$) are close to Integrated Gradients and LayerCAM, which keep the most there. LIME and KernelSHAP keep a HOG correlation of about $0.86$ on VGG-16 and ViT-B/16 at low Spearman correlation: their superpixels are computed from the input image, so the maps inherit its edge structure. On ResNet-50, endpoint outputs no longer depend on superpixels, yielding constant maps ($^{\ddagger}$). The \ac{rg} rows lie between Gradient and LRP-$\varepsilon$ on VGG-16, slightly below \ac{lrp} on ResNet-50, and highest in ViT-B/16 Spearman correlation ($\sanityVitRGanchorRho$ for the anchor, $\sanityVitRGlocRho$ for the selected mode). Two maps become anti-correlated rather than unrelated (Grad-CAM++ on ResNet-50, \ac{ptnbTIBAV} on ViT-B/16). Section~\ref{ptnb:sec:lmp-randomization} measures divergence of the underlying trajectory distributions rather than pixel-level map similarity.
 
 \input{tables/ptnb_v2/sanity_check}
 
 \subsection{Double-Random Empirical Baseline}\label{ptnb:sec:lmp-rand-double-random}
 
-Our cascade-endpoint reference compares two copies of each architecture with independently randomized convolutional and linear layers, retaining the pretrained parameter groups below. This differs from \textcite{Adebayo2018sanity}'s trained-versus-randomized comparison.
+Our cascade-endpoint reference compares two copies of each architecture with independently randomized convolutional and linear layers, retaining the pretrained parameter groups below. This differs from the trained-versus-randomized comparison of \textcite{Adebayo2018sanity}.
 
 \paragraph{Protocol.}
 For each architecture, $R = 500$ independent rounds comprise: \emph{(i)} instantiate two copies $A_r, B_r$ of the pretrained checkpoint and re-initialize every \texttt{Conv2d}/\texttt{Linear} layer independently as in the cascade, matching its endpoint. Both retain normalization parameters, packed attention query/key/value projections, positional embedding, and class token. We use checkpoints for all architectures: \texttt{weights=None} gives ViT an identically zero classification head, making trajectory laws trivially indistinguishable. \emph{(ii)} Draw one image index with replacement from the $565$-image ImageNet-S test split ($\drDistinctImages$ distinct images among $500$ draws with our fixed seed). \emph{(iii)} Compute plain $\mathrm{H}(\Pi_{A_r}, \Pi_{B_r})$ and conditioned-survival $\mathrm{H}_{\mathrm{surv}}$ for both Stopping Game and Routing Game kernels using the ground-truth label as target class. Table~\ref{ptnb:tab:double-random-hellinger} reports the round-to-round mean and standard deviation; the variance mixes image choice and the random-pair realization.
@@ -277,15 +280,15 @@ Plain $\mathrm H$ concentrates at $\drFloorMin$--$\drFloorMax$, consistent with 
 
 Beyond the aggregate randomization bounds and double-random reference, Table~\ref{ptnb:tab:per-image-corr} asks whether greater trajectory displacement corresponds to a more dissimilar attribution map \emph{per image}, at fixed randomization depth.
 
-\paragraph{Protocol.}
+{\emergencystretch=3em \paragraph{Protocol.}
 For each architecture we pick a cascading step at the same network depth in the Hellinger
 and attribution-sanity runs: the layers down to \path{features.26} on VGG-16 and down to
-\path{layer4.1.conv3} on ResNet-50 (identical sets of re-initialized layers), and the last
+\mbox{\texttt{layer4.1.conv3}} on ResNet-50 (identical sets of re-initialized layers), and the last
 encoder block on ViT-B/16, where the Hellinger cascade re-initializes the MLP and the output
 projection of the block and the attribution cascade additionally its $Q$, $K$ and $V$ projections.
 The interventions therefore match on the CNNs; on ViT-B/16, the comparison also reflects this
 difference in the randomized operators.
-Figure~\ref{ptnb:fig:hellinger-sanity} gives mean $\mathrm H$ and $\mathrm H_{\mathrm{surv}}$ at these steps. For each of the $\perImageN$ test images, we record both distances for each game and Spearman $\rho(|a|)$ and HOG map similarity between pretrained and partially randomized models, using Gradient and the $\alpha\beta$-\ac{rg} anchor at $\tau=1$ as the respective game counterparts. Table~\ref{ptnb:tab:per-image-corr} correlates these eight scalars across images by Spearman rank.
+Figure~\ref{ptnb:fig:hellinger-sanity} gives mean $\mathrm H$ and $\mathrm H_{\mathrm{surv}}$ at these steps. For each of the $\perImageN$ test images, we record both distances for each game and Spearman $\rho(|a|)$ and HOG map similarity between pretrained and partially randomized models, using Gradient and the $\alpha\beta$-\ac{rg} anchor at $\tau=1$ as the respective game counterparts. Table~\ref{ptnb:tab:per-image-corr} correlates these eight scalars across images by Spearman rank.\par}
 
 \begin{table}[H]
 \TableContent{
@@ -304,7 +307,7 @@ Figure~\ref{ptnb:fig:hellinger-sanity} gives mean $\mathrm H$ and $\mathrm H_{\m
     \label{ptnb:tab:per-image-corr}
 \end{table}
 
-\paragraph{Readings.}
+\paragraph{Interpretation.}
 The Hellinger-vs-map block of Table~\ref{ptnb:tab:per-image-corr} is uniformly near zero ($|\rho| \leq \perImageCrossMax$ across all three architectures): trajectory displacement and map drift have weak observed per-image rank association. Statistical independence and nonlinear dependence remain unresolved; ViT-B/16's unequal interventions further limit conclusions about the diagnostics alone.
 
 The two normalizations show strong rank agreement in the ViT-B/16 experiment: their per-image distances have Spearman $\rho=+0.96$ (\ac{rg}) and $+0.99$ (\ac{sg}). VGG-16 \ac{rg} gives identical values because it never routes to dead-neuron states. Under the \ac{sg} on the \ac{relu} backbones the normalizations agree weakly or negatively ($\rho=-0.30$ VGG-16, $+0.16$ ResNet-50): the cemetery share of plain $\mathrm{H}$ varies with the input-dependent inactive entries of the ReLU activation vectors, which renormalization by $1/\sqrt{Z_A Z_B}$ removes. The conditioned distances of the two games agree strongly on the \ac{relu} backbones ($\rho=+0.85$ VGG-16, $+0.89$ ResNet-50) and only weakly on ViT-B/16 ($+0.28$), where the two kernels read partly different per-image structure.

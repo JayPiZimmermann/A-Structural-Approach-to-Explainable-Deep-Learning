@@ -1,6 +1,6 @@
 \chapter{Mathematical Foundations}\label{ch:foundations}
 
-We establish network notation, the \ac{relu}--\ac{cpwl} equivalence and two-polytope DC representations (Section~\ref{sec:nn_notation_pwl}); monotone networks, \acp{icnn}, and Maxout units (Section~\ref{sec:convex_monotone_foundations}); and \acp{mdp}, zero-sum games, and the ReLU Net Game of Gaubert and Vlassopoulos (Section~\ref{sec:game_theory_mdp_foundations}). Probability distances and layered Markov processes (Section~\ref{sec:probabilistic_foundations}) support the trajectory diagnostics of Chapter~\ref{ch:trajectory}. The network and game foundations underpin Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory}; the absolute-curvature construction for smooth activations accompanies the decomposition theorem in Section~\ref{sec:dc_splitting_smooth}.
+We establish network notation, the \ac{relu}--\ac{cpwl} equivalence and two-polytope DC representations (Section~\ref{sec:nn_notation_pwl}); monotone networks, \acp{icnn}, and Maxout units (Section~\ref{sec:convex_monotone_foundations}); and \acp{mdp}, zero-sum games, and the ReLU Net Game of Gaubert and Vlassopoulos (Section~\ref{sec:game_theory_mdp_foundations}). Probability distances and layered Markov processes (Section~\ref{sec:probabilistic_foundations}) support the trajectory diagnostics of Chapter~\ref{ch:trajectory}. The network and game foundations underpin Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory}; the absolute-curvature construction for smooth activations accompanies the decomposition theorem in Section~\ref{sec:dc_splitting_smooth}. Throughout the thesis, a grey reference \texttt{Lean\_$n$} in a heading links to a declaration in the accompanying Lean~4 formalization that checks the statement or a part of it; Section~\ref{app:lean} and Table~\ref{tab:lean_coverage} list the declarations and their scope.
 
 \section{Neural Network Notation and PWL Mappings}\label{sec:nn_notation_pwl}
 
@@ -50,7 +50,7 @@ The activation labels $\act{l}{\sigma}$, $\sigma \in \{+,-\}$, denote the two no
 
 \subsection*{Continuous Piecewise Linear Functions}
 
-\begin{definition}[Convexity, {\parencite[Sections~2.1 and~3.1]{BoydVandenberghe2004}}]\label{def:convexity}
+\begin{definition}[Convexity, {\cite[Sections~2.1 and~3.1]{BoydVandenberghe2004}}]\label{def:convexity}
 A set $C\subseteq\RR^d$ is \emph{convex} if $\lambda x+(1-\lambda)y\in C$ for all $x,y\in C$ and $\lambda\in[0,1]$. A function $f:C\to\RR$ on a convex set is \emph{convex} if
 \[
 f\bigl(\lambda x+(1-\lambda)y\bigr)\le\lambda f(x)+(1-\lambda)f(y)
@@ -84,7 +84,7 @@ Affine maps and componentwise $\relu$ are \ac{cpwl}. Composition preserves this 
 \end{proof}
 
 \begin{definition}[Activation vector and activation cells]\label{def:activation_vector}
-For a \ac{relu} \ac{mlp}, the \emph{layerwise activation vector} and the concatenated \emph{activation vector} are
+For a \ac{relu} \ac{mlp}, the \emph{layer-wise activation vector} and the concatenated \emph{activation vector} are
 \begin{align}
  \chi^{(l)}(x)&\coloneqq\bigl(\1\{\preactl{l}_j(x)>0\}\bigr)_{j=1}^{d^{(l)}}\in\{0,1\}^{d^{(l)}},\qquad 1\le l<L,\notag\\
  \chi(x)&\coloneqq\bigl(\chi^{(1)}(x),\ldots,\chi^{(L-1)}(x)\bigr)\in\{0,1\}^{N},\qquad N=\sum_{l=1}^{L-1}d^{(l)}.\label{eq:activation_vector}
@@ -93,11 +93,11 @@ These binary vectors record which ReLU neurons are active, with zero pre-activat
 
 For $\omega\in\{0,1\}^{N}$, the \emph{activation cell} is $C_\omega\coloneqq\{x\in\RR^{d^{(0)}}:\chi(x)=\omega\}$. Its \emph{strict activation cell} additionally requires every included pre-activation to be nonzero.
 \end{definition}
-Each nonempty activation cell is convex with polyhedral closure, and the network is affine on it. Distinct cells may realize the same affine map, so linear regions need not coincide with activation cells or be convex. For networks with max pooling, we further refine these cells by pooling-winner indices, requiring unique winners for classical derivative claims.
+Each nonempty activation cell is convex with polyhedral closure, and the network is affine on it. Distinct cells may realize the same affine map, so linear regions need not coincide with activation cells or be convex. For networks with max-pooling, we further refine these cells by pooling-winner indices, requiring unique winners for classical derivative claims.
 
 Conversely, every \ac{cpwl} function has an exact \ac{relu} representation \parencite{Arora2018}. This equivalence underlies the difference-of-convex analysis of Chapter~\ref{ch:decompositions}.
 
-\begin{theoremenv}[\ac{cpwl}--\ac{relu} equivalence, \parencite{Arora2018}, \LeanResult{thm:cpwl_relu_equivalence}]\label{thm:cpwl_relu_equivalence}
+\begin{theoremenv}[\ac{cpwl}--\ac{relu} equivalence, \cite{Arora2018}, \LeanResult{thm:cpwl_relu_equivalence}]\label{thm:cpwl_relu_equivalence}
 A function $f \colon \RR^{d} \to \RR$ is \ac{cpwl} if and only if it is representable by a \ac{relu} \ac{mlp}.\end{theoremenv}
 
 Two hidden layers suffice, with unrestricted width and real weights: \textcite{Brunck2026TwoReLULayers} establish this for every \ac{cpwl} function. \textcite{Zimmermann2026Caterpillar} and \textcite{TallavarjulaRastegar2026TwoHiddenLayers} give alternative constructions of finite maxima, which also yield general \ac{cpwl} representations by \ac{relu} \acp{mlp} with two hidden layers.
@@ -111,7 +111,7 @@ For input dimension $d^{(0)}\ge1$ and hidden-layer widths $d^{(1)},\ldots,d^{(L-
 linear regions. For fixed input dimension and equal hidden-layer widths of at least $2d^{(0)}$, this bound grows exponentially with depth $L$.
 \end{theoremenv}
 
-\begin{theoremenv}[DC representation of \ac{cpwl} functions, \parencite{Melzer1986_PLasDC,Kripfganz1987_PWAasDC}]\label{thm:cpwl_dc_representation}
+\begin{theoremenv}[DC representation of \ac{cpwl} functions, \cite{Melzer1986_PLasDC,Kripfganz1987_PWAasDC}]\label{thm:cpwl_dc_representation}
 Every scalar \ac{cpwl} function $f:\RR^d\to\RR$ admits a finite difference-of-convex representation
 \begin{equation}
  f=g-h,\qquad g=\max_{r\in[N_g]}\ell_r,\qquad h=\max_{s\in[N_h]}m_s,
@@ -120,7 +120,7 @@ Every scalar \ac{cpwl} function $f:\RR^d\to\RR$ admits a finite difference-of-co
 where $\ell_r,m_s:\RR^d\to\RR$ are affine; thus $g$ and $h$ are convex \ac{cpwl} functions.
 \end{theoremenv}
 
-For inspiration, we sketch the convex-fold and local-maxima constructions of \textcite{Kripfganz1987_PWAasDC}, following the exposition in \textcite[Appendix~B]{Brandenburg2025_DecompositionPolyhedra}; the first is also described by \textcite[Section~2.1]{Schlueter2021_ConvexDecompPAF}.
+For orientation, we sketch the convex-fold and local-maxima constructions of \textcite{Kripfganz1987_PWAasDC}, following the exposition in \textcite[Appendix~B]{Brandenburg2025_DecompositionPolyhedra}; the first is also described by \textcite[Section~2.1]{Schlueter2021_ConvexDecompPAF}.
 
 \begin{proof}[Construction via convex folds]
 Let $q_i$ be the affine formula of $f$ on each full-dimensional cell $Q_i$. Let $V$ contain the adjacent pairs $i<j$ with $q_i\ne q_j$ and $f=\max\{q_i,q_j\}$ locally across their shared facet. Set
@@ -179,7 +179,7 @@ Figure~\ref{fig:cpwl_local_maxima} illustrates this minimum identity with four c
 \begin{remark}[Expressivity and linear regions]\label{rem:linear_regions}
 By Theorem~\ref{thm:linear_region_count}, explicit region enumeration has exponential output size in the worst case. The constructions above are therefore impractical as general decomposition algorithms for deep \acp{mlp}. \textcite[Section~4]{Brandenburg2025_DecompositionPolyhedra} identify as open a general finite algorithm for finding a DC decomposition with Pareto-minimal region counts for $g,h$ (neither count can be reduced without increasing the other), allowing the underlying polyhedral complex to vary. Section~\ref{sec:dc_splitting_relu} instead extracts the convex split-streams $g,h$ locally, layer by layer, without enumerating regions.
 
-The layerwise ReLU decomposition is algebraically closer to the local-maxima construction: its identity $\relu(g-h)=\max\{g,h\}-h$ uses the same rules for moving a common term outside a maximum. Its split-streams depend on the network representation and need not coincide with either global construction. The scalar absolute-curvature construction of Section~\ref{sec:dc_splitting_smooth} follows the convex-fold idea of separating positive and negative curvature.
+The layer-wise ReLU decomposition is algebraically closer to the local-maxima construction: its identity $\relu(g-h)=\max\{g,h\}-h$ uses the same rules for moving a common term outside a maximum. Its split-streams depend on the network representation and need not coincide with either global construction. The scalar absolute-curvature construction of Section~\ref{sec:dc_splitting_smooth} follows the convex-fold idea of separating positive and negative curvature.
 \end{remark}
 
 \subsection{Newton Polytopes and Support Functions}\label{sec:polytope_foundations}
@@ -255,7 +255,7 @@ A monotone neural network represents a monotone function; each coordinate functi
 Induct from the monotone input $\actl{0}=x$. Non-negative weights preserve coordinatewise order: $a\le a'$ implies $\Wl{l}a+b^{(l)}\le\Wl{l}a'+b^{(l)}$. Thus monotonicity of $\actl{l-1}$ implies that of $\preactl{l}$; componentwise monotone activation gives monotonicity of $\actl{l}$. The same order argument covers the affine output.
 \end{proof}
 
-\begin{definition}[\acl{icnn}, \parencite{Amos2017}]\label{def:icnn}
+\begin{definition}[\acl{icnn}, \cite{Amos2017}]\label{def:icnn}
 An \ac{mlp} with recursion \eqref{eq:forward_recursion} whose activation functions are convex \emph{and} monotone is called an \emph{\acl{icnn}} (\acs{icnn}) if all weight matrices except possibly the first are entrywise non-negative, $\Wl{l} \ge 0$ for all $l = 2, \ldots, L$, while $\Wl{1}$ is unconstrained.
 \end{definition}
 
@@ -280,7 +280,7 @@ With $\Wl{1}\ge0$, an \ac{icnn} is both monotone and convex by Propositions~\ref
 
 \subsection*{Maxout Units}
 
-\begin{definition}[Maxout unit and Maxout network, \parencite{Goodfellow2013Maxout}]\label{def:maxout}
+\begin{definition}[Maxout unit and Maxout network, \cite{Goodfellow2013Maxout}]\label{def:maxout}
 A \emph{rank-$k$ Maxout unit} with weights $w_1, \ldots, w_k \in \RR^{d}$ and biases $\beta_1, \ldots, \beta_k \in \RR$ computes
 \begin{equation}
 	x \longmapsto \maxout(x) \coloneqq \max_{j \in [k]} \bigl( w_j^{\top} x + \beta_j \bigr).
@@ -294,7 +294,7 @@ A \emph{rank-$k$ Maxout network} is a layered network whose neurons are rank-$k$
 \end{definition}
 
 \begin{remark}\label{rem:maxout_role}
-Maxout networks are the natural piecewise-linear generalization of \ac{relu}: a rank-$k$ unit expresses a maximum of $k$ affine functions in one neuron, matching the building blocks of the DC representation \eqref{eq:cpwl_dc_representation}. The DC decomposition of Chapter~\ref{ch:decompositions} is developed for \ac{relu} networks and extended to Maxout units---and to the multiplicative interactions needed for attention---in Chapter~\ref{ch:transformers}, using the exchange identity $\max_{j \in [k]}(u_j - v_j) = \max_{j \in [k]}\bigl\{ u_j + \sum_{i \ne j} v_i \bigr\} - \sum_{i \in [k]} v_i$ for pairs of non-negative streams.
+Maxout networks are the natural piecewise-linear generalization of \ac{relu}: a rank-$k$ unit expresses a maximum of $k$ affine functions in one neuron, matching the building blocks of the DC representation \eqref{eq:cpwl_dc_representation}. The DC decomposition of Chapter~\ref{ch:decompositions} is developed for \ac{relu} networks and extended to maxima over several inputs using the exchange identity $\max_{j \in [k]}(u_j - v_j) = \max_{j \in [k]}\bigl\{ u_j + \sum_{i \ne j} v_i \bigr\} - \sum_{i \in [k]} v_i$ for pairs of non-negative streams (Proposition~\ref{prop:maxpool_correct}); Chapter~\ref{ch:transformers} adds the multiplicative interactions needed for attention.
 \end{remark}
 
 \section{Game Theory and Markov Decision Processes}\label{sec:game_theory_mdp_foundations}
@@ -376,11 +376,11 @@ For general discounted stochastic games with cycles, existence of the value and 
 
 \subsection{The ReLU Net Game of Gaubert and Vlassopoulos}\label{subsec:relu_net_game}
 
-\textcite{Gaubert2025} represent the forward pass of a \ac{relu} network as the value of a zero-sum turn-based stopping game played backward on its graph. We give their full construction in our notation; Chapter~\ref{ch:game_theory} retains its states, transitions, and stopping structure with revised payoff bookkeeping. Fix a \ac{relu} \ac{mlp} from Definition~\ref{def:ffn_relu} with scalar output ($d^{(L)}=1$), an input $x\in\RR^{d^{(0)}}$, and nonzero weight rows, ensuring strictly positive discounts \eqref{eq:structural_discount}.
+\textcite{Gaubert2025} represent the forward pass of a \ac{relu} network as the value of a zero-sum turn-based Stopping Game played backward on its graph. We give their full construction in our notation; Chapter~\ref{ch:game_theory} retains its states, transitions, and stopping structure with revised payoff bookkeeping. Fix a \ac{relu} \ac{mlp} from Definition~\ref{def:ffn_relu} with scalar output ($d^{(L)}=1$), an input $x\in\RR^{d^{(0)}}$, and nonzero weight rows, ensuring strictly positive discounts \eqref{eq:structural_discount}.
 
 Read the identity $\actl{l}_i = \max\bigl\{0,\, \preactl{l}_i\bigr\}$ as a decision: a player at neuron $i$ may \emph{stop}, securing payoff $0$, or \emph{continue}, collecting the bias $b^{(l)}_i$ plus the weighted contributions of the previous layer. Continuing propagates the decision backward through the network; a negative weight flips the sign of its contribution, i.e.\ hands the turn to an adversary facing the mirrored problem. The optimal value at neuron $i$ is exactly the activation $\actl{l}_i$.
 
-\begin{definition}[ReLU Net Game, following \parencite{Gaubert2025}]\label{def:relu_net_game}
+\begin{definition}[ReLU Net Game, following \cite{Gaubert2025}]\label{def:relu_net_game}
 The \emph{ReLU Net Game} on the network $f$ at input $x$ is the zero-sum turn-based game with the following components.
 \begin{itemize}
 	\item \textbf{States.} Each hidden neuron $i\in[d^{(l)}]$, $l\in[L-1]$, has activation states $s^{(l)}_{i,q}$ controlled by $P^q$, $q\in\{+,-\}$. The affine output state $s^{(L)}$ is assigned to $P^+$ with no choice of action. Terminal states are $s^{(0)}_{k,q}$ for $k\in[d^{(0)}]$, $q\in\{+,-\}$, and a zero-payoff \emph{cemetery} $\perp$; play ends upon reaching any terminal state.
@@ -401,7 +401,7 @@ Player $P^{+}$ maximizes and $P^{-}$ minimizes the expected discounted total pay
 
 Each transition decreases the layer index or terminates, so Theorem~\ref{thm:shapley_bellman} applies for arbitrary positive structural discounts. Multiplying \eqref{eq:rng_kernel} by $\gamma^{(l)}_i$ restores the sign-selected weight $\Wsig{l}{q\oplus r}_{ij}$; summing signed successor values recovers the forward affine calculation.
 
-\begin{theoremenv}[Forward pass as game value, \parencite{Gaubert2025}, \LeanResult{thm:relu_net_game_value}]\label{thm:relu_net_game_value}
+\begin{theoremenv}[Forward pass as game value, \cite{Gaubert2025}, \LeanResult{thm:relu_net_game_value}]\label{thm:relu_net_game_value}
 The ReLU Net Game of Definition~\ref{def:relu_net_game} admits the subgame perfect equilibrium $\polstar = (\polstar_{+}, \polstar_{-})$ in which both players use the same pure stopping rule,
 \begin{equation}
 	\polstar_{q}\bigl( s^{(l)}_{i,q} \bigr) = \mathrm{cont}
@@ -431,7 +431,7 @@ since $\sum_r\xi_r\Wsig{l}{q\oplus r}_{ij}=\xi_q\Wl{l}_{ij}$. Stopping yields ze
 \end{proof}
 
 \begin{remark}[Softplus networks from entropy regularization]\label{rem:softplus_game}
-\textcite{Gaubert2025} also treat softplus networks, by \emph{regularizing} the stop/continue decision. Replace the hard choice at a positive activation state by a mixed policy $\nu \in \Delta(\{\mathrm{stop}, \mathrm{cont}\})$ rewarded with a Shannon-entropy bonus at temperature $\theta > 0$. At a negative state, the entropy term enters with the opposite sign in the payoff to $P^+$. By the Legendre--Fenchel identity for the entropy \parencite{BoydVandenberghe2004},
+\textcite{Gaubert2025} also treat Softplus networks, by \emph{regularizing} the stop/continue decision. Replace the hard choice at a positive activation state by a mixed policy $\nu \in \Delta(\{\mathrm{stop}, \mathrm{cont}\})$ rewarded with a Shannon-entropy bonus at temperature $\theta > 0$. At a negative state, the entropy term enters with the opposite sign in the payoff to $P^+$. By the Legendre--Fenchel identity for the entropy \parencite{BoydVandenberghe2004},
 \begin{equation}
 	\max_{\nu \in \Delta_n} \Bigl\{ \textstyle\sum_{i=1}^{n} \nu_i r_i + \theta\, \Entropy(\nu) \Bigr\}
 	= \theta \log \textstyle\sum_{i=1}^{n} e^{r_i / \theta},
@@ -439,11 +439,11 @@ since $\sum_r\xi_r\Wsig{l}{q\oplus r}_{ij}=\xi_q\Wl{l}_{ij}$. Stopping yields ze
 	\Entropy(\nu) = -\textstyle\sum_i \nu_i \log \nu_i,
 	\label{eq:legendre_fenchel}
 \end{equation}
-with the Gibbs distribution $\nu^{\star}_i \propto e^{r_i/\theta}$ as unique maximizer, the regularized value at a positive state with continuation value $\preactl{l}_i$ (computed as in \eqref{eq:rng_cont_value}) becomes $\theta \log\bigl(1 + e^{\preactl{l}_i / \theta}\bigr)$---the softplus activation at temperature $\theta$---and the equilibrium policy continues with the sigmoid probability $\bigl(1 + e^{-\preactl{l}_i/\theta}\bigr)^{-1}$. The hard game of Definition~\ref{def:relu_net_game} is recovered in the limit $\theta \to 0$. Chapter~\ref{ch:game_theory} re-derives this mechanism from the regularized decompositions of Section~\ref{sec:regularized_decompositions} and reuses it at the routing states of the \ac{rg}, with the two temperatures $\theta$ (activation gates) and $\tau$ (routing) kept distinct.
+with the Gibbs distribution $\nu^{\star}_i \propto e^{r_i/\theta}$ as unique maximizer, the regularized value at a positive state with continuation value $\preactl{l}_i$ (computed as in \eqref{eq:rng_cont_value}) becomes $\theta \log\bigl(1 + e^{\preactl{l}_i / \theta}\bigr)$---the Softplus activation at temperature $\theta$---and the equilibrium policy continues with the sigmoid probability $\bigl(1 + e^{-\preactl{l}_i/\theta}\bigr)^{-1}$. The hard game of Definition~\ref{def:relu_net_game} is recovered in the limit $\theta \to 0$. Chapter~\ref{ch:game_theory} re-derives this mechanism from the regularized decompositions of Section~\ref{sec:regularized_decompositions} and reuses it at the routing states of the \ac{rg}, with the two temperatures $\theta$ (activation gates) and $\tau$ (routing) kept distinct.
 \end{remark}
 
 \begin{remark}[What Chapter~\ref{ch:game_theory} inherits and what it changes]\label{rem:inherited_vs_new}
-The \ac{sg} retains Definition~\ref{def:relu_net_game}'s per-neuron states indexed by $\sigma\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Chapter~\ref{ch:game_theory} adds \emph{non-negative player payoffs}: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition streams (Section~\ref{sec:stopping_decomposition}), whose difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, risk aversion, and regularized policies, absent from the original game.
+The \ac{sg} retains the per-neuron states of Definition~\ref{def:relu_net_game} indexed by $\sigma\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Chapter~\ref{ch:game_theory} adds \emph{non-negative player payoffs}: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition streams (Section~\ref{sec:stopping_decomposition}), whose difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, risk aversion, and regularized policies, absent from the original game.
 \end{remark}
 
 \section{Probability Distances and Layered Markov Processes}\label{sec:probabilistic_foundations}\label{ptnb:app:path-divergence}

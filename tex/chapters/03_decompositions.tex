@@ -1,6 +1,6 @@
 \chapter{Network Decompositions}\label{ch:decompositions}
 
-Network decompositions separate positive and negative contributions while preserving their difference. The DC decomposition yields convex, monotone split-streams for the attribution methods in Section~\ref{sec:split_attribution_concept}. The stopping decomposition applies the original ReLU gates to both streams, setting both to zero at inactive neurons and retaining the active paths used by the backward games in Chapter~\ref{ch:game_theory}. We compare their retained information and backward calculations, then stabilize them for deep networks. \begin{changed}The MNIST study in Section~\ref{sec:dcinns} illustrates the resulting stream sensitivities on present and candidate missing strokes; Sections~\ref{sec:results_vgg}--\ref{sec:results_resnet} demonstrate gains in localization and faithfulness (Selectivity) from the DC decomposition, without retraining or altering model predictions. Our experiments show that numerical stabilization enables gradient recovery to machine precision in the tested pretrained ViT-B/16 (Appendix~\ref{app:transformer_dc_numeric}).\end{changed}
+Network decompositions separate positive and negative contributions while preserving their difference. The DC decomposition yields convex, monotone split-streams for the attribution methods in Section~\ref{sec:split_attribution_concept}. The Stopping Decomposition applies the original ReLU gates to both streams, setting both to zero at inactive neurons and retaining the active paths used by the backward games in Chapter~\ref{ch:game_theory}. We compare their retained information and backward calculations, then stabilize them for deep networks. \begin{changed}The MNIST study in Section~\ref{sec:dcinns} illustrates the resulting stream sensitivities on present and candidate missing strokes; Sections~\ref{sec:results_vgg}--\ref{sec:results_resnet} demonstrate gains in localization and faithfulness (Selectivity) from the DC decomposition, without retraining or altering model predictions. Our experiments show that numerical stabilization enables gradient recovery to machine precision in the tested pretrained ViT-B/16 (Appendix~\ref{app:transformer_dc_numeric}).\end{changed}
 
 \begin{table}[htbp]
 \TableContent{
@@ -53,7 +53,7 @@ Activations are indexed by $l \in \{0,\dots,L\}$, affine parameters by $l \in \{
 and each affine layer $l$ maps the preceding activation pair to a non-negative pre-activation pair $\bigl(\preact{l}{+}_i, \preact{l}{-}_i\bigr)$. The pairwise activation applies for $l<L$; at $l=L$, $\act{L}{\sigma}=\preact{L}{\sigma}$. We call $\bigl(\act{l}{+}_i,\act{l}{-}_i\bigr)$ the \emph{decomposed activation} and $\bigl(\preact{l}{+}_i,\preact{l}{-}_i\bigr)$ the \emph{decomposed pre-activation}.
 \end{definition}
 
-\textcite[Proposition~4.2]{hertrich2025neuralnetworksvirtualextended} make each maxout neuron's weights non-negative by adding a common linear term inside its maximum. They compensate for this term in later neurons, eventually obtaining a difference of two monotone networks. Here the decomposed activations keep both contributions explicit at every layer.
+\textcite[Proposition~4.2]{hertrich2025neuralnetworksvirtualextended} make each Maxout neuron's weights non-negative by adding a common linear term inside its maximum. They compensate for this term in later neurons, eventually obtaining a difference of two monotone networks. Here the decomposed activations keep both contributions explicit at every layer.
 
 \paragraph{Canonical affine map with non-negative weights and biases.}
 Using the entrywise positive and negative parts of the weights and biases from~\eqref{eq:weight_split}, the decomposed pre-activation at neuron $i$ is
@@ -303,10 +303,10 @@ At an inactive neuron, $\preactl{l}_i\le0$, ReLU outputs $\actl{l}_i=0$, discard
 
 \subsection{Closed Formulas for Smooth Activations}\label{sec:closed_form_dc_activations}
 
-We give simple closed-form DC decompositions for GELU, Swish, sigmoid, and softplus; only the softplus decomposition has minimal curvature. Write $\sigma(z)=(1+e^{-z})^{-1}$, let $\varphi,\Phi$ be the standard Gaussian density and distribution function, and set $s_\beta(z)=\beta^{-1}\log(1+e^{\beta z})$ for $\beta>0$.
+We give simple closed-form DC decompositions for GELU, Swish, sigmoid, and Softplus; only the Softplus decomposition has minimal curvature. Write $\sigma(z)=(1+e^{-z})^{-1}$, let $\varphi,\Phi$ be the standard Gaussian density and distribution function, and set $s_\beta(z)=\beta^{-1}\log(1+e^{\beta z})$ for $\beta>0$.
 
 \begin{corollary}[Explicit convex, monotone activation pairs, \LeanResult{cor:closed_form_dc_activations}]\label{cor:closed_form_dc_activations}
-For $f(z)=z\Phi(z)$ (GELU), $f(z)=z\sigma(\beta z)$ (Swish), $f=\sigma$ (sigmoid), and $f=s_{1/\theta}$ (softplus), choose the corresponding row of Table~\ref{tab:closed_form_dc_profiles}. Then the functions $F_+(x,y)=p(x-y)+Ly$ and $F_-(x,y)=q(x-y)+Ly$ are convex and coordinatewise non-decreasing on $\RR^2$, map $\RR^2_{\ge0}$ to itself, and satisfy $F_+-F_-=f(x-y)$.
+For $f(z)=z\Phi(z)$ (GELU), $f(z)=z\sigma(\beta z)$ (Swish), $f=\sigma$ (sigmoid), and $f=s_{1/\theta}$ (Softplus), choose the corresponding row of Table~\ref{tab:closed_form_dc_profiles}. Then the functions $F_+(x,y)=p(x-y)+Ly$ and $F_-(x,y)=q(x-y)+Ly$ are convex and coordinatewise non-decreasing on $\RR^2$, map $\RR^2_{\ge0}$ to itself, and satisfy $F_+-F_-=f(x-y)$.
 \end{corollary}
 
 \begin{table}[htbp]
@@ -375,7 +375,7 @@ The lifted pairs require no quadrature or root solve. Writing $d=x-y$ for the sc
     \end{aligned}
     \label{eq:swish_dc_closed}
 \end{align}
-The softplus pair tends to $(\max\{x,y\},y)$ as $\theta\downarrow0$.
+The Softplus pair tends to $(\max\{x,y\},y)$ as $\theta\downarrow0$.
 Stable implementations of the exponential formulas should evaluate log-sum-exp through its usual shifted form.
 
 \paragraph{Closed forms for the canonical absolute-curvature split.}
@@ -410,19 +410,19 @@ The constants are
 \end{equation}
 where $r$ uniquely solves $r\tanh(r/2)=2$ on $r>0$ ($r\approx2.39936$): the left-hand side increases strictly from $0$ to infinity. Fixing $r$ gives a pointwise Swish formula without quadrature. Softplus already uses the canonical profiles in Table~\ref{tab:closed_form_dc_profiles}.
 
-For~\eqref{eq:gelu_swish_canonical_dc}, both activations satisfy $f(-z)=f(z)-z$, $f'(-\infty)=0$, $f'(+\infty)=1$, and have positive curvature precisely on $(-a,a)$. Piecewise differentiation gives $p''=\max\{f'',0\}$, $q''=\max\{-f'',0\}$, with matching values and first derivatives at $-a$ and $a$. Since $p(0)=q(0)=0$, these are Theorem~\ref{thm:absolute_curvature_split}'s normalized profiles. Sigmoid's curvature changes sign at zero, giving~\eqref{eq:sigmoid_canonical_dc} analogously. Canonical GELU and Swish profiles can be negative on the negative half-line; origin normalization and coordinatewise monotonicity ensure their lifted pairs are non-negative on the required quadrant.
+For~\eqref{eq:gelu_swish_canonical_dc}, both activations satisfy $f(-z)=f(z)-z$, $f'(-\infty)=0$, $f'(+\infty)=1$, and have positive curvature precisely on $(-a,a)$. Piecewise differentiation gives $p''=\max\{f'',0\}$, $q''=\max\{-f'',0\}$, with matching values and first derivatives at $-a$ and $a$. Since $p(0)=q(0)=0$, these are the normalized profiles of Theorem~\ref{thm:absolute_curvature_split}. Sigmoid's curvature changes sign at zero, giving~\eqref{eq:sigmoid_canonical_dc} analogously. Canonical GELU and Swish profiles can be negative on the negative half-line; origin normalization and coordinatewise monotonicity ensure their lifted pairs are non-negative on the required quadrant.
 
 Figure~\ref{fig:activation_dc_grid} compares the simple and canonical pairs on two independent inputs.
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=\linewidth]{activation_dc_grid.pdf}
-\caption[Activation functions and their convex monotone decompositions]{Original activations (left) and their bivariate decompositions $F_+(x,y)$ (middle) and $F_-(x,y)$ (right). The simple formulas and the lifts of the canonical minimum-curvature profiles are overlaid on $[0,4]^2$, with $x,y$ varying independently. The two 3D panels share a linear vertical scale within each row. Every pair satisfies $F_+-F_-=f(x-y)$. Swish uses $\beta=1$ and softplus $\theta=1$.}
+\caption[Activation functions and their convex monotone decompositions]{Original activations (left) and their bivariate decompositions $F_+(x,y)$ (middle) and $F_-(x,y)$ (right). The simple formulas and the lifts of the canonical minimum-curvature profiles are overlaid on $[0,4]^2$, with $x,y$ varying independently. The two 3D panels share a linear vertical scale within each row. Every pair satisfies $F_+-F_-=f(x-y)$. Swish uses $\beta=1$ and Softplus $\theta=1$.}
 \label{fig:activation_dc_grid}
 \end{figure}
 
 \begin{corollary}[Networks with smooth activations, \LeanResult{cor:smooth_dc_networks}]\label{cor:smooth_dc_networks}
-Every finite \ac{mlp} with GELU, Swish/SiLU, sigmoid, or softplus hidden activations, arbitrary signed weights and biases, and an affine readout admits the DC decomposition of Theorem~\ref{thm:general_dc_network}, using either the simple or canonical activation pairs above.
+Every finite \ac{mlp} with GELU, Swish/SiLU, sigmoid, or Softplus hidden activations, arbitrary signed weights and biases, and an affine readout admits the DC decomposition of Theorem~\ref{thm:general_dc_network}, using either the simple or canonical activation pairs above.
 \end{corollary}
 
 \begin{proof}
@@ -521,8 +521,8 @@ For $\eta=0$, every split activation is concave and coordinatewise non-decreasin
 
 The mixing family uses per-stream maxima and minima. The Stopping Decomposition instead gates both streams by the same activation-vector entry $\chi_i^{(l)}(x)$ (Definition~\ref{def:activation_vector}).
 
-\begin{definition}[Stopping decomposition function, \LeanResult{def:fstop}]\label{def:fstop}
-The \emph{stopping decomposition function} is
+\begin{definition}[Stopping Decomposition function, \LeanResult{def:fstop}]\label{def:fstop}
+The \emph{Stopping Decomposition function} is
 \begin{equation}
 	\fstop(z^+, z^-) \coloneqq \bigl(\, \1\bigl[z^+ - z^- > 0\bigr]\, z^+, \;\; \1\bigl[z^+ - z^- > 0\bigr]\, z^- \,\bigr).
 	\label{eq:fstop_def}
@@ -583,7 +583,7 @@ where $\operatorname{sgn}(P)' $ denotes the opposite sign of $\operatorname{sgn}
 Expand~\eqref{eq:split_pos}--\eqref{eq:split_neg} recursively, substituting $a_{\mathrm{stop},j}^{(t,\sigma)}=\1[\preactl{t}_j>0]\preact{t}{\sigma}_j$ at each hidden predecessor. Each term selects a unique path $P$ and accumulates the factor $G_{<l}(P)\abs{w}(P)$; for $l=1$, the gate product is empty. Positive edges preserve stream membership, negative edges swap it, and zero-weight edges contribute zero. Thus the positive output stream takes $x_{P_0}^{\operatorname{sgn}(P)}$, and the negative stream takes the opposite input sign, proving~\eqref{eq:parity_path_sums}. Biases add stub paths ending at intermediate layers with the same parity rule.
 \end{proof}
 
-Subtracting the path sums using $x_k^+-x_k^-=x_k$ recovers $\preactl{l}_i=\sum_P G_{<l}(P)\,w(P)\,x_{P_0}$ with signed weight products $w(P)$. The split sorts these active paths by parity. Chapter~\ref{ch:game_theory} turns this representation into a two-player zero-sum stopping game, with~\eqref{eq:fstop_def} as the optimal stop/continue decision.
+Subtracting the path sums using $x_k^+-x_k^-=x_k$ recovers $\preactl{l}_i=\sum_P G_{<l}(P)\,w(P)\,x_{P_0}$ with signed weight products $w(P)$. The split sorts these active paths by parity. Chapter~\ref{ch:game_theory} turns this representation into a two-player zero-sum Stopping Game, with~\eqref{eq:fstop_def} as the optimal stop/continue decision.
 
 \section{Regularized Decompositions}\label{sec:regularized_decompositions}
 
@@ -630,13 +630,13 @@ At the final affine layer, the difference is $\preactl{L}=\actl{L}$. Thus $\freg
 \end{proof}
 
 \begin{corollary}[Unregularized case, \LeanResult{cor:freg_stop}]\label{cor:freg_stop}
-For $\Omega \equiv 0$ on $[0,1]$, Definition~\ref{def:freg} with the maximizer $\pi_\Omega(\Delta) = \1[\Delta > 0]$ recovers the stopping decomposition function, $\freg[0] = \fstop$, and Theorem~\ref{thm:freg_validity} specializes to Theorem~\ref{thm:stopping_validity} with $\Omega^*(\Delta) = \max_{\pi \in [0,1]} \pi\Delta = \relu(\Delta)$.\end{corollary}
+For $\Omega \equiv 0$ on $[0,1]$, Definition~\ref{def:freg} with the maximizer $\pi_\Omega(\Delta) = \1[\Delta > 0]$ recovers the Stopping Decomposition function, $\freg[0] = \fstop$, and Theorem~\ref{thm:freg_validity} specializes to Theorem~\ref{thm:stopping_validity} with $\Omega^*(\Delta) = \max_{\pi \in [0,1]} \pi\Delta = \relu(\Delta)$.\end{corollary}
 
 \begin{proof}
 For $\Delta\neq0$, $\pi\Delta$ uniquely maximizes at $\1[\Delta>0]$ on $[0,1]$; for $\Delta=0$, every $\pi$ maximizes, including the selected $\1[0>0]=0$. Thus~\eqref{eq:freg_def} with $\Omega=0$ equals~\eqref{eq:fstop_def}, with value $\relu(\Delta)$.
 \end{proof}
 
-\subsection{The Softplus Decomposition as the entropic subcase}\label{subsec:softplus_decomposition}
+\subsection{The Softplus Decomposition as the Entropic Subcase}\label{subsec:softplus_decomposition}
 
 The canonical smooth regularizer is the (negative) binary Shannon entropy at temperature $\theta > 0$,
 \begin{equation}
@@ -655,7 +655,7 @@ For $\Omega = \Omega_\theta$ as in~\eqref{eq:entropy_regularizer}, the regulariz
 	\Omega_\theta^*(\Delta) = \sigma_\theta(\Delta) \coloneqq \theta \log\bigl( 1 + e^{\Delta/\theta} \bigr),
 	\label{eq:sigmoid_gate}
 \end{equation}
-the sigmoid gate and the softplus function at temperature $\theta$. The resulting decomposition function is the \emph{softplus decomposition function}
+the sigmoid gate and the Softplus function at temperature $\theta$. The resulting decomposition function is the \emph{Softplus decomposition function}
 \begin{equation}
 	\fsoft(z^+, z^-) = \Bigl(\, \sigma'_\theta(\Delta)\, z^+ + \theta\, \Entropy\bigl(\sigma'_\theta(\Delta)\bigr), \;\; \sigma'_\theta(\Delta)\, z^- \,\Bigr),
 	\qquad
@@ -663,7 +663,7 @@ the sigmoid gate and the softplus function at temperature $\theta$. The resultin
 	\label{eq:fsoft_def}
 \end{equation}
 \AliasLabel{ptnb:eq:softplus-decomp}{eq:fsoft_def}
-and by Theorem~\ref{thm:freg_validity} it yields a valid decomposition---the \emph{Softplus Decomposition}---of the softplus network with parameter $\beta = 1/\theta$. In the limit $\theta \to 0$, $\fsoft \to \fstop$ pointwise on $\{\Delta \neq 0\}$.\end{corollary}
+and by Theorem~\ref{thm:freg_validity} it yields a valid decomposition---the \emph{Softplus Decomposition}---of the Softplus network with parameter $\beta = 1/\theta$. In the limit $\theta \to 0$, $\fsoft \to \fstop$ pointwise on $\{\Delta \neq 0\}$.\end{corollary}
 
 \begin{proof}
 The objective $\pi \Delta + \theta \Entropy(\pi)$ is strictly concave on $(0,1)$ with derivative $\Delta - \theta \log\frac{\pi}{1-\pi}$; the first-order condition gives the unique maximizer $\pi = \sigma'_\theta(\Delta)$. Substituting back, with $\log \sigma'_\theta(\Delta) = \Delta/\theta - \log(1 + e^{\Delta/\theta})$ and $\log(1 - \sigma'_\theta(\Delta)) = -\log(1 + e^{\Delta/\theta})$, yields the optimal value
@@ -746,7 +746,7 @@ The \emph{backward invariant} requires these sensitivities to recover the origin
 \delta^{(l)}\coloneqq\frac{\partial f^{(l)}}{\partial\actl{l}}.
 \label{eq:stabilization_backward_invariant}
 \end{equation}
-The shifted sensitivities must satisfy the same identity; at ties, matching branch choices or cached-gradient corrections are required. The original paper's attribution experiments use a common shift parameter $\alpha$ across layers. \begin{changed}Intermediate shifts $\alpha=0.35$--$0.45$ give the best localization and Pixel Flipping results for the tested VGG-16 SplitCAM and SplitGrad configurations (Table~\ref{tab:alpha_ablation_main}), while $\alpha=0$ minimizes Maximum Sensitivity.\end{changed}
+The shifted sensitivities must satisfy the same identity; at ties, matching branch choices or cached-gradient corrections are required.
 
 Differentiating the common-shift identity~\eqref{eq:shift_forward} along each coordinate gives \emph{sensitivity complementarity} (\LeanResult{thm:delta_connection}):
 \begin{equation}
@@ -790,7 +790,7 @@ We then apply the uniform shift
 \end{equation}
 The Maxout selection matrices are $M^{(l,+)}\coloneqq\diag(\1[\preactl{l}\ge0])$ and $M^{(l,-)}\coloneqq\diag(\1[\preactl{l}<0])$. On strict activation cells, $M^{(l,+)}=\diag(\chi^{(l)}(x))$ and $M^{(l,-)}=I-M^{(l,+)}$; at zero, the displayed Maxout convention selects the positive branch, whereas $\chi^{(l)}_i(x)=0$. Differentiating~\eqref{eq:split_pos}--\eqref{eq:split_neg} and~\eqref{eq:dc_split_activations} gives~\eqref{eq:split_layer_jacobians}, hence the chain-rule recursion~\eqref{eq:delta_int_pos}. The implementation uses cached original activation vectors and pooling winners away from ties, and cached-gradient corrections to maintain the backward invariant~\eqref{eq:stabilization_backward_invariant}.
 
-Define $\delta_{\mathrm{shift}}^{(l,s)}\coloneqq(\delta_{\mathrm{shift}}^{(l,+,s)}-\delta_{\mathrm{shift}}^{(l,-,s)})/2$ and $\delta^s_{\mathrm{shift}}\coloneqq\delta_{\mathrm{shift}}^{(0,s)}$. For the final affine readout we use the uniform-notation convention $M^{(L,+)}=I$, $M^{(L,-)}=0$; these are algebraic placeholders, not an additional gate. Standard backpropagation gives $\delta^{(l)} = \prod_{j = L, \dots, l+1} W^{(j,x)}$ with gated matrices $W^{(l,x)} \coloneqq M^{(l,+)} \Wl{l}$.
+Define $\delta_{\mathrm{shift}}^{(l,s)}\coloneqq(\delta_{\mathrm{shift}}^{(l,+,s)}-\delta_{\mathrm{shift}}^{(l,-,s)})/2$ and $\delta^s_{\mathrm{shift}}\coloneqq\delta_{\mathrm{shift}}^{(0,s)}$. For the final affine readout we use the uniform-notation convention $M^{(L,+)}=I$, $M^{(L,-)}=0$; these are algebraic placeholders, not an additional gate. Standard backpropagation gives $\delta^{(l)} = \prod_{j = L, \dots, l+1} W^{(j,x)}$ with gated matrices $W^{(l,x)} \coloneqq M^{(l,+)} \Wl{l}$. The attribution experiments use a common shift $\alpha^{(l)}\equiv\alpha$ across layers; Section~\ref{sec:ablations} reports its effect on localization, Pixel Flipping and Maximum Sensitivity (Table~\ref{tab:alpha_ablation_main}).
 
 \begin{theoremenv}[Closed formulas for the stabilized split-stream gradients, \LeanResult{thm:closed_formula_shift}]\label{thm:closed_formula_shift}
 With $\overline{\alpha}_j\coloneqq\prod_{j\le i\le L}(1-2\alpha^{(i)})$, $\varepsilon_g=1$, and $\varepsilon_h=-1$, the pass~\eqref{eq:delta_int_pos}--\eqref{eq:delta_shift_def} computes, for $0\le l\le L$ and $s\in\{g,h\}$,
@@ -800,7 +800,7 @@ With $\overline{\alpha}_j\coloneqq\prod_{j\le i\le L}(1-2\alpha^{(i)})$, $\varep
 \label{eq:closed_formula_g}
 \end{equation}
 \AliasLabel{eq:closed_formula_h}{eq:closed_formula_g}
-The $j=L-1$ correction term is zero because $M^{(L,-)}=0$: no minimum or auxiliary $Q$ source is inserted at the affine readout. In particular, $\delta_{\mathrm{shift}}^{(l,g)} - \delta_{\mathrm{shift}}^{(l,h)} = \delta^{(l)}$ for all $l$; for $\alpha^{(i)} \equiv 0$ (i.e.\ $\overline{\alpha}_j = 1$) the formulas describe the plain split-stream gradients, and for $\alpha^{(i)} \equiv 1/2$ all correction terms vanish and the stabilized quantities are $\delta^{(l)}/2$ for $g$ and $-\delta^{(l)}/2$ for $h$, halves of the original gradient.\end{theoremenv}
+The $j=L-1$ correction term is zero because $M^{(L,-)}=0$: no minimum, and hence no correction term, is inserted at the affine readout. In particular, $\delta_{\mathrm{shift}}^{(l,g)} - \delta_{\mathrm{shift}}^{(l,h)} = \delta^{(l)}$ for all $l$; for $\alpha^{(i)} \equiv 0$ (i.e.\ $\overline{\alpha}_j = 1$) the formulas describe the plain split-stream gradients, and for $\alpha^{(i)} \equiv 1/2$ all correction terms vanish and the stabilized quantities are $\delta^{(l)}/2$ for $g$ and $-\delta^{(l)}/2$ for $h$, halves of the original gradient.\end{theoremenv}
 
 \begin{proof}
 \emph{Claim 1 (bulk of the shifted sensitivities).} For every $l$,
@@ -865,7 +865,7 @@ Split convolution~\eqref{eq:conv_split} is the instance $A = K*(\cdot)$; the rem
 }%
 \end{table}
 
-Batch normalization in evaluation mode reduces to an affine map and can be treated as a special convolution. Its per-channel scale $c_{\mathrm{bn}}=\gamma/\sqrt{\sigma^2+\epsilon}$ may carry either sign \parencite{Guillemot2020BreakingBN,Hui2019BNDecomposition}; in practice we merge it into an adjacent convolution before splitting. Training-mode batch normalization, whose statistics depend on the batch, is genuinely multiplicative and requires the techniques of Chapter~\ref{ch:transformers}. Training-mode dropout uses the \emph{same} realized mask $m$ on both streams and on $u = u^+ - u^-$, so the split network drops exactly the units the original does.
+Batch normalization in evaluation mode reduces to an affine map and can be treated as a special convolution. Its per-channel scale $c_{\mathrm{bn}}=\gamma/\sqrt{\sigma^2+\varepsilon}$ may carry either sign \parencite{Guillemot2020BreakingBN,Hui2019BNDecomposition}; in practice we merge it into an adjacent convolution before splitting. Training-mode batch normalization, whose statistics depend on the batch, is genuinely multiplicative and requires the techniques of Chapter~\ref{ch:transformers}. Training-mode dropout uses the \emph{same} realized mask $m$ on both streams and on $u = u^+ - u^-$, so the split network drops exactly the units the original does.
 
 \paragraph{Gated max-pooling.}
 Max-pooling over a window $[q]$ computes $\max_{j \in [q]} u_j$ per channel, which is neither linear nor a shared gate on a single pair. It is a \ac{cpwl} function of the window and admits its own convexity-preserving splitting identity.
@@ -894,13 +894,13 @@ Applying the chunk rules in topological order preserves non-negativity and the f
 
 \subsection{PyTorch Implementations}\label{subsec:split_implementations}
 
-The split-network implementation accompanying \textcite{hiddenMono} uses PyTorch FX to build a separate network of split chunks.\footnote{Code: \href{https://github.com/JayPiZimmermann/DC-Decomposition-for-Explanability}{split-network implementation}; \href{https://github.com/JayPiZimmermann/Playing_The_Network_Backward_Official_Repository}{newer patched engine}.} Explicit caches retain activations and accumulate sensitivities across residual branches. As described in \textcite{hiddenMono}, intermediate computations use \texttt{torch.float64} for high numerical precision.
+The split-network implementation accompanying \textcite{hiddenMono} uses PyTorch FX to build a separate network of split chunks.\footnote{Split-network implementation: \url{https://github.com/JayPiZimmermann/DC-Decomposition-for-Explanability}; newer patched engine: \coderepo.} Explicit caches retain activations and accumulate sensitivities across residual branches. As described in \textcite{hiddenMono}, intermediate computations use \texttt{torch.float64} for high numerical precision.
 
 The forward scaling implementation multiplies activations by $0.1$ when their maximum absolute entry exceeds $10$, followed by the corrective shifts of Section~\ref{subsec:forward_stabilization}. SplitCAM and SplitGrad use the stabilized backward pass of Section~\ref{subsec:backward_stabilization}; the released implementation upsamples their layer maps by nearest-neighbor interpolation. SplitLRP passes relevance unchanged through paired Maxout gates, routes max-pooling relevance to the winning location, and divides relevance equally across residual branches. Its layer-wise normalization replaces backward shifting; the $\varepsilon$-stabilizer absorbs part of the relevance budget.
 
 The newer DC engine distributed with \textcite{playingBackward2026} patches module forwards and supplies custom \texttt{autograd.Function} backward rules. For batch size $B$, intermediate tensors pack $[a^+,a^-,a^+,a^-]$ along the batch axis. The pair is duplicated to carry four sensitivities of the chosen rule---one from each output stream $g,h$ to each activation stream $a^+,a^-$---in a single backward pass: autograd requires each returned input gradient to match its forward input's shape. These patches preserve channel counts and parameter shapes. Ordinary addition combines matching blocks, and autograd accumulates residual gradients. FX still exposes functional operations as modules; the default addition module also applies re-centering and optional alignment or sensitivity shifts. Both implementations retain reference caches for numerical alignment.
 
-The Transformer DC experiments (Section~\ref{sec:vit-extension}) extend the CVPR graph implementation with Section~\ref{sec:transformer_dc}'s convex operator pairs; Section~\ref{sec:vit_implementation} describes the conditioned game implementation.
+The Transformer DC experiments (Section~\ref{sec:vit-extension}) extend the CVPR graph implementation with the convex operator pairs of Section~\ref{sec:transformer_dc}; Section~\ref{sec:vit_implementation} describes the conditioned game implementation.
 
 \section{Split-Based Attribution}\label{sec:split_attribution_concept}
 
@@ -934,10 +934,10 @@ This quantity aggregates the positive and negative streams into a single signed 
 
 \subsection{SplitGrad}\label{sec:split_grad}
 
-As a simple attribution method we also propose \emph{SplitGrad}, which takes the channel mean of the shifted split-pair gradients:
+As a simple attribution method we also propose \emph{SplitGrad}, which takes the channel mean of the shifted split-pair sensitivities:
 \begin{equation}
 \text{SplitGrad}^{(l,s)}\coloneqq\frac{1}{C^{(l)}}\sum_{c=1}^{C^{(l)}}\delta_{\mathrm{shift}}^{(l,s)}\big\vert_c,
 \label{eq:splitgrad}
 \end{equation}
-where $C^{(l)}$ is the number of channels; the default configuration reads the $g$-stream. Chapter~\ref{ch:experiments} reports layer selection, quantitative comparisons and runtime.
+where $C^{(l)}$ is the number of channels; the default configuration reads the $g$-stream. As in~\eqref{eq:splitcam_stream}, a three-index readout SplitGrad$^{(l,\sigma,s)}$ takes the channel mean of the stream-wise sensitivity $\delta_{\mathrm{shift}}^{(l,\sigma,s)}$ instead. Chapter~\ref{ch:experiments} reports layer selection, quantitative comparisons and runtime.
 
