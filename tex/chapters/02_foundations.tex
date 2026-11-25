@@ -62,8 +62,8 @@ It is \emph{concave} if $-f$ is convex. These definitions require no differentia
 The function class computed by \ac{relu} networks admits an exact geometric description. For the polyhedral terminology, see \textcite[Chapters~1--2 and Section~5.1]{Ziegler1995}.
 
 \begin{definition}[Polyhedron, polytope, face, and facet]\label{def:polyhedron_polytope}
-A \emph{polyhedron} is an intersection of finitely many closed affine half-spaces: $P=\{x\in\RR^d:Ax\le c\}$ for some $A\in\RR^{m\times d}$ and $c\in\RR^m$, with the inequality understood componentwise. A \emph{polytope} is a bounded polyhedron; equivalently, it is the convex hull of finitely many points. Polyhedra are closed and convex but need not be bounded or full-dimensional.
-A \emph{face} of $P$ is a set $F=P\cap\{x:a^\top x=\beta\}$ for some $a\in\RR^d$ and $\beta\in\RR$ satisfying $a^\top x\le\beta$ for every $x\in P$; this includes $P$ and $\varnothing$. A \emph{facet} is a face of dimension $\dim P-1$, where dimension means the dimension of the affine hull and $\dim\varnothing=-1$.
+A \emph{polyhedron} is an intersection of finitely many closed affine half-spaces: $P=\{x\in\RR^d:Ax\le c\}$ for some $A\in\RR^{m\times d}$ and $c\in\RR^m$, with the inequality understood componentwise. A \emph{polytope} is a bounded polyhedron; equivalently, it is the convex hull of finitely many points $v_k$, the set of all $\sum_k\lambda_kv_k$ with $\lambda_k\ge0$ and $\sum_k\lambda_k=1$. Polyhedra are closed and convex but need not be bounded or full-dimensional.
+A \emph{face} of $P$ is a set $F=P\cap\{x:a^\top x=\beta\}$ for some $a\in\RR^d$ and $\beta\in\RR$ satisfying $a^\top x\le\beta$ for every $x\in P$; this includes $P$ and $\varnothing$. A \emph{facet} is a face of dimension $\dim P-1$, where dimension means the dimension of the affine hull, the smallest shifted linear subspace containing the set, and $\dim\varnothing=-1$.
 \end{definition}
 
 \begin{definition}[Polyhedral complex and decomposition]\label{def:polyhedral_complex}
@@ -203,7 +203,7 @@ The \emph{lifted Newton polytope} $\widehat{\operatorname{Newt}}(p)=\operatornam
 \end{definition}
 
 \begin{definition}[Support function, \LeanResult{def:support_function}]\label{def:support_function}
-The \emph{support function} of a nonempty compact convex set $P\subseteq\RR^d$ is
+The \emph{support function} of a nonempty compact (closed and bounded) convex set $P\subseteq\RR^d$ is
 \begin{equation}
     h_P(x)=\max_{v\in P}v^\top x.
     \label{eq:support_function}
@@ -302,7 +302,7 @@ Maxout networks are the natural piecewise-linear generalization of \ac{relu}: a 
 Chapter~\ref{ch:game_theory} interprets backward propagation through two-player games on the decomposed network graph: the Stopping Game optimizes payoff advantages, while the Routing Game uses entropy-regularized log-space utilities (Sections~\ref{ptnb:sec:stopping} and~\ref{ptnb:sec:routing}). We introduce \acp{mdp}, turn-based games, and their optimality equations, restricting throughout to finite state and action spaces. Standard textbook treatments are \textcite{Puterman1994mdp} for \acp{mdp} and \textcite{OsborneRubinstein1994} for game theory.
 
 \begin{definition}[\acl{mdp}]\label{def:mdp}
-A (finite) \emph{\acl{mdp}} (\acs{mdp}) \parencite{Puterman1994mdp,SuttonBarto2018rl} is a tuple $\mathcal{M} = (S, A, \P, R, \gamma)$ consisting of a finite state set $S$, a finite nonempty action set $A(s)$ for each $s \in S$, a \emph{transition kernel} $\P(s' \mid s, a) \ge 0$ with $\sum_{s'} \P(s' \mid s, a) = 1$, a bounded \emph{reward function} $R(s, a) \in \RR$, and a \emph{discount factor} $\gamma \in [0, 1)$. A \emph{(stationary) policy} is a map $\pi$ assigning to each state $s$ a probability distribution $\pi(\cdot \mid s)$ over $A(s)$; $\pi$ is \emph{pure} (deterministic) if each $\pi(\cdot \mid s)$ is a point mass. A policy induces, for every start state, a Markov chain on $S$ and hence a distribution over \emph{trajectories} $(s_0, a_0, s_1, a_1, \ldots)$; the \emph{value function} of $\pi$ is the expected discounted return
+A (finite) \emph{\acl{mdp}} (\acs{mdp}) \parencite{Puterman1994mdp,SuttonBarto2018rl} is a tuple $\mathcal{M} = (S, A, \P, R, \gamma)$ consisting of a finite state set $S$, a finite nonempty action set $A(s)$ for each $s \in S$, a \emph{transition kernel} $\P(s' \mid s, a) \ge 0$ with $\sum_{s'} \P(s' \mid s, a) = 1$, a bounded \emph{reward function} $R(s, a) \in \RR$, and a \emph{discount factor} $\gamma \in [0, 1)$. A \emph{(stationary) policy} is a map $\pi$ assigning to each state $s$ a probability distribution $\pi(\cdot \mid s)$ over $A(s)$; $\pi$ is \emph{pure} (deterministic) if each $\pi(\cdot \mid s)$ is a point mass. A policy induces, for every start state, a Markov chain on $S$ (a random sequence of states that moves from $s$ to $s'$ with probability $\sum_{a\in A(s)}\pi(a\mid s)\P(s'\mid s,a)$, regardless of the earlier states) and hence a distribution over \emph{trajectories} $(s_0, a_0, s_1, a_1, \ldots)$; the \emph{value function} of $\pi$ is the expected discounted return
 \begin{equation}
 	V^{\pi}(s) \coloneqq \E^{\pi}\Bigl[ \textstyle\sum_{t=0}^{\infty} \gamma^{t}\, R(s_t, a_t) \,\Big|\, s_0 = s \Bigr],
 	\label{eq:mdp_value}
@@ -326,7 +326,7 @@ The first is a linear system; the second is the \emph{Bellman optimality equatio
 \end{proposition}
 
 \begin{proof}
-Both right-hand sides, $T^{\pi}V$ and $TV$, are monotone $\gamma$-contractions in $\norm{\cdot}_\infty$, hence have unique fixed points. Conditioning \eqref{eq:mdp_value} on the first transition gives $V^{\pi}=T^{\pi}V^{\pi}\le T^{\pi}V^{\star}\le TV^{\star}$, so $V^{\star}\le TV^{\star}$. For a policy $\polstar$ greedy for $V^{\star}$, $TV^{\star}=T^{\polstar}V^{\star}$, and iterating gives $V^{\star}\le(T^{\polstar})^nV^{\star}\to V^{\polstar}\le V^{\star}$. Hence $V^{\polstar}=V^{\star}=TV^{\star}$ \parencite{Puterman1994mdp,SuttonBarto2018rl}. Acyclic games instead admit backward induction (Remark~\ref{rem:structural_discount}).
+Both right-hand sides, $T^{\pi}V$ and $TV$, are monotone $\gamma$-contractions in $\norm{\cdot}_\infty$: each such map $T'$ satisfies $T'V\le T'W$ whenever $V\le W$, and $\norm{T'V-T'W}_\infty\le\gamma\norm{V-W}_\infty$. Hence both have unique fixed points. Conditioning \eqref{eq:mdp_value} on the first transition gives $V^{\pi}=T^{\pi}V^{\pi}\le T^{\pi}V^{\star}\le TV^{\star}$, so $V^{\star}\le TV^{\star}$. For a policy $\polstar$ greedy for $V^{\star}$, $TV^{\star}=T^{\polstar}V^{\star}$, and iterating gives $V^{\star}\le(T^{\polstar})^nV^{\star}\to V^{\polstar}\le V^{\star}$. Hence $V^{\polstar}=V^{\star}=TV^{\star}$ \parencite{Puterman1994mdp,SuttonBarto2018rl}. Acyclic games instead admit backward induction (Remark~\ref{rem:structural_discount}).
 \end{proof}
 
 \begin{remark}[State-dependent structural discounts]\label{rem:structural_discount}
@@ -345,6 +345,8 @@ Two-player games enter because a decomposed network carries two interacting spli
 \begin{definition}[Zero-sum turn-based game]\label{def:turn_based_game}
 A (finite) \emph{zero-sum turn-based game} is a tuple $\mathcal{G} = (S_{+}, S_{-}, S_{\mathrm{ter}}, A, \P, R, \gamma)$ where the state set $S = S_{+} \uplus S_{-} \uplus S_{\mathrm{ter}}$ is partitioned into states controlled by player $P^{+}$, states controlled by player $P^{-}$, and terminal states; the action sets $A(s)$, the transition kernel $\P$, and the reward $R$ are as in Definition~\ref{def:mdp} on non-terminal states; $\gamma \colon S \to \RR_{\ge 0}$ is a (possibly state-dependent) discount; and each terminal state $s \in S_{\mathrm{ter}}$ carries a fixed one-time payoff $R(s)$. A \emph{policy pair} $\pi = (\pi_{+}, \pi_{-})$ consists of a policy $\pi_{p}$ for player $P^{p}$ on $S_{p}$. Play generates a trajectory as in an \ac{mdp}, with the player in turn choosing the action. On an acyclic transition graph, it reaches a terminal state $s_T$ after finitely many steps, and the expected total payoff $V^{\pi}(s)$, defined as in \eqref{eq:mdp_value} with the discount accumulated multiplicatively along the trajectory ($\gamma^t$ replaced by $\prod_{m=0}^{t-1}\gamma(s_m)$) and the terminal payoff $R(s_T)$ discounted in the same way, is paid \emph{by $P^{-}$ to $P^{+}$}: player $P^{+}$ maximizes $V^{\pi}$ and player $P^{-}$ minimizes it.
 \end{definition}
+
+A policy pair is a \emph{Nash equilibrium} if neither player can improve its payoff by changing only its own policy. The \emph{subgame} at a state $s$ is the game started at $s$; a policy pair that is a Nash equilibrium of every subgame is a \emph{subgame perfect Nash equilibrium} (SPNE).
 
 \begin{theoremenv}[Shapley--Bellman optimality on layered games, \LeanResult{thm:shapley_bellman}]\label{thm:shapley_bellman}
 Let $\mathcal{G}$ be a finite zero-sum turn-based game with acyclic transition graph. Use $Q_V$ from Proposition~\ref{prop:bellman}, replacing $\gamma$ by $\gamma(s)\ge0$. There is a unique $V^{\star}:S\to\RR$ satisfying the \emph{Shapley--Bellman equations}

@@ -15,7 +15,7 @@ The structural question asks whether the full forward map, including attention g
 
 \section{Decomposing Multiplicative Operations}\label{sec:multiplicative_splits}
 
-Gating, squeeze-and-excitation (SE) blocks and attention require Hadamard or matrix products. We extend the ReLU DC decomposition using polarization, which preserves convexity and monotonicity through these operations.
+Gating, squeeze-and-excitation (SE) blocks and attention require Hadamard (elementwise) or matrix products. We extend the ReLU DC decomposition using polarization, which preserves convexity and monotonicity through these operations.
 
 \begin{proposition}[Convex product pair by polarization, \LeanResult{prop:convex_product_pair}]\label{prop:convex_product_pair}
 For non-negative scalars $A,B,C,D$, let

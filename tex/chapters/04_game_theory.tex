@@ -469,13 +469,13 @@ Normalization includes the bias and outside weights $([b_j^{(l)}]^\kappa)^{1/\ta
 \end{align}
 \end{theoremenv}
 \begin{proof}
-Backward induction solves each linear subgame by~\eqref{ptnb:eq:gibbs-lse} on its finite-score simplex face, or by the selected absorbing action if that face is empty. The activation player continues exactly when its gain exceeds stopping's $-\infty$. These best responses compose to an SPNE on the finite DAG, including terminal bias/outside actions (Remark~\ref{ptnb:rem:routing-utilities}).
+Backward induction solves each linear subgame by~\eqref{ptnb:eq:gibbs-lse} on its finite-score simplex face, the probability distributions supported on its actions with finite score, or by the selected absorbing action if that face is empty. The activation player continues exactly when its gain exceeds stopping's $-\infty$. These best responses compose to an SPNE on the finite DAG, including terminal bias/outside actions (Remark~\ref{ptnb:rem:routing-utilities}).
 
 For the anchor, induct on $l$. The first layer uses the fused masses $[x_iW_{ij}^{(1)}]^\kappa$; subsequently, $a_i^{(l-1)}\geq0$ gives $Q_q=\ell(a_i^{(l-1)}W_{ij}^{(l,\kappa)})$ by the induction hypothesis. The linear log-sum-exp is therefore $\ell(\Sigma_j^{(l,\kappa)}+\varepsilon)$. At activation states the two $\varepsilon$ terms cancel, leaving $D_p=\Sigma_j^{(l,+)}-\Sigma_j^{(l,-)}=z_j^{(l)}$. The selected gate gives $a_j^{(l)}=\relu(z_j^{(l)})$; its opponent receives $-\infty$ whether the gate continues or stops. This proves all four identities.
 \end{proof}
 
 \begin{remark}[Utilities of arbitrary profiles and the equilibrium notion]\label{ptnb:rem:routing-utilities}
-The \ac{rg} is a finite two-player game with perfect information on the layered computation graph: each activation state is controlled by the player in turn and each linear state by its routing player. Its utilities are recursive, rather than expected sums of additive payoffs as in Definition~\ref{def:turn_based_game}. A \emph{profile} $\pi=(\pi_+,\pi_-)$ fixes a pure stop/continue action at every activation state and a mixture at every linear state, including states that are not reached. Replacing the maxima in Definition~\ref{ptnb:def:routing-recursion} by these choices defines values $V_+^\pi,V_-^\pi\colon S\to\RR\cup\{-\infty\}$ by backward recursion from the input layer; the utility of player $r$ in the subgame starting at $s$ is $V_r^\pi(s)$. A profile is an SPNE if, in every subgame, no alternative strategy of one player increases that player's utility.
+The \ac{rg} is a finite two-player game with perfect information (the player to move knows the current state) on the layered computation graph: each activation state is controlled by the player in turn and each linear state by its routing player. Its utilities are recursive, rather than expected sums of additive payoffs as in Definition~\ref{def:turn_based_game}. A \emph{profile} $\pi=(\pi_+,\pi_-)$ fixes a pure stop/continue action at every activation state and a mixture at every linear state, including states that are not reached. Replacing the maxima in Definition~\ref{ptnb:def:routing-recursion} by these choices defines values $V_+^\pi,V_-^\pi\colon S\to\RR\cup\{-\infty\}$ by backward recursion from the input layer; the utility of player $r$ in the subgame starting at $s$ is $V_r^\pi(s)$. A profile is an SPNE if, in every subgame, no alternative strategy of one player increases that player's utility.
 
 Local optimality implies this property through one signed quantity. At every state at most one player has a finite value, so the signed mass
 \[
@@ -788,7 +788,7 @@ in Theorem~\ref{ptnb:thm:deriv-occ}. Individual occupation measures need not be 
 
 \paragraph{Relation to the curvature-based defense of Dombrowski et al.}\label{ptnb:app:softplus-dombrowski}
 \textcite{Dombrowski2020} train Softplus networks from scratch against gradient-explanation
-manipulation. Their weight- and activation-dependent Hessian Frobenius-norm bound diverges in the
+manipulation. Their weight- and activation-dependent bound on the Hessian's Frobenius norm (the square root of the sum of its squared entries) diverges in the
 ReLU limit; $|\mathrm{sp}_\theta''(z)|\le1/(4\theta)$ gives a finite uniform bound for fixed weights,
 which bounds gradient-explanation changes under input perturbations.
 Theorems~\ref{ptnb:thm:softplus-forward}--\ref{ptnb:thm:softplus-gradient} realize this replacement by
