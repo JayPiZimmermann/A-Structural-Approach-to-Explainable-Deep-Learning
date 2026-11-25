@@ -329,9 +329,9 @@ AttnLRP~\parencite{Achtibat2024AttnLRP}, our DAVE variant DAVE$^{*}$~\parencite{
 reaches AL \vitRGlocAL{} against \vitBestBaseAL{} for the best baseline (\vitBestBaseALname), and
 \ac{rg}+Eq \vitRGEqlocAL{}, both significantly ahead of every baseline row after Holm correction.
 \ac{rg}+Eq also has the highest observed TK (\vitRGEqlocTK{}), but the Holm-corrected tests do not detect a difference from \vitBestBaseTKname{}
-at \vitBestBaseTK{} or LRP-$\gamma$ at $0.816$. The Pointing Game is led by \vitBestBasePGname{} (\vitBestBasePG{}), whose
+at \vitBestBaseTK{} or LRP-$\gamma$ at $0.816$. The Pointing Game is led by the superpixel methods \vitBestBasePGname{} (\vitBestBasePG{}) and LIME ($0.897$), whose
 maps are constant on superpixels: a hit needs only one pixel of the maximal region inside the mask.
-Scoring a single pixel drawn from that region instead, KernelSHAP falls below \ac{rg}+Eq, which is
+Scoring a single pixel drawn from that region instead, both fall below \ac{rg}+Eq, which is
 then not significantly below the best baseline (LRP-$\gamma$; Section~\ref{ptnb:app:pg-granularity}).
 Among the localization-selected rows, faithfulness favors the \ac{lrp} rules: AttnLRP is best on PF$_5$ and PF$_{20}$ and LRP-$\gamma$ on
 Sel (PF$_{20}$ \vitBestBasePFtwenty{} versus \vitRGlocPFtwenty{} for \ac{rg}), and the
@@ -377,7 +377,7 @@ structure is model-specific or dataset-specific. The localization lead carries o
 (Table~\ref{ptnb:tab:eval-vit-voc}).
 
 \paragraph{VGG-16 and ResNet-50 (Tables~\ref{ptnb:tab:test-ci-vgg} and~\ref{ptnb:tab:test-ci-resnet}).}
-On the CNNs, where \ac{lrp}-type rules are already strong, the localization-selected \ac{rg} rows also lead on AL within that selection: clearly on VGG-16 (\vggRGlocAL{} versus \vggBestBaseAL{} for \vggBestBaseALname{}) and narrowly on ResNet-50 (\resRGlocAL{} versus \resBestBaseAL{} for \resBestBaseALname{}). The ResNet-50 difference is not Holm-significant (adjusted $p=0.420$), so its numerical lead does not establish superiority. Across both objectives, VGG-16's strongest baseline AL is faithfulness-selected LRP-$\varepsilon$ at $0.639$, below \ac{rg}'s \vggRGlocAL{}. Pixel Flipping favors LRP-$\varepsilon$ for VGG-16 PF$_5$ ($12.43$), LRP-$\gamma$ for VGG-16 PF$_{20}$ ($7.89$ versus LRP-$\varepsilon$'s $8.17$), and LRP-$\gamma$ for both ResNet-50 metrics; \ac{cam} and perturbation methods lead TK and PG. On VGG-16 the risk-averse SG$^{\mathrm{pp}}$ mode is the most robust method (MaxS \vggSGlocMaxS{} versus \vggBestBaseMaxS{} for \vggBestBaseMaxSname{}).
+On the CNNs, where \ac{lrp}-type rules are already strong, the localization-selected \ac{rg} rows also lead on AL within that selection: clearly on VGG-16 (\vggRGlocAL{} versus \vggBestBaseAL{} for \vggBestBaseALname{}) and narrowly on ResNet-50 (\resRGlocAL{} versus \resBestBaseAL{} for \resBestBaseALname{}). The ResNet-50 difference is not Holm-significant (adjusted $p=0.420$), so its numerical lead does not establish superiority. Across both objectives, VGG-16's strongest baseline AL is faithfulness-selected LRP-$\varepsilon$ at $0.639$, below \ac{rg}'s \vggRGlocAL{}. Pixel Flipping favors LRP-$\varepsilon$ for VGG-16 PF$_5$ ($12.43$), LRP-$\gamma$ for VGG-16 PF$_{20}$ ($7.89$ versus LRP-$\varepsilon$'s $8.17$), and LRP-$\gamma$ for both ResNet-50 metrics; \ac{cam} methods lead TK. As on ViT-B/16, the superpixel methods lead PG (LIME $0.972$ on VGG-16, KernelSHAP $0.965$ on ResNet-50), partly because their maps are constant on superpixels. On VGG-16 the risk-averse SG$^{\mathrm{pp}}$ mode is the most robust method (MaxS \vggSGlocMaxS{} versus \vggBestBaseMaxS{} for \vggBestBaseMaxSname{}).
 
 \subsection{Game-Method Ablations}\label{subsec:mode_ablation}
 
