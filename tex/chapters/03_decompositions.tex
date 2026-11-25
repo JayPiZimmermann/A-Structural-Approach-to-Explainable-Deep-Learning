@@ -533,7 +533,7 @@ The input pair consists of coordinate functions. On $C_\omega$, the activation v
 \paragraph{Excitatory and inhibitory path isolation.}
 We can decompose the Stopping Decomposition pre-activations into small contributions coming from individual paths through the network. The shared gate never mixes the split-streams; the choice between input signs is determined by the parity of the number of negative weights traversed.
 
-\begin{lemmaenv}[Parity path view on the Stopping Decomposition, \LeanResult{lem:parity_path}, \LeanResult{ptnb:lem:parity-path}]\label{lem:parity_path}
+\begin{lemmaenv}[Parity path view on the Stopping Decomposition, \LeanResult{lem:parity_path}]\label{lem:parity_path}
 Fix a \ac{relu} network with weights $\Wl{l}$ and, for clarity, vanishing biases. For a neuron $i$ in layer $l \ge 1$, a \emph{backward path} to the input is a list $P = (P_l, \dots, P_0)$ with $P_l = i$ and $P_t$ a neuron in layer $t$, using weights $\Wl{t}_{P_t, P_{t-1}}$. Define the absolute weight product, parity sign, and gate factor, the latter multiplying the activation-vector entries below the starting neuron:
 \begin{equation*}
 \begin{gathered}
