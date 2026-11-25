@@ -226,4 +226,92 @@ theorem common_start_distance (A B : Kernel S) (s₀ : S 0) :
     hellinger (pathLaw A s₀ 0) (pathLaw B s₀ 0) = 0 := by
   simp [hellinger, hellingerSquared, Prefix, pathLaw]
 
+/-- Bridge for the terminal-state decomposition: grouping the pathwise
+disagreement `Thesis.Games.pathDisagreement` of the two trajectory laws by the
+last state gives the two transported endpoint masses and the recursively
+computed overlap `g`. In thesis notation this is
+`H²(s) = (m_A(s)+m_B(s))/2 - g⁽⁰⁾(s)`. -/
+theorem pixelDisagreement_eq_overlap_recursion (A B : Kernel S) (s₀ : S 0)
+    (n : ℕ) (hA : ∀ i < n, ∀ s t, 0 ≤ A i s t)
+    (hB : ∀ i < n, ∀ s t, 0 ≤ B i s t) (s : S n) :
+    Thesis.Games.pixelDisagreement (pathLaw A s₀ n) (pathLaw B s₀ n) (last n) s =
+      (mass A s₀ n s + mass B s₀ n s) / 2 - g A B s₀ n s := by
+  rw [Thesis.Games.pixelDisagreement_formula]
+  unfold g
+  simp_rw [mass_eq_endpoint_sum, pathLaw_geometric A B s₀ n hA hB]
+
+/-- The terminal contributions add up to the squared Hellinger distance of the
+full trajectory laws, with the overlap computed by the recursion. -/
+theorem pixelDisagreement_total_eq (A B : Kernel S) (s₀ : S 0)
+    (n : ℕ) (hA : ∀ i < n, ∀ s t, 0 ≤ A i s t)
+    (hB : ∀ i < n, ∀ s t, 0 ≤ B i s t)
+    (hArow : ∀ i < n, ∀ s, ∑ t, A i s t = 1)
+    (hBrow : ∀ i < n, ∀ s, ∑ t, B i s t = 1) :
+    (∑ s, Thesis.Games.pixelDisagreement (pathLaw A s₀ n) (pathLaw B s₀ n) (last n) s) =
+      1 - BC A B s₀ n := by
+  rw [Thesis.Games.pixelDisagreement_total _ _ _ (pathLaw_normalized A s₀ n hArow)
+    (pathLaw_normalized B s₀ n hBrow), BC_eq_path_overlap A B s₀ n hA hB]
+
+end Thesis.TrajectoryHellinger
+
+/-! The fixed-state path law `Thesis.Games.pathLaw` and the layered prefix law
+of this file describe the same Markov chain. The lemmas below connect the two
+encodings through their endpoint integrals. -/
+namespace Thesis.TrajectoryHellinger
+open Finset
+open scoped Classical
+
+variable {T : Type} [Fintype T]
+
+/-- First-step decomposition of the transported mass for a fixed state type. -/
+theorem mass_first_step (K : ℕ → T → T → ℝ) (s : T) (n : ℕ) (u : T) :
+    mass (S := fun _ => T) K s (n + 1) u =
+      ∑ t, K 0 s t * mass (S := fun _ => T) (fun i => K (i + 1)) t n u := by
+  induction n generalizing u with
+  | zero =>
+      change (∑ v, (if v = s then (1 : ℝ) else 0) * K 0 v u) =
+        ∑ t, K 0 s t * (if u = t then (1 : ℝ) else 0)
+      simp
+  | succ n ih =>
+      change (∑ v, mass (S := fun _ => T) K s (n + 1) v * K (n + 1) v u) =
+        ∑ t, K 0 s t *
+          ∑ v, mass (S := fun _ => T) (fun i => K (i + 1)) t n v * K (n + 1) v u
+      simp_rw [ih, Finset.sum_mul, Finset.mul_sum]
+      rw [Finset.sum_comm]
+      exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+
+/-- Every endpoint integral against `Thesis.Games.pathLaw` equals the integral
+against the transported mass of the layered prefix law. Hence the two path-law
+encodings have the same endpoint distribution. -/
+theorem games_path_integral_eq_mass (n : ℕ) (K : ℕ → T → T → ℝ)
+    (payoff : T → ℝ) (s : T) :
+    (∑ path : Thesis.Games.Paths T n,
+      Thesis.Games.pathLaw n K s path * payoff (Thesis.Games.endpoint n s path)) =
+      ∑ t, mass (S := fun _ => T) K s n t * payoff t := by
+  rw [Thesis.Games.path_integral_eq_DP]
+  induction n generalizing K s with
+  | zero =>
+      change payoff s = ∑ t, (if t = s then (1 : ℝ) else 0) * payoff t
+      simp
+  | succ n ih =>
+      change (∑ t, K 0 s t * Thesis.Games.backwardDP n (fun i => K (i + 1)) payoff t) = _
+      simp_rw [ih, mass_first_step, Finset.sum_mul, Finset.mul_sum]
+      rw [Finset.sum_comm]
+      exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+
+/-- The same statement for the prefix law itself: both encodings integrate
+endpoint payoffs identically. -/
+theorem games_pathLaw_eq_prefix_pathLaw (n : ℕ) (K : ℕ → T → T → ℝ)
+    (payoff : T → ℝ) (s : T) :
+    (∑ path : Thesis.Games.Paths T n,
+      Thesis.Games.pathLaw n K s path * payoff (Thesis.Games.endpoint n s path)) =
+      ∑ p : Prefix (fun _ => T) n,
+        pathLaw (S := fun _ => T) K s n p * payoff (last n p) := by
+  rw [games_path_integral_eq_mass]
+  simp_rw [mass_eq_endpoint_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro p _
+  simp [ite_mul]
+
 end Thesis.TrajectoryHellinger

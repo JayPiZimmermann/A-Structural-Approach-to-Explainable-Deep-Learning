@@ -256,11 +256,27 @@ lake build All
 The accepted foundational axioms are `propext`, `Classical.choice`, and
 `Quot.sound`. No `sorry`, `admit`, or custom axioms are used.
 
-The unpublished `TrajectoryHellinger` addition is checked separately with
-`lake build Thesis.TrajectoryHellinger` and
-`lake env lean checks/trajectory_hellinger_audit.lean`. The equation links to
-a source snapshot under `draft-proofs/`. Keep that directory beside the
-PDF. Existing published links and the pinned `All` root remain unchanged.
+The `All` root also imports `Thesis.TrajectoryHellinger`,
+`Thesis.PolarizedMultiplicative` and `HiddenMonotonicity.TransformerLinearCost`.
+Each has an independent statement check:
+
+```sh
+lake build Thesis.TrajectoryHellinger
+lake env lean checks/trajectory_hellinger_audit.lean
+lake build Thesis.PolarizedMultiplicative
+lake env lean checks/polarized_multiplicative_audit.lean
+lake build HiddenMonotonicity.TransformerLinearCost
+lake env lean checks/transformer_linear_cost_audit.lean
+```
+
+On systems whose C library is older than the one the bundled `clang` expects
+(for example glibc 2.28), `lake exe cache get` fails while linking the cache
+tool. Use the system compiler for that step:
+
+```sh
+T="$(lean --print-prefix)"
+LEAN_CC=/usr/bin/gcc LIBRARY_PATH="$T/lib:$T/lib/lean" lake exe cache get
+```
 
 The local development checkout may reuse a mathlib cache through an ignored
 `.lake/packages` symlink. A fresh checkout fetches the pinned dependencies normally;
@@ -273,3 +289,12 @@ corresponding declarations in this repository at a fixed revision, with exact
 line numbers.
 A **Lean variant** badge links a complete theorem under the stated formal
 model's assumptions; **Lean components** links part of a broader statement.
+
+The links and the coverage table of the thesis are generated. The map
+`tex/preamble/lean_links_map.tsv` assigns a declaration and a scope to each
+thesis label; `python3 tex/scripts/generate_lean_links.py` finds every
+declaration by name in this directory, numbers the references in order of
+appearance, pins all links to one commit, and writes
+`tex/preamble/lean_links_generated.tex` and `tex/tables/lean_coverage.tex`.
+It stops if a label or declaration is missing, or if the Lean sources differ
+from the pinned commit.

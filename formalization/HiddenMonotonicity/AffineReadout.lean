@@ -99,4 +99,84 @@ theorem Network.affine_logit_derivative {n m} (net : Network n m)
       ((rPlus-rMinus).comp (net.originalTrace x).originalJac) x :=
   ((rPlus-rMinus).hasFDerivAt.comp x (net.hasFDerivAt_originalTrace x hx)).add_const bias
 
+/-- Pointwise closed formulas of the shifted backward pass for an arbitrary
+fixed 0/1 gate selection. The inactive selection is the complement of the
+active one by construction of `MaskedTrace`, so this covers every complementary
+mask, including either convention at ties. The correction is the explicit
+finite list of layer terms; the affine readout contributes none. -/
+theorem MaskedTrace.affine_readout_closed_form {n m} (tr : MaskedTrace n m)
+    (α : ℕ → ℝ) (rPlus rMinus : Row m) (β : ℝ) :
+    unified (tr.run α (affineReadoutSeed rPlus rMinus β true)) =
+      (1/2 : ℝ) • ((rPlus-rMinus).comp tr.originalJac -
+        (tr.correctionTerms α ((1-2*β) • (rPlus+rMinus))).sum) ∧
+    unified (tr.run α (affineReadoutSeed rPlus rMinus β false)) =
+      (-1/2 : ℝ) • ((rPlus-rMinus).comp tr.originalJac +
+        (tr.correctionTerms α ((1-2*β) • (rPlus+rMinus))).sum) := by
+  rw [tr.correction_terms_sum]
+  constructor
+  · rw [MaskedTrace.run_unified]
+    simp only [affineReadoutSeed, ite_true]
+    rw [unified_shift, shiftPair_sum]
+    simp only [unified]
+    apply ContinuousLinearMap.ext
+    intro v
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+      ContinuousLinearMap.sub_apply, smul_eq_mul]
+    ring
+  · rw [MaskedTrace.run_unified]
+    simp only [affineReadoutSeed, Bool.false_eq_true, ite_false]
+    rw [unified_shift, shiftPair_sum]
+    simp only [unified]
+    rw [add_comm rMinus rPlus]
+    apply ContinuousLinearMap.ext
+    intro v
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+      ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply, smul_eq_mul]
+    ring
+
+/-- The bulk of the shifted pair for an arbitrary gate selection: the product
+of the shift factors times the common-mode map. -/
+theorem MaskedTrace.affine_readout_bulk {n m} (tr : MaskedTrace n m)
+    (α : ℕ → ℝ) (rPlus rMinus : Row m) (β : ℝ) (head : Bool) :
+    (tr.run α (affineReadoutSeed rPlus rMinus β head)).1 +
+      (tr.run α (affineReadoutSeed rPlus rMinus β head)).2 =
+      (tr.bulkCoefficient α * (1-2*β)) • ((rPlus+rMinus).comp tr.absMap) := by
+  rw [tr.run_bulk]
+  cases head <;>
+    simp only [affineReadoutSeed, Bool.false_eq_true, ite_false, ite_true, shiftPair_sum,
+      ContinuousLinearMap.smul_comp, smul_smul, add_comm rMinus rPlus]
+
+/-- The backward invariant for an arbitrary gate selection and arbitrary shifts. -/
+theorem MaskedTrace.affine_readout_invariant {n m} (tr : MaskedTrace n m)
+    (α : ℕ → ℝ) (rPlus rMinus : Row m) (β : ℝ) :
+    unified (tr.run α (affineReadoutSeed rPlus rMinus β true)) -
+      unified (tr.run α (affineReadoutSeed rPlus rMinus β false)) =
+      (rPlus-rMinus).comp tr.originalJac := by
+  rw [(tr.affine_readout_closed_form α rPlus rMinus β).1,
+    (tr.affine_readout_closed_form α rPlus rMinus β).2]
+  module
+
+/-- Thesis thm:closed_formula_shift, pointwise on strict activation cells. The
+gate selection is the one of the forward pass, the masked product is the actual
+derivative of the affine logit, and both shifted formulas hold with the explicit
+finite sum of layer corrections. No sign condition on the weight parts is used. -/
+theorem Network.affine_closed_form_strict {n m} (net : Network n m)
+    (x : Vec n) (hx : net.Strict x) (α : ℕ → ℝ)
+    (rPlus rMinus : Row m) (bp bn β : ℝ) :
+    HasFDerivAt (fun y => (rPlus-rMinus) (net.eval y)+(bp-bn))
+      ((rPlus-rMinus).comp (net.originalTrace x).originalJac) x ∧
+    unified ((net.originalTrace x).run α (affineReadoutSeed rPlus rMinus β true)) =
+      (1/2 : ℝ) • ((rPlus-rMinus).comp (net.originalTrace x).originalJac -
+        ((net.originalTrace x).correctionTerms α ((1-2*β) • (rPlus+rMinus))).sum) ∧
+    unified ((net.originalTrace x).run α (affineReadoutSeed rPlus rMinus β false)) =
+      (-1/2 : ℝ) • ((rPlus-rMinus).comp (net.originalTrace x).originalJac +
+        ((net.originalTrace x).correctionTerms α ((1-2*β) • (rPlus+rMinus))).sum) ∧
+    unified ((net.originalTrace x).run α (affineReadoutSeed rPlus rMinus β true)) -
+      unified ((net.originalTrace x).run α (affineReadoutSeed rPlus rMinus β false)) =
+      (rPlus-rMinus).comp (net.originalTrace x).originalJac :=
+  ⟨net.affine_logit_derivative x hx rPlus rMinus (bp-bn),
+    ((net.originalTrace x).affine_readout_closed_form α rPlus rMinus β).1,
+    ((net.originalTrace x).affine_readout_closed_form α rPlus rMinus β).2,
+    (net.originalTrace x).affine_readout_invariant α rPlus rMinus β⟩
+
 end HiddenMonotonicity

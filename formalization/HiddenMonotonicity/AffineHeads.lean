@@ -171,4 +171,50 @@ theorem Network.affine_canonical_mass {n m} (net : Network n m) (hc : net.Canoni
   · rw [add_comm, coefficientRow_sign_sum]
   · rw [coefficientRow_sign_sum]
 
+/-- The recursive common-mode shift `Network.common` is the same linear map as
+`Network.absCLM`; the two encodings of the product of `W⁺+W⁻` coincide. -/
+theorem Network.common_eq_absCLM {n m} (net : Network n m) (c : Vec n) :
+    net.common c = net.absCLM c := by
+  induction net with
+  | output n => rfl
+  | layer wp wn bp bn tail ih =>
+      simp only [Network.common, Network.absCLM, ContinuousLinearMap.comp_apply]
+      rw [ih]
+      rfl
+
+/-- For the canonical sign split, the common-mode shift is the printed product
+of entrywise absolute weights. -/
+theorem Network.common_eq_absoluteMap {n m} (net : Network n m) (hc : net.Canonical)
+    (c : Vec n) : net.common c = net.absoluteMap c := by
+  rw [net.common_eq_absCLM, net.absCLM_eq_absoluteMap hc]
+
+/-- Readout step of the shift law: a common input shift moves both ungated
+affine heads by `(rp+rn) (net.common c)`. No sign condition on the streams,
+weights or readout rows is needed. -/
+theorem Network.affineHeads_shift {n m} (net : Network n m)
+    (rp rn : Row m) (bp bn : ℝ) (x : PairVec n) (c : Vec n) :
+    net.affineHeads rp rn bp bn (x.1+c, x.2+c) =
+      ((net.affineHeads rp rn bp bn x).1 + (rp+rn) (net.common c),
+       (net.affineHeads rp rn bp bn x).2 + (rp+rn) (net.common c)) := by
+  unfold Network.affineHeads
+  simp only [net.shift, map_add, ContinuousLinearMap.add_apply]
+  apply Prod.ext <;> simp only <;> ring
+
+/-- The same readout shift with the literal absolute-weight product. -/
+theorem Network.affineHeads_shift_absolute {n m} (net : Network n m) (hc : net.Canonical)
+    (rp rn : Row m) (bp bn : ℝ) (x : PairVec n) (c : Vec n) :
+    net.affineHeads rp rn bp bn (x.1+c, x.2+c) =
+      ((net.affineHeads rp rn bp bn x).1 + (rp+rn) (net.absoluteMap c),
+       (net.affineHeads rp rn bp bn x).2 + (rp+rn) (net.absoluteMap c)) := by
+  rw [net.affineHeads_shift, net.common_eq_absoluteMap hc]
+
+/-- A common shift leaves the difference of the two affine heads unchanged. -/
+theorem Network.affineHeads_shift_difference {n m} (net : Network n m)
+    (rp rn : Row m) (bp bn : ℝ) (x : PairVec n) (c : Vec n) :
+    (net.affineHeads rp rn bp bn (x.1+c, x.2+c)).1 -
+      (net.affineHeads rp rn bp bn (x.1+c, x.2+c)).2 =
+    (net.affineHeads rp rn bp bn x).1 - (net.affineHeads rp rn bp bn x).2 := by
+  rw [net.affineHeads_shift]
+  ring
+
 end HiddenMonotonicity

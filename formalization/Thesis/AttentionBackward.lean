@@ -176,7 +176,7 @@ This is the anchor policy/occupation identity on the attention-conditioned map;
 it asserts no derivative through QK or a global game-equilibrium theorem. -/
 theorem thesis_attention_alpha_beta_recovery {T K C D m : ℕ} (A : Matrix (Fin T) (Fin K) ℝ)
     (Wv : Matrix (Fin C) (Fin D) ℝ) (bv : Vec C) (tail : Network (T*C) m)
-    (α β ε : ℝ) (_hα : 0 ≤ α) (_hβ : 0 ≤ β) (_hε : 0 < ε)
+    (α β ε : ℝ) (_hα : 0 ≤ α) (_hβ : 0 ≤ β) (_hε : 0 ≤ ε)
     (_hA : ∀ t k, 0 ≤ A t k) (_hA1 : ∀ t, ∑ k, A t k = 1)
     (x : Vec (K*D)) (R : Vec m) (i : Fin (K*D)) :
     attentionLRP A Wv bv tail α β ε x R i = ∑ j, R j *

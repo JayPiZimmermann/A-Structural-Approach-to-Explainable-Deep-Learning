@@ -1,5 +1,27 @@
 import All
 
+#print axioms HiddenMonotonicity.Network.common_eq_absCLM
+#print axioms HiddenMonotonicity.Network.common_eq_absoluteMap
+#print axioms HiddenMonotonicity.Network.affineHeads_shift
+#print axioms HiddenMonotonicity.Network.affineHeads_shift_absolute
+#print axioms HiddenMonotonicity.Network.affineHeads_shift_difference
+#print axioms HiddenMonotonicity.MaskedTrace.affine_readout_closed_form
+#print axioms HiddenMonotonicity.MaskedTrace.affine_readout_bulk
+#print axioms HiddenMonotonicity.MaskedTrace.affine_readout_invariant
+#print axioms HiddenMonotonicity.Network.affine_closed_form_strict
+#print axioms HiddenMonotonicity.SmoothDC.derivative_limit_atTop
+#print axioms HiddenMonotonicity.SmoothDC.curvatureLiftWidth_eq
+#print axioms HiddenMonotonicity.SmoothDC.normalized_profiles_eq
+#print axioms HiddenMonotonicity.SmoothDC.absolute_curvature_split
+#print axioms Thesis.TrajectoryHellinger.trajectory_hellinger_recursion
+#print axioms Thesis.TrajectoryHellinger.BC_eq_path_overlap
+#print axioms Thesis.TrajectoryHellinger.pixelDisagreement_eq_overlap_recursion
+#print axioms Thesis.TrajectoryHellinger.pixelDisagreement_total_eq
+#print axioms Thesis.TrajectoryHellinger.mass_first_step
+#print axioms Thesis.TrajectoryHellinger.games_path_integral_eq_mass
+#print axioms Thesis.TrajectoryHellinger.games_pathLaw_eq_prefix_pathLaw
+#print axioms Thesis.PolarizedMultiplicative.polarized_expression_dc
+#print axioms HiddenMonotonicity.TransformerDC.Transformer.dc_decomposition_linear_cost
 #print axioms HiddenMonotonicity.affineChunk_recovery
 #print axioms HiddenMonotonicity.affineChunk_nonnegative
 #print axioms HiddenMonotonicity.affineChunk_monotone
