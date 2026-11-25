@@ -27,7 +27,7 @@ Biases can be absorbed by carrying a constant \emph{intercept coordinate} throug
 \varrho_l\!\left(\widehat W^{(l)}\begin{pmatrix}\actl{l-1}\\c_{l-1}\end{pmatrix}\right)
 =\begin{pmatrix}\actl{l}\\c_l\end{pmatrix}.
 \]
-The scaled bias column compensates for the constant's value; the final readout uses $[\Wl{L}\;b^{(L)}/c_{L-1}]$. ReLU permits $t_l=c_l=1$. Only an identically zero hidden activation prevents this choice, in which case the network is constant and can be represented by its output bias alone.
+The scaled bias column compensates for the constant's value; the final readout uses $[\Wl{L}\;b^{(L)}/c_{L-1}]$. ReLU permits $t_l=c_l=1$. Only an identically zero hidden activation prevents this choice, in which case the network is constant and can be represented by an output bias equal to that constant, with zero readout weights.
 \end{remark}
 
 Chapter~\ref{ch:decompositions} splits parameters and inputs by sign using the following notation.
@@ -45,7 +45,7 @@ so that $\Wl{l} = \Wsig{l}{+} - \Wsig{l}{-}$ and $\abs{\Wl{l}} = \Wsig{l}{+} + \
 \end{definition}
 
 \begin{remark}[Pair notation for decomposed activations]\label{rem:pair_notation}
-The activation labels $\act{l}{\sigma}$, $\sigma \in \{+,-\}$, denote the two non-negative \emph{streams} defined in Section~\ref{sec:general_decomposition_def}, distinct from the entrywise parts $\posneg{\actl{l}}{\sigma}$.
+The activation labels $\act{l}{\sigma}$, $\sigma \in \{+,-\}$, denote the two non-negative \emph{split-streams} defined in Section~\ref{sec:general_decomposition_def}, distinct from the entrywise parts $\posneg{\actl{l}}{\sigma}$.
 \end{remark}
 
 \subsection*{Continuous Piecewise Linear Functions}
@@ -127,7 +127,7 @@ Let $q_i$ be the affine formula of $f$ on each full-dimensional cell $Q_i$. Let 
 \[
 g(x)=\sum_{(i,j)\in V}\max\{q_i(x),q_j(x)\},\qquad h(x)=g(x)-f(x).
 \]
-A maximum of affine functions is convex, and sums preserve convexity, so $g$ is convex. Extend each shared facet of the cells $Q_i$ to the hyperplane containing it, and cut all cells along these hyperplanes. On this \emph{common refinement}, $f$ and every summand of $g$ are affine on each smaller cell. Choose a line that crosses the distinct hyperplanes one at a time: it is not parallel to any of them and passes through no point where two meet. At every positive slope jump of $f$, the corresponding summand contributes exactly that jump to $g$; all other summands contribute non-negative jumps. Negative jumps of $f$ become positive jumps of $-f$, and additional cuts contribute only non-negative jumps from $g$. Thus $h$ has non-decreasing slopes along this line. Any line segment can be approximated by segments on such lines; continuity therefore gives convexity on every segment. Both functions are \ac{cpwl} and convex, and together with $f=g-h$, this proves~\eqref{eq:cpwl_dc_representation}.
+A maximum of affine functions is convex, and sums preserve convexity, so $g$ is convex. Extend each shared facet of the cells $Q_i$ to the hyperplane containing it, and cut all cells along these hyperplanes. On this \emph{common refinement}, $f$ and every summand of $g$ are affine on each smaller cell. Choose a line that crosses the distinct hyperplanes one at a time: it is not parallel to any of them and passes through no point where two meet. At every positive slope jump of $f$, the corresponding summand contributes exactly that jump to $g$; all other summands contribute non-negative jumps. Negative jumps of $f$ become positive jumps of $-f$, and additional cuts contribute only non-negative jumps from $g$. Thus $h$ has non-decreasing slopes along this line. Any line segment can be approximated by segments on such lines; continuity therefore gives convexity on every segment. Both functions are \ac{cpwl} and convex, hence maxima of their affine pieces, which support them globally; together with $f=g-h$, this proves~\eqref{eq:cpwl_dc_representation}.
 \end{proof}
 
 Figure~\ref{fig:cpwl_convex_folds} illustrates how convex folds contribute to $g$ and concave folds to $-h$ in one dimension.
@@ -156,7 +156,7 @@ Refine a polyhedral decomposition for $f$ by all hyperplanes where two distinct 
 M_i=\{j\in[m]:q_j(x)\le q_i(x)\text{ for all }x\in P_i\},
 \qquad u_i(x)=\max_{j\in M_i}q_j(x).
 \]
-Each $u_i$ bounds $f$ from above on the entire domain \parencite[Construction~B.2]{Brandenburg2025_DecompositionPolyhedra}. On $P_i$, the included formula $q_i$ attains the maximum, so $u_i=f$ there. Thus, at every point, all $u_i$ lie above $f$ and at least one equals it:
+Each $u_i$ bounds $f$ from above on the entire domain \parencite[Construction~B.2]{Brandenburg2025_DecompositionPolyhedra}. Indeed, fix $y$ in the interior of $P_i$ and suppose $u_i(x)<f(x)$. Let $t$ be the last point of the segment from $y$ to $x$ with $u_i\ge f$, let $q_k$ be the formula of $f$ just after $t$, and let $j\in M_i$ attain $u_i(t)$. Then $k\notin M_i$, since otherwise $u_i\ge q_k=f$ just after $t$; hence $q_k>q_i\ge q_j$ in the interior of $P_i$. The affine function $q_j-q_k$ would thus be negative at $y$, non-negative at $t$ and negative just after $t$, which is impossible. On $P_i$, the included formula $q_i$ attains the maximum, so $u_i=f$ there. Thus, at every point, all $u_i$ lie above $f$ and at least one equals it:
 \[
 f(x)=\min_{i\in[m]}u_i(x).
 \]
@@ -164,7 +164,7 @@ To express this minimum as a difference of convex functions, set
 \[
 g=\sum_{i=1}^m u_i,\qquad h=\max_{i\in[m]}\sum_{k\ne i}u_k.
 \]
-Each $u_i$ is a maximum of affine functions, so $g$ and $h$ are convex \ac{cpwl} functions. Finally, $h=\max_i(g-u_i)=g-\min_i u_i=g-f$, proving the decomposition directly.
+Each $u_i$ is a finite maximum of affine functions, and sums and maxima of such maxima are again finite maxima of affine functions, so $g$ and $h$ have the form~\eqref{eq:cpwl_dc_representation}. Finally, $h=\max_i(g-u_i)=g-\min_i u_i=g-f$, proving the decomposition directly.
 \end{proof}
 
 Figure~\ref{fig:cpwl_local_maxima} illustrates this minimum identity with four convex local maxima.
@@ -225,7 +225,7 @@ where $P+Q=\{u+v:u\in P,\,v\in Q\}$ is the \emph{Minkowski sum}. The support fun
     \qquad b_r=0\ \text{for all }r\ \Longrightarrow\ p=h_{\operatorname{Newt}(p)}.
     \label{eq:lifted_support}
 \end{equation}
-Thus a decomposition $f=g-h$ with convex \ac{cpwl} functions $g,h$ is represented by two lifted polytopes $P_g=\widehat{\operatorname{Newt}}(g)$ and $P_h=\widehat{\operatorname{Newt}}(h)$:
+Thus a decomposition $f=g-h$ with convex \ac{cpwl} functions $g,h$ is represented by the lifted polytopes $P_g=\widehat{\operatorname{Newt}}(g)$ and $P_h=\widehat{\operatorname{Newt}}(h)$ of any max-affine representations of $g$ and $h$:
 \begin{equation}
     f(x)=h_{P_g}(x,1)-h_{P_h}(x,1).
     \label{eq:dc_polytope_representation}
@@ -233,7 +233,7 @@ Thus a decomposition $f=g-h$ with convex \ac{cpwl} functions $g,h$ is represente
 \end{proposition}
 
 \begin{proof}
-A linear functional has the same maximum over a finite set and its convex hull, proving~\eqref{eq:lifted_support}. Adding affine maxima takes all pairwise sums of their affine pieces; taking their maximum collects the pieces. Their slope hulls therefore satisfy~\eqref{eq:newton_calculus}. Apply the support identity to the convex functions $g,h$ in~\eqref{eq:cpwl_dc_representation}.
+A linear functional has the same maximum over a finite set and its convex hull, proving~\eqref{eq:lifted_support}. Adding affine maxima takes all pairwise sums of their affine pieces; taking their maximum collects the pieces. Since $\operatorname{conv}(A+B)=\operatorname{conv}A+\operatorname{conv}B$ for finite sets $A,B$, their slope hulls satisfy~\eqref{eq:newton_calculus}. Apply the support identity to the convex functions $g,h$ in~\eqref{eq:cpwl_dc_representation}.
 \end{proof}
 
 \section{Convexity and Monotonicity in Neural Networks}\label{sec:convex_monotone_foundations}
@@ -294,7 +294,7 @@ A \emph{rank-$k$ Maxout network} is a layered network whose neurons are rank-$k$
 \end{definition}
 
 \begin{remark}\label{rem:maxout_role}
-Maxout networks are the natural piecewise-linear generalization of \ac{relu}: a rank-$k$ unit expresses a maximum of $k$ affine functions in one neuron, matching the building blocks of the DC representation \eqref{eq:cpwl_dc_representation}. The DC decomposition of Chapter~\ref{ch:decompositions} is developed for \ac{relu} networks and extended to maxima over several inputs using the exchange identity $\max_{j \in [k]}(u_j - v_j) = \max_{j \in [k]}\bigl\{ u_j + \sum_{i \ne j} v_i \bigr\} - \sum_{i \in [k]} v_i$ for pairs of non-negative streams (Proposition~\ref{prop:maxpool_correct}); Chapter~\ref{ch:transformers} adds the multiplicative interactions needed for attention.
+Maxout networks are the natural piecewise-linear generalization of \ac{relu}: a rank-$k$ unit expresses a maximum of $k$ affine functions in one neuron, matching the building blocks of the DC representation \eqref{eq:cpwl_dc_representation}. The DC decomposition of Chapter~\ref{ch:decompositions} is developed for \ac{relu} networks and extended to maxima over several inputs using the exchange identity $\max_{j \in [k]}(u_j - v_j) = \max_{j \in [k]}\bigl\{ u_j + \sum_{i \ne j} v_i \bigr\} - \sum_{i \in [k]} v_i$ for pairs of non-negative split-streams (Proposition~\ref{prop:maxpool_correct}); Chapter~\ref{ch:transformers} adds the multiplicative interactions needed for attention.
 \end{remark}
 
 \section{Game Theory and Markov Decision Processes}\label{sec:game_theory_mdp_foundations}
@@ -326,7 +326,7 @@ The first is a linear system; the second is the \emph{Bellman optimality equatio
 \end{proposition}
 
 \begin{proof}
-Both right-hand sides are $\gamma$-contractions in $\norm{\cdot}_\infty$, hence have unique fixed points. Conditioning \eqref{eq:mdp_value} on the first transition identifies them as $V^{\pi}$ and $V^{\star}$; a policy greedy for $V^{\star}$ attains its value \parencite{Puterman1994mdp,SuttonBarto2018rl}. Acyclic games instead admit backward induction (Remark~\ref{rem:structural_discount}).
+Both right-hand sides, $T^{\pi}V$ and $TV$, are monotone $\gamma$-contractions in $\norm{\cdot}_\infty$, hence have unique fixed points. Conditioning \eqref{eq:mdp_value} on the first transition gives $V^{\pi}=T^{\pi}V^{\pi}\le T^{\pi}V^{\star}\le TV^{\star}$, so $V^{\star}\le TV^{\star}$. For a policy $\polstar$ greedy for $V^{\star}$, $TV^{\star}=T^{\polstar}V^{\star}$, and iterating gives $V^{\star}\le(T^{\polstar})^nV^{\star}\to V^{\polstar}\le V^{\star}$. Hence $V^{\polstar}=V^{\star}=TV^{\star}$ \parencite{Puterman1994mdp,SuttonBarto2018rl}. Acyclic games instead admit backward induction (Remark~\ref{rem:structural_discount}).
 \end{proof}
 
 \begin{remark}[State-dependent structural discounts]\label{rem:structural_discount}
@@ -340,14 +340,14 @@ restores the mass after normalizing row $i$ of $\abs{\Wl{l}}$ into transition pr
 
 \subsection*{Zero-Sum Turn-Based Games}
 
-Two-player games enter because a decomposed network carries two interacting streams: a player $P^{+}$ who collects positive evidence and a player $P^{-}$ who collects negative evidence. We use the following conventions throughout: $p, q, r \in \{+, -\}$ denote player, turn, or sign labels; $\opp{p}$ denotes the opponent ($\opp{+} = -$, $\opp{-} = +$); the \emph{sign-XOR} $p \oplus q$ is $+$ if $p = q$ and $-$ otherwise; and $\xi_{p} \in \{+1, -1\}$ is the numerical sign of the label $p$, so that $\xi_{p}\, \xi_{q} = \xi_{p \oplus q}$.
+Two-player games enter because a decomposed network carries two interacting split-streams: a player $P^{+}$ who collects positive evidence and a player $P^{-}$ who collects negative evidence. We use the following conventions throughout: $p, q, r \in \{+, -\}$ denote player, turn, or sign labels; $\opp{p}$ denotes the opponent ($\opp{+} = -$, $\opp{-} = +$); the \emph{sign-XOR} $p \oplus q$ is $+$ if $p = q$ and $-$ otherwise; and $\xi_{p} \in \{+1, -1\}$ is the numerical sign of the label $p$, so that $\xi_{p}\, \xi_{q} = \xi_{p \oplus q}$.
 
 \begin{definition}[Zero-sum turn-based game]\label{def:turn_based_game}
-A (finite) \emph{zero-sum turn-based game} is a tuple $\mathcal{G} = (S_{+}, S_{-}, S_{\mathrm{ter}}, A, \P, R, \gamma)$ where the state set $S = S_{+} \uplus S_{-} \uplus S_{\mathrm{ter}}$ is partitioned into states controlled by player $P^{+}$, states controlled by player $P^{-}$, and terminal states; the action sets $A(s)$, the transition kernel $\P$, and the reward $R$ are as in Definition~\ref{def:mdp} on non-terminal states; $\gamma \colon S \to \RR_{\ge 0}$ is a (possibly state-dependent) discount; and each terminal state $s \in S_{\mathrm{ter}}$ carries a fixed one-time payoff $R(s)$. A \emph{policy pair} $\pi = (\pi_{+}, \pi_{-})$ consists of a policy $\pi_{p}$ for player $P^{p}$ on $S_{p}$. Play generates a trajectory as in an \ac{mdp}, with the player in turn choosing the action; the expected total payoff $V^{\pi}(s)$, defined as in \eqref{eq:mdp_value} with the discount accumulated multiplicatively along the trajectory ($\gamma^t$ replaced by $\prod_{m=0}^{t-1}\gamma(s_m)$), is paid \emph{by $P^{-}$ to $P^{+}$}: player $P^{+}$ maximizes $V^{\pi}$ and player $P^{-}$ minimizes it.
+A (finite) \emph{zero-sum turn-based game} is a tuple $\mathcal{G} = (S_{+}, S_{-}, S_{\mathrm{ter}}, A, \P, R, \gamma)$ where the state set $S = S_{+} \uplus S_{-} \uplus S_{\mathrm{ter}}$ is partitioned into states controlled by player $P^{+}$, states controlled by player $P^{-}$, and terminal states; the action sets $A(s)$, the transition kernel $\P$, and the reward $R$ are as in Definition~\ref{def:mdp} on non-terminal states; $\gamma \colon S \to \RR_{\ge 0}$ is a (possibly state-dependent) discount; and each terminal state $s \in S_{\mathrm{ter}}$ carries a fixed one-time payoff $R(s)$. A \emph{policy pair} $\pi = (\pi_{+}, \pi_{-})$ consists of a policy $\pi_{p}$ for player $P^{p}$ on $S_{p}$. Play generates a trajectory as in an \ac{mdp}, with the player in turn choosing the action. On an acyclic transition graph, it reaches a terminal state $s_T$ after finitely many steps, and the expected total payoff $V^{\pi}(s)$, defined as in \eqref{eq:mdp_value} with the discount accumulated multiplicatively along the trajectory ($\gamma^t$ replaced by $\prod_{m=0}^{t-1}\gamma(s_m)$) and the terminal payoff $R(s_T)$ discounted in the same way, is paid \emph{by $P^{-}$ to $P^{+}$}: player $P^{+}$ maximizes $V^{\pi}$ and player $P^{-}$ minimizes it.
 \end{definition}
 
 \begin{theoremenv}[Shapley--Bellman optimality on layered games, \LeanResult{thm:shapley_bellman}]\label{thm:shapley_bellman}
-Let $\mathcal{G}$ be a finite zero-sum turn-based game with acyclic transition graph. Use $Q_V$ from Proposition~\ref{prop:bellman}, replacing $\gamma$ by $\gamma(s)\ge0$. Its unique \emph{value} $V^{\star}:S\to\RR$ satisfies the \emph{Shapley--Bellman equations}
+Let $\mathcal{G}$ be a finite zero-sum turn-based game with acyclic transition graph. Use $Q_V$ from Proposition~\ref{prop:bellman}, replacing $\gamma$ by $\gamma(s)\ge0$. There is a unique $V^{\star}:S\to\RR$ satisfying the \emph{Shapley--Bellman equations}
 \begin{equation}
 V^{\star}(s)=
 \begin{cases}
@@ -357,12 +357,12 @@ R(s),&s\in S_{\mathrm{ter}}.
 \end{cases}
 \label{eq:shapley_bellman}
 \end{equation}
-and there exist pure stationary policies $\polstar = (\polstar_{+}, \polstar_{-})$, obtained by selecting maximizing respectively minimizing actions in \eqref{eq:shapley_bellman}, such that for all $s \in S$ and all policies $\pi_{+}, \pi_{-}$,
+and there exist pure stationary policies $\polstar = (\polstar_{+}, \polstar_{-})$, obtained by selecting maximizing respectively minimizing actions in \eqref{eq:shapley_bellman}, such that for all $s \in S$ and all stationary policies $\pi_{+}, \pi_{-}$,
 \begin{equation}
 	V^{(\polstar_{+}, \pi_{-})}(s) \;\ge\; V^{\polstar}(s) = V^{\star}(s) \;\ge\; V^{(\pi_{+}, \polstar_{-})}(s).
 	\label{eq:saddle_point}
 \end{equation}
-In particular, $\polstar$ is a Nash equilibrium of every subgame, i.e.\ a subgame perfect equilibrium.\end{theoremenv}
+In particular, $V^{\star}=\max_{\pi_+}\min_{\pi_-}V^{\pi}=\min_{\pi_-}\max_{\pi_+}V^{\pi}$ is the \emph{value} of the game, and $\polstar$ is a Nash equilibrium of every subgame, i.e.\ a subgame perfect equilibrium.\end{theoremenv}
 
 \begin{proof}
 Backward induction on the finite acyclic graph starts from $V^{\star}(s)=R(s)$ at terminal states. At each remaining state, the known successor values determine $Q_{V^{\star}}$; its finite nonempty action set has an attained maximum or minimum, uniquely determining the value and a pure optimal choice.
@@ -383,9 +383,9 @@ Read the identity $\actl{l}_i = \max\bigl\{0,\, \preactl{l}_i\bigr\}$ as a decis
 \begin{definition}[ReLU Net Game, following \cite{Gaubert2025}]\label{def:relu_net_game}
 The \emph{ReLU Net Game} on the network $f$ at input $x$ is the zero-sum turn-based game with the following components.
 \begin{itemize}
-	\item \textbf{States.} Each hidden neuron $i\in[d^{(l)}]$, $l\in[L-1]$, has activation states $s^{(l)}_{i,q}$ controlled by $P^q$, $q\in\{+,-\}$. The affine output state $s^{(L)}$ is assigned to $P^+$ with no choice of action. Terminal states are $s^{(0)}_{k,q}$ for $k\in[d^{(0)}]$, $q\in\{+,-\}$, and a zero-payoff \emph{cemetery} $\perp$; play ends upon reaching any terminal state.
+	\item \textbf{States.} Each hidden neuron $i\in[d^{(l)}]$, $l\in[L-1]$, has activation states $s^{(l)}_{i,q}$ controlled by $P^q$, $q\in\{+,-\}$. The affine output state $s^{(L)}$ is assigned to $P^+$ with no choice of action. Terminal states are $s^{(0)}_{k,q}$ for $k\in[d^{(0)}]$, $q\in\{+,-\}$, and a zero-payoff \emph{cemetery} $\dagger$; play ends upon reaching any terminal state.
 	\item \textbf{Actions.} At every activation state the player in turn chooses an action from $\{\mathrm{stop}, \mathrm{cont}\}$. The output state has the single action $\mathrm{cont}$.
-	\item \textbf{Transitions.} Stopping moves deterministically to the cemetery, $\P(\perp \mid s^{(l)}_{i,q}, \mathrm{stop}) = 1$. Continuation at $s^{(l)}_{i,q}$ moves one layer backward, to neuron $j$ of layer $l-1$ with probability proportional to the absolute weight, keeping the turn on positive weights and passing it to the opponent on negative weights:
+	\item \textbf{Transitions.} Stopping moves deterministically to the cemetery, $\P(\dagger \mid s^{(l)}_{i,q}, \mathrm{stop}) = 1$. Continuation at $s^{(l)}_{i,q}$ moves one layer backward, to neuron $j$ of layer $l-1$ with probability proportional to the absolute weight, keeping the turn on positive weights and passing it to the opponent on negative weights:
 	\begin{equation}
 		\P\bigl( s^{(l-1)}_{j,r} \,\big|\, s^{(l)}_{i,q}, \mathrm{cont} \bigr)
 		\coloneqq \frac{\Wsig{l}{q \oplus r}_{ij}}{\gamma^{(l)}_i},
@@ -427,7 +427,7 @@ Q_{V^{\star}}\bigl(s^{(l)}_{i,q},\mathrm{cont}\bigr)
 =\xi_q\preactl{l}_i,
 \label{eq:rng_cont_value}
 \end{equation}
-since $\sum_r\xi_r\Wsig{l}{q\oplus r}_{ij}=\xi_q\Wl{l}_{ij}$. Stopping yields zero. At $q=+$, maximizing gives the value $\max\{0,\preactl{l}_i\}=\actl{l}_i$; at $q=-$, minimizing gives $\min\{0,-\preactl{l}_i\}=-\actl{l}_i$, both measured as payoffs to $P^+$. Both continue precisely for positive pre-activation, with either action optimal at zero and our convention choosing stop. This proves the value and uniqueness up to ties by Theorem~\ref{thm:shapley_bellman}. Forced continuation at the affine output gives $V^{\star}(s^{(L)})=\preactl{L}=f(x)$ by the same calculation with $l=L$, $q=+$.
+since $\sum_r\xi_r\Wsig{l}{q\oplus r}_{ij}=\xi_q\Wl{l}_{ij}$. Stopping yields zero. At $q=+$, maximizing gives the value $\max\{0,\preactl{l}_i\}=\actl{l}_i$; at $q=-$, minimizing gives $\min\{0,-\preactl{l}_i\}=-\actl{l}_i$, both measured as payoffs to $P^+$. Both continue precisely for positive pre-activation, with either action optimal at zero and our convention choosing stop. This proves the value by Theorem~\ref{thm:shapley_bellman}. For uniqueness, every subgame perfect equilibrium is a Nash equilibrium of every subgame, and by~\eqref{eq:saddle_point} every Nash equilibrium of a zero-sum subgame pays its value. The continuation values are therefore those of~\eqref{eq:rng_value_identity}, so at $\preactl{l}_i\neq0$ only the action of~\eqref{eq:rng_equilibrium_policy} is optimal, also among mixed actions. Forced continuation at the affine output gives $V^{\star}(s^{(L)})=\preactl{L}=f(x)$ by the same calculation with $l=L$, $q=+$.
 \end{proof}
 
 \begin{remark}[Softplus networks from entropy regularization]\label{rem:softplus_game}
@@ -443,7 +443,7 @@ with the Gibbs distribution $\nu^{\star}_i \propto e^{r_i/\theta}$ as unique max
 \end{remark}
 
 \begin{remark}[What Chapter~\ref{ch:game_theory} inherits and what it changes]\label{rem:inherited_vs_new}
-The \ac{sg} retains the per-neuron states of Definition~\ref{def:relu_net_game} indexed by $\sigma\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Chapter~\ref{ch:game_theory} adds \emph{non-negative player payoffs}: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition streams (Section~\ref{sec:stopping_decomposition}), whose difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, risk aversion, and regularized policies, absent from the original game.
+The \ac{sg} retains the per-neuron states of Definition~\ref{def:relu_net_game} indexed by $\sigma\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Chapter~\ref{ch:game_theory} adds \emph{non-negative player payoffs}: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition split-streams (Section~\ref{sec:stopping_decomposition}), whose difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, and risk aversion, absent from the original game.
 \end{remark}
 
 \section{Probability Distances and Layered Markov Processes}\label{sec:probabilistic_foundations}\label{ptnb:app:path-divergence}
@@ -572,10 +572,10 @@ Moreover, $g^{(l)}(s)$ equals the sum of $\sqrt{\Pi_A^{(l)}(\zeta)\Pi_B^{(l)}(\z
 Expanding the recursion for $g^{(l)}(s)$ gives the sum of products of geometric-mean transition probabilities over prefixes ending at $s$. After summing out lower layers in~\eqref{ptnb:eq:path-measure}, each summand is $\sqrt{\Pi_A^{(l)}(\zeta)\Pi_B^{(l)}(\zeta)}$. Summing over $s$ proves~\eqref{ptnb:eq:bc-chain-rule}. Since both prefix laws have total mass one, expanding the square in the Hellinger definition gives $\bigl(\mathrm H^{(l)}\bigr)^2=1-\mathrm{BC}^{(l)}$. Setting $l=0$ proves the full-path identity~\eqref{eq:trajectory_hellinger_recursion}.
 
 The non-negative propagated masses and $\widetilde R^{(l)}(s)\le1$ give
-\[
+\begin{equation}\label{ptnb:eq:h2-increment}
  \bigl(\mathrm H^{(l-1)}\bigr)^2-\bigl(\mathrm H^{(l)}\bigr)^2
  =\sum_sg^{(l)}(s)\bigl(1-\widetilde R^{(l)}(s)\bigr)\ge0.
-\]
+\end{equation}
 This proves monotonicity; the shared start gives $\mathrm{BC}^{(L)}=1$. Each step visits the current states and their outgoing edges once, proving the runtime bound.
 \end{proof}
 
@@ -664,7 +664,7 @@ For $M\in\{A,B\}$, $0\le l\le L$, and $s\in\mathcal S_+^{(l)}$, define the remai
 \end{align}
 The cemetery has $\psi_M^{(l)}(\dagger)=0$ at every layer, so its term may be included in the recursion without effect.
 
-On ordinary states with $\psi_M^{(l)}(s)>0$, the Doob kernel is row-stochastic; complete zero-survival rows arbitrarily as probability distributions, since the conditioned process never reaches them. Its path law is $\Pi_{M,\mathrm{surv}}$, and its ordinary-state marginals satisfy
+On ordinary states with $\psi_M^{(l)}(s)>0$, the Doob kernel is row-stochastic; complete zero-survival rows arbitrarily as probability distributions, with $\dagger\to\dagger$ for the cemetery, since the conditioned process never reaches them and the conditioned overlap vanishes wherever either survival probability does. Its path law is $\Pi_{M,\mathrm{surv}}$, and its ordinary-state marginals satisfy
 \begin{align}
  T_{M,\mathrm{surv}}^{(l)}(s\to s')
  &=\frac{T_M^{(l)}(s\to s')\psi_M^{(l-1)}(s')}{\psi_M^{(l)}(s)},

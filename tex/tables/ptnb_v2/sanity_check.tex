@@ -1,11 +1,12 @@
 \begin{table}[tbp]
 \centering
-\scriptsize
+\small
 \caption[Parameter randomization sanity check]{Parameter randomization sanity check adapted from~\textcite{Adebayo2018sanity}. Each cell reports the average similarity between the attribution of the original pretrained model and the attribution of a copy randomized over the tested convolutional and linear layers (every convolutional and linear layer re-initialized, including the decomposed attention query/key/value projections; normalization layers and the ViT embeddings stay pretrained). Values near zero indicate low map similarity under this parameter intervention; the Spearman correlation is signed, so negative values occur. Bold marks the value closest to zero per metric within each architecture, among maps that are not constant; $^{\ddagger}$: the map is constant at the cascade endpoint (similarity $0$ by convention). Rows: the reported configuration of every method (Section~\ref{ptnb:sec:experiments}).}
 \label{tab:sanity-check}
 \TableContent{
-\input{tables/ptnb_v2/generated/sanity_check_tabular}
+\setlength{\tabcolsep}{4pt}%
+\input{tables/ptnb_v2/sanity_check_blocks}
 \par\smallskip
-{\footnotesize Spear.\ $\rho(|a|)$ = Spearman rank correlation of absolute attribution values; HOG $r$ = Pearson correlation of HOG descriptors. RG anchor = the $\alpha\beta$-\ac{lrp} representation ($\tau{=}1$, $\varepsilon{=}0.5$); the second \ac{rg} row and the \ac{sg} row are the localization-selected configurations and list the modes that differ ($\tau$ = temperature; $\lambda$, $\lambda_{\mathrm{sm}}$ = risk aversion; $\sigma^2$ = \ac{ptnbADF} input variance; $\varepsilon$ = \ac{lrp} stabilizer; $\tilde\Phi$ = noisy-observation gate). DAVE$^{*}$ and SG$^{\mathrm{pp}}$ mark the implementation variants of Section~\ref{ptnb:app:config-symbols}.}
+{$\rho(|a|)$ = Spearman rank correlation of absolute attribution values; HOG $r$ = Pearson correlation of HOG descriptors. RG anchor = the $\alpha\beta$-\ac{lrp} representation ($\tau{=}1$, $\varepsilon{=}0.5$). RG (loc) and SG$^{\mathrm{pp}}$ (loc) are the localization-selected configurations: SG$^{\mathrm{pp}}$ with $\lambda{=}{-}1$, $\sigma^2{=}5$ and the noisy-observation gate $\tilde\Phi$ on VGG-16; RG with $\tau{=}0.3$, $\varepsilon{=}0.1$ on VGG-16, with $\tau{=}0.9$, $\varepsilon{=}1$ on ResNet-50, and with $\tau{=}0.4$, $\lambda_{\mathrm{sm}}{=}{-}10$, $\sigma^2{=}5$, $\varepsilon{=}0.1$ on ViT-B/16 ($\tau$ = temperature; $\lambda$, $\lambda_{\mathrm{sm}}$ = risk aversion; $\sigma^2$ = \ac{ptnbADF} input variance; $\varepsilon$ = \ac{lrp} stabilizer). DAVE$^{*}$ and SG$^{\mathrm{pp}}$ mark the implementation variants of Section~\ref{ptnb:app:config-symbols}.}
 }%
 \end{table}

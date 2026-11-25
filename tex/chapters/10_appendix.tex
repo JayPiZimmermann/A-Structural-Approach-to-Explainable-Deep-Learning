@@ -1,11 +1,7 @@
 \appendix
 \chapter{Experimental Protocol and Reproducibility}\label{app:extended_results}
 
-This appendix specifies the evaluation and reproduction protocols. Appendix~\ref{app:supp_experiments} contains the complete results, validation selections, ablations and qualitative examples.
-
-\section{Split-Method Evaluation}\label{app:hm_artifact_scope}
-
-The split-method results and their evaluation protocol in this appendix are from \emph{Hidden Monotonicity}~\parencite{hiddenMono}. The paper evaluates pretrained VGG-16 and ResNet-18 models on ImageNet-S50, using a 50-image validation subset and a 566-image test subset. Attributions target each model's predicted class, including on misclassified images, and localization uses the annotated object masks. The thesis's separate game-method evaluation protocol is specified below.
+This appendix specifies the evaluation protocol and the implementation details of the game-method campaign and the scope of the Lean formalization; the split-method protocol is given in Section~\ref{sec:experimental_setup}, and its metric settings in Section~\ref{ptnb:app:metrics}. Appendix~\ref{app:supp_experiments} contains the complete results and ablations.
 
 \section{Evaluation Protocol}\label{ptnb:app:protocol}
 
@@ -18,9 +14,9 @@ image per class forms the \textbf{50-image validation split}, used only for conf
 selection; the remaining $566$ form the test pool. Images whose object mask lies entirely outside
 the $224{\times}224$ center crop are excluded after the split, because the mask-based metrics are
 undefined for them. This removes one test image and leaves \textbf{565 test images}. The
-explanation target is the dataset class, including when the model misclassifies the image. This
-population and target convention belong to the game-method protocol and need not coincide with
-the split-method campaign. The Pascal VOC 2012 transfer split is described in
+explanation target is the dataset class, including when the model misclassifies the image. Maps
+explain the raw logit of this class (no softmax), except that LIME and KernelSHAP fit their surrogates
+to the softmax probability and Attention Rollout does not depend on the class. The Pascal VOC 2012 transfer split is described in
 Section~\ref{ptnb:app:voc-cross-data}.
 
 \subsection{Metric Definitions}\label{ptnb:app:metrics}\label{app:metrics}
@@ -30,26 +26,30 @@ Let $x \in \RR^{C \times H \times W}$ be an image, let $y$ be its target class, 
 reduction. Write $d \coloneqq HW$ and let $\text{vec}(a) \in \RR^d$ denote the flattened map. For
 any binary segmentation mask $m \in \{0,1\}^{H \times W}$, write $\text{vec}(m) \in \{0,1\}^d$.
 When a metric is configured with \texttt{abs=true} and \texttt{normalise=true}, the evaluator
-applies the max-abs normalization (not min--max)
+takes absolute values and applies max-abs normalization (not min--max). Quantus~0.6.0 takes the
+maximum over the whole evaluation batch, which holds up to 50 maps, rather than over each map.
+AL, PG, TK, PF and Sel depend on a map only through ratios or the ordering of its entries, and MaxS
+and AvgS are evaluated one image per batch, so every metric takes the same value as under the
+per-map normalization
 \begin{align}
     \psi(a) = \frac{|\text{vec}(a)|}{\max_i |\text{vec}(a)_i|},
 \end{align}
-with the convention that the all-zero map remains zero. We denote the preprocessed attribution
-vector by $\bar{a}$. All metrics below use $\bar{a}$; faithfulness metrics use raw logits (no
-softmax) to avoid saturation effects, and perturbations use the Quantus per-sample mean replacement
-baseline.
+with the convention that the all-zero map remains zero; for AL this holds up to its stabilizer
+$10^{-9}$. We denote the preprocessed attribution vector $\psi(a)$ by $\bar{a}$. All metrics below
+use $\bar{a}$. Pixel Flipping and Selectivity read the raw logit of the target class (no softmax),
+since saturation of the softmax would compress score differences.
 
 \paragraph{Attribution Localization (AL).} We adapt the positive-relevance ratio of \textcite{Kohlbrenner2020} within ground-truth boxes to absolute mass, pixel masks, and a stabilized denominator:
 \begin{align}
     \text{AL}(a, m) = \frac{\sum_{i=1}^d \bar{a}_i m_i}{\sum_{i=1}^d \bar{a}_i + 10^{-9}}.
 \end{align}
 
-\paragraph{Pointing Game (PG).} We use the pointing-game criterion of~\textcite{Zhang2018pointinggame}; our configuration applies \texttt{abs=true} without normalization. Let $M(a) \coloneqq \{i \in \{1, \dots, d\} :
+\paragraph{Pointing Game (PG).} We use the Quantus implementation (version 0.6.0) of the pointing-game criterion of~\textcite{Zhang2018pointinggame}, with \texttt{abs=true} and the default max-abs normalization, which leaves the maximizers unchanged. Let $M(a) \coloneqq \{i \in \{1, \dots, d\} :
     \bar{a}_i = \max_j \bar{a}_j\}$ contain all maximizers. Then
 \begin{align}
     \text{PG}(a, m) = \1\bigl\{M(a) \cap \{i : m_i = 1\} \neq \varnothing\bigr\}.
 \end{align}
-Ties are scored as a hit whenever at least one maximizer lies inside the object mask. PG is binary per image--class record; its ImageNet-S test mean is a multiple of $1/565$.
+Ties are scored as a hit whenever at least one maximizer lies inside the object mask. A constant map, for which every pixel is a maximizer, therefore scores a hit on every image. Quantus raises no warning for this case: its input check is applied to an evaluation batch of up to 50 maps, not to each map, so a single constant map passes it. Our evaluation records for every image whether its map is all zero. Selection admits only configurations whose maps are non-zero on every validation image (Section~\ref{ptnb:app:selection}), and none of the reported game-campaign rows has an all-zero map on a test image. PG is binary per image--class record; its ImageNet-S test mean is a multiple of $1/565$.
 
 \paragraph{Top-$k$ Intersection (TK).} Following~\textcite{Theiner2021}, with $k = 1000$ and the permutation $\pi$ that sorts
 $\bar{a}$ in descending order:
@@ -83,9 +83,12 @@ Following~\textcite{Montavon2018} and its Quantus implementation~\parencite{Heds
 \paragraph{Max and average sensitivity (MaxS, AvgS).} Following the max-sensitivity of~\textcite{Yeh2019} and its mean analogue, regenerate attributions for both metrics on the same $N_s = 50$ inputs $x + \xi_k$, with uniform noise $\xi_k \sim \mathcal{U}[-r, r]^{C \times H
     \times W}$, $r = 0.2$. Report the maximum (MaxS) or mean (AvgS) over $k$ of $\|\psi(a(x+\xi_k)) - \psi(a(x))\|_F / \|\psi(a(x))\|_F$; lower values indicate greater stability to input noise. The noise is seeded per image, so every row sees the same perturbed inputs. MaxS and AvgS are computed on a fixed random subset of 200 test images (seed 0) that is identical for all rows and models; all other metrics use the full test split.
 
+\paragraph{Settings of the two campaigns.}
+The settings above are those of the game campaign: Pixel Flipping perturbs $1{,}568$ scalar features per step, and the sensitivity metrics use 50 perturbations per image on the 200-image subset. The split campaign reports Pixel Flipping as score-drop AUC (PF$^{\mathrm{drop}}_5$, PF$^{\mathrm{drop}}_{20}$; higher is better), perturbing 112 scalar input features per step, and Maximum Sensitivity with 25 random perturbations per image. Both Pixel-Flipping implementations broadcast the spatial attribution over the color channels and index the flattened $C\times H\times W$ input, $150{,}528$ features for RGB images at this resolution. The game campaign configures every metric with \texttt{abs=true}, so the maps of the game methods and of the baselines always enter the metrics as absolute values. The split campaign configures AL and PG with \texttt{abs=false}: rows with \emph{Abs} = y take absolute values before the evaluation, and all other rows evaluate the signed map, divided by its maximum absolute value. For a signed map, positive and negative values cancel in both sums of AL. Quantus assigns no score to an image whose AL ratio exceeds $1$ and keeps negative ratios, so the AL mean of a signed row covers only the images with ratio at most $1$ and can be negative. PG of a signed map takes the maximizers of the signed values, that is, the most positive pixels. The split campaign passes one map per Quantus call, so the input check applies to each map: a constant map, or a signed map that is negative everywhere, is rejected with an error and receives no score.
+
 \subsection{Selection}\label{ptnb:app:selection}
 
-For every tunable method, baselines and ours alike, two configurations are selected on the validation split: \texttt{loc} minimizes rank-sum over $\{\text{AL}, \text{PG}, \text{TK}\}$, and \texttt{faith} over $\{\text{PF}_5, \text{PF}_{20}, \text{Sel}\}$. Ranks are computed within each method's grid, respecting metric directions; ties are broken in favor of the default (for \ac{rg}, the anchor), then of fewer non-default parameters, then of grid order. Admission requires non-zero maps and defined metrics on every validation image. Before ranking, we exclude 5 of the 40 VGG-16 \ac{sg} configurations, all with strong risk aversion and deterministic gates, whose maps vanish on some images; all others qualify. MaxS and AvgS are excluded from selection because each evaluation re-explains every image $2N_s$ times. The main discussion uses \texttt{loc}; Section~\ref{ptnb:app:results} reports both selections. Localization suits modes controlling routing focus, has external mask ground truth, and has precedent for comparing \ac{lrp} rules using bounding boxes~\parencite{Kohlbrenner2020}. Perturbation metrics evaluate off-distribution inputs. Reporting both selections preserves the distinction and trade-off between localization and faithfulness.
+For every tunable method, baselines and ours alike, two configurations are selected on the validation split: \texttt{loc} minimizes rank-sum over $\{\text{AL}, \text{PG}, \text{TK}\}$, and \texttt{faith} over $\{\text{PF}_5, \text{PF}_{20}, \text{Sel}\}$. Ranks are computed within each method's grid, respecting metric directions; ties are broken in favor of the default (for \ac{rg}, the anchor), then of fewer non-default parameters, then of grid order. Admission requires non-zero maps and defined metrics on every validation image. Before ranking, we exclude 5 of the 40 VGG-16 \ac{sg} configurations, all with strong risk aversion and deterministic gates, whose maps vanish on some images; all others qualify. MaxS and AvgS are excluded from selection because each evaluation re-explains every image $2N_s$ times. The main discussion uses \texttt{loc}; Section~\ref{ptnb:app:results} reports both selections. Localization suits modes controlling routing focus, has external mask ground truth, and has precedent for comparing \ac{lrp} rules using bounding boxes~\parencite{Kohlbrenner2020}. Perturbation metrics evaluate off-distribution inputs.
 
 \subsection{Statistics}\label{ptnb:app:stats}
 
@@ -121,49 +124,31 @@ practical equivalence. These intervals and tests condition on the fixed checkpoi
 configurations and realized attribution evaluations; they do not quantify training or
 configuration-selection variability.
 
+\subsection{Settings of the Additional Controls}\label{app:control-settings}
+
+The controls of Sections~\ref{sec:additional-controls} and~\ref{ptnb:sec:per-image-orthogonality} use the following settings. \emph{Sharpening:} the intervals are percentile intervals from $10{,}000$ bootstrap resamples paired by image. \emph{Full deletion and insertion curves:} the score is evaluated at 101 cumulative fractions including both endpoints. \emph{Risk controls:} both use 50 input perturbations per image and paired image-bootstrap intervals from $10{,}000$ resamples; the VGG-16 anchor has $\tau=1$, $\varepsilon=0.5$ and $\sigma^2=2$, and its validation sweep covers $\lambda\in\{0,-0.3,-1,-2,-5\}$; the noise panel crosses uniform and Gaussian noise at the scales $r\in\{0.05,0.1,0.2\}$ with the perturbation counts $\{10,25,50,100,200\}$. \emph{Matched-model control:} the intervals of the per-image association use $2{,}000$ bootstrap resamples of the images. \emph{Graded perturbations:} the draw $\xi$ of a tensor is seeded from the seed 42 and the name of the parameter, and the intervals use $10{,}000$ bootstrap resamples of the images. \emph{Survival conditioning:} in the released scripts, the default batch size is four in the Hellinger cascade and two in the input-noise experiments and their reference baselines; the double-random reference evaluates one comparison at a time.
+
 \section{Implementation and Evaluation Details}\label{app:extended_protocol}
 
 \paragraph{Backbone and dataset provenance.}
 All game-based experiments use the pretrained checkpoints shipped with the evaluation release of torchvision: VGG-16 uses \path{VGG16_Weights.IMAGENET1K_V1}
-(\url{https://download.pytorch.org/models/vgg16-397923af.pth}; recipe
-\url{https://github.com/pytorch/vision/tree/main/references/classification#alexnet-and-vgg}),
+(\url{https://download.pytorch.org/models/vgg16-397923af.pth}),
 ResNet-50 uses \path{ResNet50_Weights.IMAGENET1K_V2}
-(\url{https://download.pytorch.org/models/resnet50-11ad3fa6.pth}; recipe
-\url{https://github.com/pytorch/vision/issues/3995#issuecomment-1013906621}), and ViT-B/16 uses
+(\url{https://download.pytorch.org/models/resnet50-11ad3fa6.pth}), and ViT-B/16 uses
 \path{ViT_B_16_Weights.IMAGENET1K_V1}
-(\url{https://download.pytorch.org/models/vit_b_16-c867db91.pth}; recipe
-\url{https://github.com/pytorch/vision/tree/main/references/classification#vit_b_16}). These ImageNet-1K classifiers were trained on ImageNet / ILSVRC~\parencite{Deng2009,Russakovsky2015ilsvrc} and scored with Quantus~\parencite{Hedstrom2023}.
-
-\paragraph{Licenses.}\label{ptnb:app:licences}
-ImageNet images~\parencite{Deng2009} are used under the ImageNet terms of access (non-commercial research and
-educational use)\footnote{\url{https://www.image-net.org/download-images.php}.}. The ImageNet-S mask release~\parencite{gao2022luss} does not state a separate mask license\footnote{Authors' release: \url{https://github.com/LUSSeg/ImageNet-S}.}; its images are ImageNet images and fall under the same
-terms. The Pascal VOC 2012 images are subject to the Flickr terms of use,
-as stated by the dataset providers\footnote{\url{https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/}, Database Rights.}. The checkpoints are distributed with torchvision
-and were trained on ImageNet-1K. Libraries: PyTorch and torchvision (BSD-3-Clause), Quantus
-(GPL-3.0), zennit (GPL-3.0/LGPL-3.0), lxt, captum and scikit-image (BSD-3-Clause), pytorch-grad-cam
-(MIT); the reference code of \acs{ptnbTIBAV} (MIT) is included with its license notice, and \acs{ptnbGAE} is re-implemented from its published rules.
+(\url{https://download.pytorch.org/models/vit_b_16-c867db91.pth}). These ImageNet-1K classifiers were trained on ImageNet / ILSVRC~\parencite{Deng2009,Russakovsky2015ilsvrc}; the attributions are scored with Quantus~\parencite{Hedstrom2023}.
 
 \subsection{Methods}\label{ptnb:app:baselines}\label{app:baselines}
 
-Baselines use lxt, zennit, captum, pytorch-grad-cam, and the authors' TIBAV/GAE code, with reference settings and the declared grids~\parencite{Achtibat2024AttnLRP,Anders2021Zennit,kokhlikyan2020captum,Gildenblat2021gradcam,Chefer2021GenericAttention,Chefer2021ICCV}.
+Baselines use lxt, zennit, captum, pytorch-grad-cam, the reference code of \acs{ptnbTIBAV}, and a re-\hspace{0pt}implementation of \acs{ptnbGAE} from its published rules, with reference settings and the declared grids~\parencite{Achtibat2024AttnLRP,Anders2021Zennit,kokhlikyan2020captum,Gildenblat2021gradcam,Chefer2021GenericAttention,Chefer2021ICCV}. Section~\ref{subsec:visual_attribution_related} introduces the methods; the following implementation choices apply. \textbf{Gradient}~\parencite{Simonyan2014} takes the maximum over color channels of the absolute input gradient, and \textbf{SmGrad}~\parencite{Smilkov2017} averages noisy gradient maps. \textbf{IntGrad}~\parencite{Sundararajan2017} uses a black-image baseline. \textbf{DeepLIFT}~\parencite{Shrikumar2017} uses the Rescale rule and is run on the CNNs only. \textbf{LRP-$\varepsilon$}~\parencite{Bach2015} and \textbf{LRP-$\gamma$}~\parencite{Montavon_2022_gammaLRP} are the stabilized and the positive-weight-amplified rules; \textbf{AttnLRP}~\parencite{Achtibat2024AttnLRP} also propagates relevance through the softmax and the bilinear attention product. \textbf{TIBAV}~\parencite{Chefer2021GenericAttention}, \textbf{GAE}~\parencite{Chefer2021ICCV} and Attention Rollout (\textbf{AR}) are the Transformer-specific attention-map baselines. \textbf{GCAM}~\parencite{Selvaraju2017}, \textbf{GCAM++}~\parencite{Chattopadhay2018} and \textbf{LCAM}~\parencite{Jiang2021LayerCAM} are computed at the last convolutional block of the CNNs and upsampled bilinearly. \textbf{LIME}~\parencite{Ribeiro2016} and \textbf{KernelSHAP}~\parencite{LundbergLee2017} perturb SLIC superpixels~\parencite{Achanta2012slic} and fit a local surrogate.
 
-\paragraph{Gradient-based block.}
-\textbf{Gradient} is the raw input-gradient saliency map~\parencite{Simonyan2014}, the maximum over color channels of the absolute gradient. \textbf{SmGrad} is SmoothGrad, i.e.\ an average over noisy gradient maps~\parencite{Smilkov2017}. \textbf{IntGrad} is Integrated Gradients~\parencite{Sundararajan2017} with a black-image baseline. \textbf{DeepLIFT} propagates activation differences relative to a reference input with the Rescale rule~\parencite{Shrikumar2017} (CNNs only). \textbf{DAVE} is the distribution-aware ViT gradient decomposition of~\textcite{Wrobel2024}; our implementation additionally freezes the LayerNorm mean, whereas published DAVE differentiates through mean-centering; result rows of this variant are labeled DAVE$^{*}$. \textbf{SG} denotes our Stopping Game: signed occupation differences recover the gradient (Theorem~\ref{ptnb:thm:deriv-occ}), whereas the reported benchmark uses the positive-player/positive-input component (\texttt{pp}) summed over RGB channels, labeled SG$^{\mathrm{pp}}$ in the result tables. Appendix~\ref{app:rebuttal-sg} separates this readout from signed-gradient verification.
-
-\paragraph{LRP / relevance-propagation block.}
-\textbf{LRP-$\varepsilon$} denotes the stabilized Layer-wise Relevance Propagation rule~\parencite{Bach2015}. \textbf{LRP-$\gamma$} is the positive-weight-amplified LRP variant~\parencite{Montavon_2022_gammaLRP}. \textbf{AttnLRP} is Transformer LRP that propagates relevance through the softmax and the bilinear attention product as well as the Value path~\parencite{Achtibat2024AttnLRP}. \textbf{RG} denotes our Routing Game attribution method. \textbf{RG+Eq} is the same method with equivariant Reynolds averaging, used mainly on ViT to suppress tokenization-grid artifacts. \textbf{TIBAV}~\parencite{Chefer2021GenericAttention}, \textbf{GAE}~\parencite{Chefer2021ICCV} and Attention Rollout (\textbf{AR}) are the transformer-specific attention-map baselines.
-
-\paragraph{CAM block.}
-\textbf{GCAM} is Grad-CAM~\parencite{Selvaraju2017}, \textbf{GCAM++} is Grad-CAM++~\parencite{Chattopadhay2018}, and \textbf{LCAM} is LayerCAM, which weights class-activation evidence per location~\parencite{Jiang2021LayerCAM}. All three are computed at the last convolutional block of the CNNs and upsampled bilinearly.
-
-\paragraph{Perturbation block.}
-\textbf{LIME} is Local Interpretable Model-agnostic Explanations~\parencite{Ribeiro2016}. \textbf{KernelSHAP} denotes the model-agnostic weighted-regression estimator of SHAP values~\parencite{LundbergLee2017}. Both perturb SLIC superpixels~\parencite{Achanta2012slic}, explaining predictions by perturbing the input and fitting a local surrogate; they are separated from the backward-propagation methods above.
+Three rows deviate from a published method or from the theorem they are named after. \textbf{DAVE$^{*}$} is our variant of DAVE~\parencite{Wrobel2024}: it additionally freezes the LayerNorm mean, whereas published DAVE differentiates through mean-centering. \textbf{SG} denotes our Stopping Game: signed occupation differences recover the gradient (Theorem~\ref{ptnb:thm:deriv-occ}), whereas the reported benchmark uses the positive-player/positive-input component (\texttt{pp}) summed over RGB channels, labeled SG$^{\mathrm{pp}}$ in the result tables. Section~\ref{sec:additional-controls} verifies the signed identity separately and reports the effect of the implementation's gate convention at pre-activations that are exactly zero (Remark~\ref{ptnb:rem:adf-spne-uniqueness}). \textbf{RG} denotes our Routing Game attribution method, and \textbf{RG+Eq} the same method with averaging over $N=50$ sampled transformations, i.i.d.\ rotations uniform in $\pm10^\circ$, translations up to $\pm5\%$ per image axis and horizontal flips with probability $0.5$, used mainly on ViT to suppress tokenization-grid artifacts; exact equivariance is not guaranteed (Section~\ref{ptnb:app:equivariant}).
 
 \subsection{Declared Validation Grids}\label{ptnb:app:grids}
 
-Table~\ref{ptnb:tab:main-search-grid} lists every method's grid. Functionally duplicate rows (e.g.\ different $\sigma^2$ when $\lambda = \lambda_{\mathrm{sm}} = 0$) are evaluated once, yielding \nValGrid{} configurations. On ViT-B/16, activation-side $\lambda$ is fixed to $0$, keeping GELU gates conditioned (Section~\ref{ptnb:sec:attention}). At attention--Value products, \ac{rg} applies $\alpha\beta$-\ac{lrp}-$\varepsilon$ to the composite attention-product/Value-projection map (Theorem~\ref{ptnb:thm:attn-ab-recovery}; Section~\ref{ptnb:app:vit-implementation}). Baselines without grids use their reference implementations' settings.
+Table~\ref{ptnb:tab:main-search-grid} lists every method's grid. Functionally duplicate rows (e.g.\ different $\sigma^2$ when $\lambda = \lambda_{\mathrm{sm}} = 0$) are evaluated once, yielding \nValGrid{} configurations. On ViT-B/16, activation-side $\lambda$ is fixed to $0$, keeping GELU gates conditioned (Section~\ref{ptnb:sec:attention}). Baselines without grids use their reference implementations' settings.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \caption[Per-method validation grids]{Per-method validation grids (all architectures unless stated). Symbols:
     Section~\ref{ptnb:app:config-symbols}.}
@@ -180,7 +165,7 @@ Table~\ref{ptnb:tab:main-search-grid} lists every method's grid. Functionally du
         aggregation \quad (3 configs) \\
         IntGrad & black-image baseline, $N_{\text{steps}} \in \{20, 50, 100, 300\}$ \quad (4 configs) \\
         DeepLIFT & Rescale rule, single config \quad (CNNs only) \\
-        DAVE & $N \in \{25, 50\} \times \theta_{\max} \in \{0, 10, 20\} \times s_{\max} \in \{0, 0.05,
+        DAVE$^{*}$ & $N \in \{25, 50\} \times \theta_{\max} \in \{0, 10, 20\} \times s_{\max} \in \{0, 0.05,
             0.1\} \times t_{\max} \in \{0, 0.25, 0.5\}$, horizontal flips with probability $0.5$, averaged
         effective map multiplied by the input \quad (54 configs; ViT-B/16 only) \\
         SG & $\lambda \in \{-5, -2, -1, -0.3, 0\} \times \sigma^2 \in \{1, 2, 5, 10\} \times$ noisy gate
@@ -219,9 +204,6 @@ Table~\ref{ptnb:tab:main-search-grid} lists every method's grid. Functionally du
 }%
 \end{table}
 
-\subsection{Compute Resources}\label{ptnb:app:compute-resources}
-The attribution evaluations are inference-only. The main cost is the repeated backward attribution pass over the validation and test images across the method grids, including the equivariant-Reynolds and noise-averaged configurations. Runtime measurements were taken on a single NVIDIA A100-SXM4-40GB with batch size 1; evaluation sweeps were distributed over several GPUs of the same type, with up to two evaluation processes per GPU. The full pipeline (validation grids, test evaluation, robustness, Pascal VOC, ablations and randomization diagnostics) required about 450 GPU-hours.
-
 \subsection{\texorpdfstring{\ch{Code and Correctness Tests}}{Code and Correctness Tests}}\label{ptnb:app:code-tests}
 
 \begingroup\emergencystretch=3em
@@ -238,31 +220,19 @@ Theorem, lemma and definition headings carry references \texttt{Lean\_1}, \textt
 
 \input{tables/lean_coverage}
 
-Both papers share a finite, varying-width Lean MLP definition: an identity output or an affine layer followed by a smaller network, evaluated with ordinary or paired activations. Local difference preservation suffices algebraically for paired activations; induction proves complete-network recovery. This definition supports ReLU, mixing and Softplus, with a separate affine readout for ungated target logits.
-
-The Transformer development defines signed projections, actual masked Query--Key products, coupled softmax, attention--Value products, input-dependent LayerNorm, residual additions and the \ac{mlp} subnetwork. Finite block lists allow arbitrary depth, including zero, an optional final LayerNorm and signed affine readout. Compilation to an explicit expression language equals the ordinary evaluator. Recursive two-stream evaluation proves Theorem~\ref{thm:transformer_dc}: exact reconstruction and convex, monotone, non-negative components on non-negative input pairs. The positive/negative raw-input lift gives global convexity, without asserting raw-input monotonicity. The proofs derive structural properties from the closed-form softmax and normalization constructions, with positive $\varepsilon$ and nonempty allowed-key sets. They use exact real arithmetic; Section~\ref{app:transformer_dc_numeric} checks the stabilized numerical implementation on pretrained ViT-B/16.
-
-A forward trace records actual gates. Each sensitivity row maps an input perturbation linearly to its scalar output change; paired rows describe partial sensitivities to both components of the input pair. Their half-difference is the derivative along the balanced lift $(x/2,-x/2)$. At strict gate comparisons, the recursive Jacobian equals the complete network's Fr\'echet derivative.
-
-The layer-wise shifted backward algorithm equals its closed formula for arbitrary widths and shifts. The correction terms of the closed formula are derivatives of explicit auxiliary networks, called $Q$-networks in the Lean files, which consist of the original network prefix, one minimum and a bias-free linear tail with absolute weights. Checked identities cover shift-coefficient suffix products, sensitivity mass, separate cross-head partials and original-gradient reconstruction. Shifted algorithmic sensitivities remain distinct from derivatives through input-dependent forward re-centering; classical derivatives at gate ties are not asserted.
-
-The game developments define finite sign-labeled paths, probabilities, discounts and occupation sums. Under the stated policies, discounted stopping occupations recover the actual MLP gradient; routing occupations recover the full $\alpha\beta$ recurrence from network contributions. The smooth case includes the full Softplus derivative. Attention uses a fixed matrix and the complete composite Value projection, including its bias; backward recovery alone asserts neither Query/Key differentiation nor global equilibrium. Generic finite layered-game saddle bounds and Bellman uniqueness are checked separately for actual randomized policies.
-
-The trajectory module checks finite path normalization, dynamic-programming identities, geometric-mean overlap, terminal-state disagreement and positive survival conditioning. Hellinger probability laws remain distinct from discounted occupation measures. The regularization module checks the finite Gibbs variational maximum, attaining policy, binary stop/continue optimizer and actual Softplus derivatives.
-
-The source inventory lists statements outside the checked scope. Proofs and corrections certify neither Python implementations nor experiments. Independently, the table adapter regenerates thirteen outputs from the revised game paper's published summaries and checks them against the thesis. Hidden Monotonicity tables reproduce the paper-reported results. Reproduce mathematical checks with \texttt{lake build} in \texttt{formalization/} and its explicit axiom audit; the README gives complete commands.
+The formalization covers five areas. For finite \acp{mlp} of varying width, it proves recovery of the network from paired activations, for the ReLU, mixing and Softplus pairs and with an ungated affine readout, together with the split-stream properties. For the Transformer of Definition~\ref{def:prenorm_transformer}, it proves Theorem~\ref{thm:transformer_dc} for arbitrary depth, with positive $\varepsilon$ and nonempty allowed-key sets: exact reconstruction and convex, monotone, non-negative components on non-negative input pairs. For the backward passes, the layer-wise shifted algorithm equals its closed formula for arbitrary widths and shifts, and at strict gate comparisons the recursive Jacobian equals the Fr\'echet derivative of the network; derivatives at gate ties are not asserted. For the games, discounted stopping occupations recover the gradient of the \ac{mlp} and routing occupations the $\alpha\beta$ recurrence, including the Softplus case and attention with a fixed attention matrix; saddle bounds and Bellman uniqueness are checked for finite layered games. For trajectories, it checks path normalization, the overlap recursion, terminal-state disagreement and survival conditioning. All proofs use exact real arithmetic; Section~\ref{app:transformer_dc_numeric} checks the stabilized numerical implementation on pretrained ViT-B/16. The proofs certify neither the Python implementations nor the experiments. The checks are reproduced with \texttt{lake build} in \texttt{formalization/}; the README gives the commands.
 
 \subsection{Gradient Reconstruction on Pretrained ViT-B/16}\label{app:transformer_dc_numeric}
 
-We evaluate the stabilized DC implementation on pretrained ViT-B/16 at $224\times224$ resolution, including all twelve encoder blocks with the pre-normalization arrangement of Definition~\ref{def:prenorm_transformer}. Attention, Query/Key paths and LayerNorm statistics remain input-dependent. The float64 CPU check uses three annotated ImageNet-S validation images at three backward-shift settings, giving nine runs. An independent ordinary-model computation supplies the comparison gradients at the input and all twelve pre-attention LayerNorm readouts. Gradient repairs are disabled; forward stabilization anchors each split-pair's difference to a cached ordinary activation.
+We evaluate the stabilized DC implementation on pretrained ViT-B/16 at $224\times224$ resolution, including all twelve encoder blocks with the pre-normalization arrangement of Definition~\ref{def:prenorm_transformer}. Attention, Query/Key paths and LayerNorm statistics remain input-dependent. The float64 CPU check uses three annotated ImageNet-S validation images at three backward-shift settings, giving nine runs. An independent ordinary-model computation supplies the comparison gradients at the input and all twelve pre-attention LayerNorm readouts. Gradient repairs are disabled; forward stabilization anchors each split-pair's difference to a cached ordinary activation, so the output agreement holds by construction and the test concerns the gradients.
 
-All nine runs pass. Maximum absolute errors are $2.22\times10^{-16}$ for the output, $2.36\times10^{-15}$ for the input gradient, and $7.81\times10^{-16}$ across the twelve readout gradients. This demonstrates gradient recovery to machine precision in the tested pretrained ViT. Input-dependent recentering and scaling do not establish globally convex stabilized split-streams. The completed attribution benchmark uses fixed attention and LayerNorm (Section~\ref{sec:vit-extension}). Image identifiers, settings, checkpoint and source hashes, and per-run errors are recorded with the experiment outputs.
+All nine runs pass. Maximum absolute errors are $2.22\times10^{-16}$ for the output, $2.36\times10^{-15}$ for the input gradient, and $7.81\times10^{-16}$ across the twelve readout gradients. This demonstrates gradient recovery to machine precision in the tested pretrained ViT. Input-dependent recentering and scaling do not establish globally convex stabilized split-streams. The completed attribution benchmark uses fixed attention and LayerNorm (Section~\ref{sec:vit-extension}).
 
 \input{appendices/experiments}
 
 \chapter{Publication Provenance and Tool Use}\label{app:publication_provenance}
 
-This thesis integrates two coauthored works with the thesis author as first author: \emph{Hidden Monotonicity}, a CVPR 2026 Highlight~\parencite{hiddenMono}, and the revised \emph{Playing the Network Backward} preprint, arXiv:2605.06212v2~\parencite{playingBackward2026}. It reuses their model-evaluation outputs and point estimates, recomputing VOC intervals and paired comparisons by whole-image resampling (Section~\ref{ptnb:app:stats}). The thesis presents both in the decomposition framework of the game paper and adds mathematical extensions, connections and a Lean formalization.
+This thesis integrates two coauthored works with the thesis author as first author: \emph{Hidden Monotonicity}, a CVPR 2026 Highlight~\parencite{hiddenMono}, and the revised \emph{Playing the Network Backward} preprint, arXiv:2605.06212v2~\parencite{playingBackward2026}. It reuses their model-evaluation outputs and point estimates; the Pascal VOC intervals are recomputed by whole-image resampling, and the Holm-adjusted paired comparisons of the game-method tables are recomputed (Section~\ref{ptnb:app:stats}). The thesis places both papers in a common decomposition framework, which extends the Stopping Decomposition of the game paper, and adds theory, experiments and a partial Lean formalization.
 
 Table~\ref{tab:provenance} separates the material taken from each paper from the work added in this thesis.
 
@@ -272,18 +242,18 @@ Table~\ref{tab:provenance} separates the material taken from each paper from the
 \toprule
 Source & Material and location \\
 \midrule
-\emph{Hidden Monotonicity}~\parencite{hiddenMono} & DC decomposition of ReLU networks and CNNs (Sections~\ref{sec:dc_decompositions} and~\ref{sec:cnn_decompositions}); numerical stabilization and closed formulas for the shifted passes (Section~\ref{sec:stabilization_dc}); SplitCAM, SplitLRP and SplitGrad (Section~\ref{sec:split_attribution_concept}); the VGG-16 and ResNet-18 evaluation with its ablations and sanity check (Sections~\ref{sec:results_vgg}--\ref{sec:ablations}, Appendices~\ref{app:saliency}--\ref{app:ablation}); directly trained difference models on MNIST (Section~\ref{sec:dcinns}). \\
+\emph{Hidden Monotonicity}~\parencite{hiddenMono} & The convexity and monotonicity criterion (Section~\ref{sec:convex_monotone_foundations}); the DC decomposition of ReLU networks by the maximum and identity pair (Section~\ref{sec:dc_splitting_relu}); stabilization and closed formulas for the shifted passes (Section~\ref{sec:stabilization_dc}); split rules for CNN components (Section~\ref{sec:cnn_decompositions}); SplitCAM, SplitLRP and SplitGrad (Section~\ref{sec:split_attribution_concept}); the sign-sorted product pair (starting point of Section~\ref{sec:multiplicative_splits}); the VGG-16 and ResNet-18 evaluation with its ablations, sanity check and runtime (Sections~\ref{sec:results_vgg}--\ref{sec:ablations}, Appendices~\ref{app:saliency}, \ref{app:p1_sanity}, \ref{app:p1_timing} and~\ref{app:ablation}); directly trained difference models on MNIST (Section~\ref{sec:dcinns}). \\
 \addlinespace
-\emph{Playing the Network Backward}~\parencite{playingBackward2026} & Stopping Game and Routing Game with the recovery of gradients and $\alpha\beta$-LRP, and the game-theoretic modes (Chapter~\ref{ch:game_theory}); the attention rule (Section~\ref{ptnb:sec:attention}); the network decomposition framework with its mixing, stopping and regularized families (Sections~\ref{sec:general_decomposition_def} and~\ref{sec:mixing_decomposition}--\ref{sec:regularized_decompositions}); trajectory distributions and Hellinger diagnostics (Chapter~\ref{ch:trajectory}); the evaluation on VGG-16, ResNet-50 and ViT-B/16 with Pascal VOC transfer (Section~\ref{sec:results_vit}, Appendix~\ref{ptnb:app:results}) and its additional controls (Appendix~\ref{app:rebuttal-controls}). \\
+\emph{Playing the Network Backward}~\parencite{playingBackward2026} & The Stopping Decomposition and the Softplus decomposition function (Sections~\ref{sec:stopping_decomposition} and~\ref{subsec:softplus_decomposition}); the Stopping Game and the Routing Game with the recovery of gradients and $\alpha\beta$-LRP, and the game modes (Chapter~\ref{ch:game_theory} without Section~\ref{ptnb:app:affine-readout}); the attention game (Section~\ref{ptnb:sec:attention}); layered Markov processes and the Hellinger distance between trajectory laws, with terminal-state disagreement and survival conditioning (Sections~\ref{ptnb:sec:lmp}--\ref{ptnb:sec:lmp-conditioned-survival}), and the pixel disagreement map (Section~\ref{sec:trajectory_pixel_map}); the trajectory experiments under input noise and under the two randomization cascades (Sections~\ref{ptnb:sec:hellinger-sanity}, \ref{ptnb:sec:lmp-experiments} and~\ref{ptnb:app:sanity-check} without the controls listed below); the evaluation on VGG-16, ResNet-50 and ViT-B/16 with Pascal VOC transfer and ablations (Sections~\ref{sec:results_vit} and~\ref{subsec:mode_ablation}, Appendices~\ref{app:game_timing} and~\ref{ptnb:app:results}) with its protocol (Appendices~\ref{ptnb:app:protocol} and~\ref{app:extended_protocol}). \\
 \addlinespace
-Theory added in the thesis & DC decompositions of smooth activations (Sections~\ref{sec:dc_splitting_smooth} and~\ref{sec:closed_form_dc_activations}); the softmax pair (Section~\ref{sec:multivariate_dc_softmax}); product and LayerNorm pairs and the DC decomposition of Transformers (Sections~\ref{sec:multiplicative_splits} and~\ref{sec:transformer_dc}). \\
+Theory added in the thesis & The definition of valid decompositions (Section~\ref{sec:general_decomposition_def})$^{\dagger}$; the profile criterion, the construction from absolute second derivatives and the closed formulas for smooth activations (Sections~\ref{sec:profile_criterion}, \ref{sec:dc_splitting_smooth} and~\ref{sec:closed_form_dc_activations}); the softmax pair (Section~\ref{sec:multivariate_dc_softmax}); the mixing family (Section~\ref{sec:mixing_decomposition})$^{\dagger}$; regularized decompositions (Section~\ref{sec:regularized_decompositions}); signed affine output logits in the Routing Game (Section~\ref{ptnb:app:affine-readout}); the polarized product pair, the LayerNorm pair and the DC decomposition of Transformers (Sections~\ref{sec:multiplicative_splits} and~\ref{sec:transformer_dc}); the two-step Markov process of the Routing Game, the local form of the Hellinger distance, and the effect of temperature and outside weight on it (Section~\ref{ptnb:sec:games-fit}). \\
 \addlinespace
-Experiments and implementation added in the thesis & Reconstruction check of the Transformer decomposition on ViT-B/16 (Section~\ref{app:transformer_dc_numeric}); SplitCAM on ViT-B/16 (Section~\ref{sec:vit-extension}); recomputed Pascal VOC intervals and paired comparisons (Section~\ref{ptnb:app:stats}). \\
+Experiments added in the thesis & SplitCAM on ViT-B/16 (Section~\ref{sec:vit-extension}); the gradient reconstruction check of the Transformer decomposition on ViT-B/16 (Section~\ref{app:transformer_dc_numeric}); the temperature comparison of Figure~\ref{fig:vit_temperature}, which includes $\tau=0.2$; recomputed Pascal VOC intervals and Holm-adjusted comparisons (Section~\ref{ptnb:app:stats}); the additional controls of Section~\ref{sec:additional-controls} and the matched-model and perturbation controls of the Hellinger cascade (Section~\ref{ptnb:sec:per-image-orthogonality})$^{\ddagger}$. \\
 \addlinespace
 Partial formalization & Lean~4 project covering the statements listed in Table~\ref{tab:lean_coverage} (Section~\ref{app:lean}). \\
 \bottomrule
 \end{tabularx}
-\caption[Provenance of the thesis material]{Provenance of the thesis material: what is taken from each of the two papers and what the thesis adds.}
+\caption[Provenance of the thesis material]{Provenance of the thesis material. $^{\dagger}$In an earlier manuscript version of the game paper, not in arXiv~v2. $^{\ddagger}$Prepared for a later revision of the game paper, not in arXiv~v2.}
 \label{tab:provenance}
 \end{table}
 
@@ -291,7 +261,7 @@ Partial formalization & Lean~4 project covering the statements listed in Table~\
 
 For both papers, I developed the theory and experiments, ran the experiments, and wrote all appendices and most text outside the introductions, collaborating with the coauthors listed in Section~\ref{sec:motivation}.
 
-The following disclosures distinguish original-paper preparation from later thesis work.
+The next two sections disclose the use of AI tools, first in the preparation of the game paper and then in this thesis.
 
 \section{Disclosure in the Revised Game Paper}
 The revised game paper discloses the following for its preparation:
@@ -310,6 +280,8 @@ produced with the aid of generative AI.
 \end{quote}
 
 \section{AI Assistance in the Thesis Revision}
-The November 2026 thesis revision used OpenAI Codex CLI for mathematical exploration, proof development, Lean implementation and checking, code review and repair, statistical reaggregation, and drafting and editing. Its session logs record CLI versions 0.166.0, 0.167.1 and 0.171.0 and the model identifiers \texttt{gpt-6-astra} (main sessions), \texttt{gpt-6-luna} (delegated subtasks) and \texttt{gpt-6.1-sol} (one logged turn). A final editorial pass used Anthropic's Claude Code 2.1.329 with the model identifier \texttt{claude-fable-5-2} for drafting, editing and consistency checks against the recorded experiment code. The division of the mathematical work is as follows. I developed all definitions, theorems and proofs of the two papers myself, and likewise the DC decomposition of smooth activations (Section~\ref{sec:dc_splitting_smooth}). The one mathematical result found by an AI tool is the explicit convex, monotone softmax pair (Theorem~\ref{thm:softmax_dc_split}); I checked its statement and proof. All other mathematical results of the thesis are my own, and for them the AI tools assisted with checking proofs and with the Lean formalization. These versions and model identifiers describe the thesis revision only; they do not identify tools used for the original papers. The quoted historical statement about theorem and proof development concerns the original paper, excluding this later thesis work.
+The November 2026 thesis revision used OpenAI Codex CLI for mathematical exploration, proof development, Lean implementation and checking, code review and repair, statistical reaggregation, and drafting and editing. Its session logs record CLI versions 0.166.0, 0.167.1 and 0.171.0 and the model identifiers \texttt{gpt-6-astra} (main sessions), \texttt{gpt-6-luna} (delegated subtasks) and \texttt{gpt-6.1-sol} (one logged turn). The final revision used Anthropic's Claude Code, versions 2.1.329 to 2.1.331, with the model identifier \texttt{claude-fable-5-2}: for drafting and editing text, for restructuring chapters and appendices and formatting tables, for checking reported numbers against the recorded experiment outputs and code, and for deriving and numerically checking the identities named below.
 
-The formalization repository records reviewed theorem types, proof-checking receipts and coverage limits. Lean certifies the stated propositions; source correspondence requires mathematical review, and kernel checks do not certify experiments.
+The division of the mathematical work is as follows. I developed all definitions, theorems and proofs of the two papers myself, and likewise the DC decomposition of smooth activations (Section~\ref{sec:dc_splitting_smooth}). Two parts of the mathematics were obtained with AI tools. The explicit convex, monotone softmax pair (Theorem~\ref{thm:softmax_dc_split}) was found by an AI tool; I checked its statement and proof. In Section~\ref{ptnb:sec:games-fit}, the local form~\eqref{ptnb:eq:h2-local} of the squared Hellinger distance and the row overlap of the Routing Game with its temperature expansion, \eqref{ptnb:eq:rg-row-overlap} and~\eqref{ptnb:eq:rg-row-local}, were derived with Claude Code and verified numerically. All other mathematical results of the thesis are my own, and for them the AI tools assisted with checking proofs and with the Lean formalization. These versions and model identifiers describe the thesis revision only; they do not identify tools used for the original papers. The quoted historical statement about theorem and proof development concerns the original paper, excluding this later thesis work.
+
+The formalization folder contains audit files that restate the checked theorem types and print the axioms on which they depend; its README states the assumptions and the limits of the coverage. Lean certifies the stated propositions; source correspondence requires mathematical review, and kernel checks do not certify experiments.

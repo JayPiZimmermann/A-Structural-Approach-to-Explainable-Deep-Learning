@@ -1,7 +1,7 @@
 \chapter{Game-Theoretic Framework}\label{ch:game_theory}\label{app:supp_games}
 
-The sign-separated streams of Chapter~\ref{ch:decompositions} expose accumulated opposing contributions. This chapter formalizes the backward-game picture of Figure~\ref{fig:game_trajectory_overview}, tracing backward rules through these contributions.
-The trajectory distributions support method design (Section~\ref{sec:risk_aversion_regularization}) and diagnostics (Chapter~\ref{ch:trajectory}). Exact recovery concerns the anchor rules; myopic temperature changes and risk-sensitive policies deform these rules. \begin{changed}Numerical experiments recover gradients with the stabilized Stopping Game and $\alpha\beta$-LRP relevance with the Routing Game to machine precision in pretrained networks (Appendices~\ref{app:rebuttal-sg} and~\ref{app:rebuttal-rg}). In the ViT benchmark, changing routing improves Attribution Localization (Section~\ref{sec:results_vit}), while the full deletion/insertion controls favor LRP baselines (Appendix~\ref{app:rebuttal-sharpening}). These different outcomes motivate examining what each backward rule computes.\end{changed}
+The sign-separated split-streams of Chapter~\ref{ch:decompositions} expose accumulated opposing contributions. This chapter formalizes the backward-game picture of Figure~\ref{fig:game_trajectory_overview}, tracing backward rules through these contributions.
+The trajectory distributions support method design (Section~\ref{sec:risk_aversion_regularization}) and diagnostics (Chapter~\ref{ch:trajectory}). Exact recovery concerns the anchor rules; myopic temperature changes and risk-sensitive policies deform these rules. \begin{changed}Numerical experiments recover gradients with the stabilized Stopping Game and $\alpha\beta$-LRP relevance with the Routing Game to machine precision in pretrained networks (Section~\ref{sec:additional-controls}). In the ViT benchmark, changing routing improves Attribution Localization (Section~\ref{sec:results_vit}), while the full deletion/insertion controls favor LRP baselines (Section~\ref{sec:additional-controls}). These different outcomes motivate examining what each backward rule computes.\end{changed}
 
 \section{Related Work}\label{ptnb:sec:related-work}\label{sec:related_work_games}
 
@@ -20,7 +20,7 @@ The \ac{nrm} framework of \textcite{Xiong2026nrm} assigns normalized signed rele
 \textbf{Relevance propagation and stochastic explanations.} \ac{lrp}, Deep Taylor, and Excitation
 Backprop constitute the core relevance propagation family~\parencite{Bach2015,Montavon2017DeepTaylor,Zhang2018pointinggame}, with later variants modifying redistribution for contrast, stability, or
 signed relevance~\parencite{Binder2016LRN,Kohlbrenner2020,Gu2019CLRP,Nam2020,vukadin2024abslrp}. We supply
-a common trajectory-space semantics for this family: \ac{sg} recovers gradients, \ac{rg} recovers
+a trajectory-space representation of gradients and the specified $\alpha\beta$-\ac{lrp} family: \ac{sg} recovers gradients, \ac{rg} recovers
 the generalized $\alpha\beta$-\ac{lrp}, and its analytical modes map back to principled modifications
 of existing backward rules.
 Excitation Backprop~\parencite{Zhang2018pointinggame} is an absorbing Markov chain whose redistribution
@@ -44,33 +44,29 @@ within our framework.
 Throughout the game, attention, and trajectory derivations, $W^{(l)}_{ij}$ denotes the edge from
 predecessor $i$ to successor $j$: the adjacency matrices transpose the DC recurrences' output-by-input
 matrices while representing the same network. The tag $\mathrm{stop}$ distinguishes stopping from
-DC streams. Use the ReLU network of Definition~\ref{def:ffn_relu}, with ReLU also at layer $L$.
+DC split-streams. Use the ReLU network of Definition~\ref{def:ffn_relu}, with ReLU also at layer $L$.
 We explain the scalar activation $f(x)=a_u^{(L)}$.
 Classifier logits are instead ungated affine readouts (Definition~\ref{def:ffn_relu}); Section~\ref{ptnb:app:affine-readout} gives the corresponding root rule for both games.
 Write $[u]^\sigma=u^\sigma$ using Definition~\ref{def:posneg_parts}, also for entrywise weight and bias parts.
 
-\begin{center}
-\fbox{\parbox{0.94\linewidth}{\small
-\textbf{Index convention.} The game indexes an edge by predecessor then successor, whereas the DC
-recurrence indexes its matrix by output then input:
+\paragraph{Index convention.}
+The game indexes an edge by predecessor then successor, whereas the DC recurrence indexes its matrix by output then input. Writing $W^{(l)}_{\mathrm{game}}$ and $W^{(l)}_{\mathrm{DC}}$ for the weight matrix of layer $l$ in the two conventions,
 \[
- W_{\mathrm{game}}^{(l)}[i,j]
- =W_{\mathrm{DC}}^{(l)}[j,i]
- =(W_{\mathrm{DC}}^{(l)})^\top[i,j].
+ W^{(l)}_{\mathrm{game},ij}
+ =W^{(l)}_{\mathrm{DC},ji}
+ =\bigl((W^{(l)}_{\mathrm{DC}})^{\top}\bigr)_{ij}.
 \]
 Thus $W_{ij}^{(l)}$ in this chapter and $\Wl{l}_{ji}$ in the DC convention name the same edge.
-}}
-\end{center}
 
 \paragraph{Layer-wise relevance propagation.} \ac{lrp}~\parencite{Bach2015} explains $f(x)$ by redistributing it backward, layer by layer: starting
 from $R^{(L)}_u = f(x)$, every neuron passes its relevance $R^{(l)}_j$ on to its inputs in
 proportion to their contributions $a^{(l-1)}_i W^{(l)}_{ij}$ to its pre-activation, with bias and stabilizer shares absorbed.
 Rules differ in how the contributions are weighted. The $\alpha\beta$-\ac{lrp} rule is parameterized by $\alpha,\beta\geq0$;
 $\alpha-\beta=1$ gives conservation when both participating sign streams are nonempty and bias,
-stabilizer, and empty-stream absorption are accounted for. With $\varepsilon\geq0$
+stabilizer, and empty sign-stream absorption are accounted for. With $\varepsilon\geq0$
 \ch{added to each sign denominator, as in common implementations~\parencite{Anders2021Zennit}},
 relevance is split into a positive-contribution fraction scaled by $\alpha$ and a negative-contribution fraction scaled by
-$\beta$, each normalized by its own denominator:
+$\beta$, each normalized by its own denominator, with $0/0\coloneqq0$:
 \begin{align}\label{ptnb:eq:lrp-ab}
     R^{(l-1)}_i &= \textstyle\sum_j \Bigl( \alpha\, \tfrac{[a^{(l-1)}_i
     W^{(l)}_{ij}]^+}{\Sigma^{(l,+)}_j + \varepsilon} - \beta\, \tfrac{[a^{(l-1)}_i
@@ -88,6 +84,9 @@ Excitation Backprop~\parencite{Zhang2018pointinggame}.
 The $\varepsilon$- and $\gamma$-rules are defined in Section~\ref{sec:related_work}, \eqref{eq:lrp_gamma_overview}. In that bias-free setting, an active neuron has $z_j=\sum_i a_iw_{ij}>0$. Its $\varepsilon$-rule coefficients sum to $z_j/(z_j+\varepsilon)<1$ for $\varepsilon>0$ and can be negative, so they are not directly a probability kernel. For non-negative coefficients, the missing mass can enter the cemetery; signed coefficients additionally require separate signs and magnitude factors. The \ac{nrm} construction permits signed coefficients with positive column sums by normalizing each column~\parencite[Sections~3.3, 3.5 and Appendix~E]{Xiong2026nrm}. For this $\varepsilon$-rule, however, normalization removes the damping factor $z_j/(z_j+\varepsilon)$; retaining the original rule requires accounting for that factor.
 
 The $\gamma$-rule is the basic $z$-rule with modified backward weights $w_{ij}^{\gamma}=w_{ij}+\gamma[w_{ij}]_+$, evaluated at the original forward activations~\parencite{Montavon_2022_gammaLRP}. Recomputing the forward pass with these weights would generally change those activations. Both rules factor into positive and negative routing fractions with neuron-dependent coefficients. These factorizations permit weighted trajectory representations; an equilibrium interpretation must also specify the game values and policies. The recovery theorem below establishes the fixed-$\alpha\beta$ construction, rather than an impossibility result for other rules.
+
+\paragraph{Integrated Gradients.}
+Integrated Gradients~\parencite{Sundararajan2017} is not covered by a single fixed-input game: it is calculated as an integral along a path in input space, while the game represents the network calculation at one given input. Such path averaging can, however, be applied not only to gradients but also to other attribution methods, including the occupation measures of the Stopping Game and the Routing Game in their different modes.
 
 \paragraph{Transformers.} In a Vision Transformer (\acs{vit}), \ch{LayerNorm couples the features of a token through its
 input-dependent mean and variance,} and the attention matrix $A = \softmax(QK^\top/\sqrt{d})$
@@ -111,11 +110,14 @@ Other symbols are defined with their operators below and in the attention and tr
 
 \subsection{Attribution as a Game}\label{ptnb:sec:game}
 
-We use the turn-based state and policy notation of Definition~\ref{def:turn_based_game} for a finite-horizon game played \emph{backward} from the positive output state with unit mass. A state records layer, neuron, player turn and stream sign;
+We use the turn-based state and policy notation of Definition~\ref{def:turn_based_game} for a finite-horizon game played \emph{backward} from the positive output state with unit mass. A state records layer, neuron, player turn and contribution sign;
 stopping moves to an absorbing cemetery state $\dagger$. Skip connections become random transitions to
 summand states; at max-pooling states, the player chooses a path to a maximal-payoff state. In the Stopping Game, the active player chooses whether to stop or continue. The Routing Game additionally optimizes entropy-regularized routing policies. Policies induce trajectory
 laws $\Pi_x$; their discounted occupation measures $\Gamma_x$ weight visits to each state by the
 cumulative game-specific discount (Definition~\ref{ptnb:def:occupation}).
+
+\paragraph{What the game adds to a Markov process.}
+The Markov processes that produce the trajectory distributions needed for the occupation measures can be specified independently of a game; our games underlie these Markov processes (Section~\ref{sec:trajectory_disagreement}). The contribution is the particular network-linked payoff and value construction and the exact anchor identities, rather than the necessity of game-theoretic language. The game interprets the kernels as optimal player policies and transition distributions. One player represents evidence for the prediction, the other evidence against it. The supporting and the opposing player organize signed contributions into a debate-like interpretation grounded in the network's computation. This gives routing policies a rationale beyond an arbitrarily specified kernel and makes them understandable and deformable by changing the rules of the game. Concretely, we derive routing from payoffs whose equilibrium values recover the network activations; regularizing routing yields temperature-controlled propagation, regularizing stopping yields the Softplus construction, and the value formulation identifies where to penalize uncertainty and translates this into risk-aware routing (Section~\ref{ptnb:sec:modes}). We argue that such deformations are more principled than directly modifying a Markov process. A signed Markov chain, in which the transition probabilities are replaced by signed measures, could potentially give a different framework to explain gradients or $\alpha\beta$-\ac{lrp}. It would have the same disadvantage: the signed transition measures would be hard-coded and lack a clear motivation.
 
 \paragraph{A first example.}
 Consider $f(x)=\relu(2x_1-x_2)$ at $x=(2,1)$, where $f(x)=3$. Since the output is active, the
@@ -142,9 +144,9 @@ We use the Stopping Decomposition of Definition~\ref{def:fstop} with canonical i
 \paragraph{Parity paths.}\label{ptnb:app:parity-path}
 Lemma~\ref{ptnb:lem:parity-path} gives the pre-activation path sums~\eqref{eq:parity_path_sums}: each input path
 contributes its absolute weight product, multiplied by the gates strictly below its starting
-neuron, to $x^+$ or $x^-$ according to its negative-edge parity. Zero-weight paths contribute zero.
+neuron, times $x^{\operatorname{sgn}(P)}_{P_0}$ to $\preact{l}{+}_i$ and times $x^{\operatorname{sgn}(P)'}_{P_0}$ to $\preact{l}{-}_i$, where $\operatorname{sgn}(P)$ is its negative-edge parity. Zero-weight paths contribute zero.
 A bias at layer $t$ adds a path terminating there, with the $l-t$ edges above it, gates at
-layers $t,\dots,l-1$, and the absolute bias value; parity includes the bias sign. Subtracting streams restores the signed active-path
+layers $t,\dots,l-1$, and the absolute bias value; parity includes the bias sign. Subtracting the two split-streams restores the signed active-path
 sum. The game implements this parity bookkeeping by switching players at negative weights.
 
 \subsection{Game Definition}\label{ptnb:app:adf-game-def}\label{sec:shapley_bellman_recursion}\label{ptnb:app:adf-recursion}
@@ -241,15 +243,19 @@ The zero-weight case has the same argument with an empty weighted sum.
 
 \begin{remark}[Ties and implementation convention]\label{ptnb:rem:adf-spne-uniqueness}
 The equilibrium choice is unique at nonzero pre-activations. At $z_j^{(l)}=0$, stopping and
-continuation have equal advantage; the theorem selects stopping.
+continuation have equal advantage, so either choice is an equilibrium; the theorem selects stopping.
 Original forward activations agree at ties, but the selected backward quantities can differ.
-The released implementation follows this convention in the \ac{rg} and in the Hellinger pass, which gate with
+The tie rule is therefore a convention. It corresponds to the choice of $\relu'(0)$, for which both $0$ and $1$ are subgradients.
+
+The released implementation follows the stated convention in the \ac{rg} and in the Hellinger pass, which gate with
 $\1[z_j^{(l)}>0]$. Its \ac{sg} backward pass instead gates with $\1[z_j^{(l)}\ge0]$ and therefore continues at a
-pre-activation that is exactly zero in floating point. The two conventions coincide whenever no pre-activation on the
-evaluated input is exactly zero.
+pre-activation that is exactly zero in floating point. This mismatch between the stated convention and the \ac{sg} implementation is already present in \textcite{playingBackward2026}; we carry it over because the \ac{sg} results of this thesis are those of that implementation. The two conventions coincide whenever no pre-activation on the
+evaluated input is exactly zero, which is the typical case on natural images. In the float32 audit on VGG-16 (Section~\ref{sec:additional-controls}), an exactly zero pre-activation occurred at one neuron in each of $3$ of the $50$ validation images and measurably changed the reconstructed gradient of one of them, by a relative $\ell_2$ error of $2.9\times10^{-4}$; in float64, none occurred. For smooth activations, the question does not arise: the GELU gate $\Phi(z)$ and the Softplus policy of Section~\ref{ptnb:app:softplus-stopping-game} are continuous in the pre-activation, so no tie has to be broken.
 \end{remark}
 
 \subsection{Skip Connections and Max-Pooling}\label{ptnb:app:skip-connections}
+
+At an addition $z=x+y$, the Stopping Decomposition adds the operand split-streams, $z^{(\sigma)}=x^{(\sigma)}+y^{(\sigma)}$; at a max-pooling node, it copies those of the selected operand, $z^{(\sigma)}=x_{k^\star}^{(\sigma)}$, as in the winner-take-all rule of Section~\ref{sec:cnn_decompositions}. An operand without its own gate, such as the convolution and batch-normalization branch that ResNet-50 adds before its ReLU, enters as a forced-continuation state like the readout root of Section~\ref{ptnb:app:affine-readout}.
 
 \begin{definition}[Addition Oracle]\label{ptnb:def:addition-subgame}
 For $z=x+y$, state $s_{z,q}^{\mathrm{add}}$ selects $s_{x,q}$ or $s_{y,q}$ with probability
@@ -259,7 +265,7 @@ $\gamma_{\mathrm O}=2$.
 \begin{proposition}[Addition equivalence, \LeanResult{ptnb:prop:addition-equivalence}]\label{ptnb:prop:addition-equivalence}
 For every policy,
 $\tilde V_p^\pi(s_{z,q}^{\mathrm{add}})=\tilde V_p^\pi(s_{x,q})+\tilde V_p^\pi(s_{y,q})$.
-Hence operand values recovering the stopping streams give
+Hence operand values recovering the stopping split-streams give
 $\tilde V_p^{\pi^\star}(s_{z,q}^{\mathrm{add}})=x^{(p\oplus q)}+y^{(p\oplus q)}=z^{(p\oplus q)}$.
 \end{proposition}
 \begin{proof}
@@ -267,7 +273,7 @@ The Bellman equation has zero payoff and probability--discount product $2(1/2)=1
 \end{proof}
 
 The uniform oracle is a convention, not an architectural constraint. Any $0<\rho<1$ with branch
-probabilities $(\rho,1-\rho)$ and branch-dependent discounts $(1/\rho,1/(1-\rho))$ preserves
+probabilities $(\rho,1-\rho)$ and branch-dependent discounts $(1/\rho,1/(1-\rho))$, placed on two intermediate states so that Definition~\ref{ptnb:def:occupation} applies, preserves
 forward values and the gradient occupations of Theorem~\ref{ptnb:thm:deriv-occ}, since each
 probability--discount product is one. A single state discount requires
 $\rho\gamma_{\mathrm O}=(1-\rho)\gamma_{\mathrm O}=1$, forcing $\rho=1/2$.
@@ -287,7 +293,7 @@ The selected equilibrium gives
 $\tilde V_p^{\pi^\star}(s_{z,q}^{\max})=x_{k^\star}^{(p\oplus q)}=z^{(p\oplus q)}$.
 \end{proposition}
 \begin{proof}
-Player $q$ maximizes its payoff advantage $\tilde V_q^{\pi^\star}(s_{x_k,q})-\tilde V_{q'}^{\pi^\star}(s_{x_k,q})=x_k^+-x_k^-=x_k$, so it selects the stated maximizer, including when all operands are negative. The deterministic, unit-discount Bellman recursion copies that operand's player-specific values.
+Player $q$ maximizes its payoff advantage $\tilde V_q^{\pi^\star}(s_{x_k,q})-\tilde V_{q'}^{\pi^\star}(s_{x_k,q})=x_k^{(+)}-x_k^{(-)}=x_k$, so it selects the stated maximizer, including when all operands are negative. The deterministic, unit-discount Bellman recursion copies that operand's player-specific values.
 \end{proof}
 Tied maximizers have equal forward values but may induce different trajectories and occupations;
 all subsequent statements use the smallest-index convention.
@@ -317,7 +323,7 @@ at max-pooling states; a stopping move has unit discount. Define
 \begin{theoremenv}[Gradient and occupation representation, \LeanResult{ptnb:thm:deriv-occ}, \LeanResult{ptnb:thm:gradient}]\label{ptnb:thm:deriv-occ}\label{thm:gradient_occupation}\label{ptnb:thm:gradient}
 Fix $s=s_{j,q}^{(m,\mathrm{act})}$ and $l\leq m$, interpreting layer-$0$ states as terminals.
 On strict activation cells with unique pooling winners, the selected
-stop-at-tie-breaks equilibrium gives, also for networks with skip connections and max-pooling,
+equilibrium, which stops at activation ties, gives, also for networks with skip connections and max-pooling,
 \begin{align}
  \frac{\partial a_{\mathrm{stop},j}^{(m,p\oplus q)}}
       {\partial a_{\mathrm{stop},i}^{(l,k)}}
@@ -328,7 +334,7 @@ stop-at-tie-breaks equilibrium gives, also for networks with skip connections an
 \end{align}
 Thus $\partial_i f(x)=\Gamma_x(s_{i,+}^{(0)})-\Gamma_x(s_{i,-}^{(0)})$ at the output root.
 At ties these formulas describe the selected backward quantities, not classical derivatives of
-individual stopping streams, which may be discontinuous. All occupations are non-negative.
+individual stopping split-streams, which may be discontinuous. All occupations are non-negative.
 \end{theoremenv}
 
 \begin{proof}
@@ -374,7 +380,7 @@ policies, opening a continuous family of deformations.
 
 \section{The Routing Game}\label{ptnb:sec:routing}\label{subsec:routing_game_def}\label{ptnb:app:routing-formal}
 
-The Routing Game places activation-dependent routing in the players' policies. Its entropy-regularized log-space subgames have a Gibbs SPNE for every $\tau>0$; at $\tau=1$, their occupations recover $\alpha\beta$-\ac{lrp} under the assumptions of Theorem~\ref{ptnb:thm:ab-recovery}. This global construction assumes non-negative activation outputs. The later GELU discussion concerns local gates conditioned on a fixed forward pass.
+The Routing Game places activation-dependent routing in the players' policies. Its entropy-regularized log-space subgames have a Gibbs SPNE for every $\tau>0$; at $\tau=1$, their occupations recover $\alpha\beta$-\ac{lrp} under the assumptions of Theorem~\ref{ptnb:thm:ab-recovery}. This global construction assumes non-negative activation outputs; at the first layer, signed raw inputs enter through the fused contributions $[x_iW_{ij}]^\kappa$. In ViT-B/16, the activations after LayerNorm, GELU and residual additions are signed as well. They are handled by applying the fused contributions locally at each block (Section~\ref{ptnb:sec:attention}), so the ViT rule composes conditioned local rules and is not an instance of Theorem~\ref{ptnb:thm:ab-recovery}. The later GELU discussion concerns local gates conditioned on a fixed forward pass.
 
 \subsection{States, Values, and Equilibrium}\label{ptnb:app:routing-kernel}
 
@@ -401,7 +407,7 @@ Fix a network input $x$, $\varepsilon\geq0$, and $\tau>0$. A neuron has activati
  A\bigl(s_{j,q,\kappa}^{(l,\mathrm{lin})}\bigr)&=[d^{(l-1)}]\uplus\{\mathrm{bias},\perp_{\mathrm{lin}}\},
 \end{aligned}
 \]
-where $i\in[d^{(l-1)}]$ selects predecessor $i$, $\mathrm{bias}$ selects a terminal bias node, and $\perp_{\mathrm{lin}}$ is an absorbing outside option.
+where $i\in[d^{(l-1)}]$ selects predecessor $i$, $\mathrm{bias}$ selects a terminal bias node, and $\perp_{\mathrm{lin}}$ is an absorbing outside option. At $l=1$, action $i$ ends at the input terminal $s_{i,q}^{(0,\mathrm{act})}$ of player $q$.
 At an activation state, player $p$ stops at $\dagger$ with both payoffs $-\infty$, or continues uniformly to $s_+=s_{j,p,+}^{(l,\mathrm{lin})}$ and $s_-=s_{j,p',-}^{(l,\mathrm{lin})}$. The negative branch switches players; structural value discount $\gamma_O=2$ compensates the $1/2$ branching.
 At a linear state $s=s_{j,q,\kappa}^{(l,\mathrm{lin})}$, player $q$ chooses a distribution $\nu\in\Delta(A(s))$. For $r\in\{q,q'\}$ and $a\in A(s)$, the action gains are
 \begin{equation}\label{ptnb:eq:routing-linear-action}
@@ -414,7 +420,7 @@ At a linear state $s=s_{j,q,\kappa}^{(l,\mathrm{lin})}$, player $q$ chooses a di
  \end{cases}
 \end{equation}
 \AliasLabel{ptnb:eq:q-value}{ptnb:eq:routing-linear-action}
-Bias and outside shares are absorbed. The entropy-regularized opponent-payoff differences reduce to
+Bias and outside shares are absorbed. The entropy-regularized opponent-payoff differences are defined by the first line and, by~\eqref{ptnb:eq:routing-linear-action}, reduce to the second:
 \begin{align}\label{ptnb:eq:optimal-linear}
  \bar Q_r(s;\nu)&=\sum_a\nu(a)\ell\bigl(e^{Q_r(s,a)}-e^{Q_{r'}(s,a)}\bigr)+\tau\Entropy(\nu),\nonumber\\
  \bar Q_q(s;\nu)&=\sum_a\nu(a)Q_q(s,a)+\tau\Entropy(\nu),\qquad \bar Q_{q'}(s;\nu)=-\infty.
@@ -426,7 +432,7 @@ Consequently, the equilibrium linear values are
  V_{q'}^\star(s)&=-\infty.
 \end{align}
 \AliasLabel{ptnb:eq:soft-bellman}{ptnb:eq:routing-linear-value}
-An identically zero weight/bias stream has value $\ell(\varepsilon)$. If all scores are $-\infty$ (including the outside score), every mixture is optimal; we select $\nu=\delta_{\perp_{\mathrm{lin}}}$ and set ordinary-successor fractions $0/0\coloneqq0$. Otherwise, when $\varepsilon=0$, the outside option has zero probability and the game reduces to predecessor/bias routing.
+An identically zero weight/bias sign stream has value $\ell(\varepsilon)$. If all scores are $-\infty$ (including the outside score), every mixture is optimal; we select $\nu=\delta_{\perp_{\mathrm{lin}}}$ and set ordinary-successor fractions $0/0\coloneqq0$. Otherwise, when $\varepsilon=0$, the outside option has zero probability and the game reduces to predecessor/bias routing.
 
 At an activation state, let $D_p=e^{V_p(s_+)}-e^{V_{p'}(s_-)}$. The uniform branch kernel and value discount give
 \begin{equation}\label{ptnb:eq:routing-activation-continue}
@@ -463,7 +469,7 @@ Normalization includes the bias and outside weights $([b_j^{(l)}]^\kappa)^{1/\ta
 \end{align}
 \end{theoremenv}
 \begin{proof}
-Backward induction solves each linear subgame by~\eqref{ptnb:eq:gibbs-lse} on its finite-score simplex face, or by the selected absorbing action if that face is empty. The activation player continues exactly when its gain exceeds stopping's $-\infty$. These best responses compose to an SPNE on the finite DAG, including terminal bias/outside actions.
+Backward induction solves each linear subgame by~\eqref{ptnb:eq:gibbs-lse} on its finite-score simplex face, or by the selected absorbing action if that face is empty. The activation player continues exactly when its gain exceeds stopping's $-\infty$. These best responses compose to an SPNE on the finite DAG, including terminal bias/outside actions (Remark~\ref{ptnb:rem:routing-utilities}).
 
 For the anchor, induct on $l$. The first layer uses the fused masses $[x_iW_{ij}^{(1)}]^\kappa$; subsequently, $a_i^{(l-1)}\geq0$ gives $Q_q=\ell(a_i^{(l-1)}W_{ij}^{(l,\kappa)})$ by the induction hypothesis. The linear log-sum-exp is therefore $\ell(\Sigma_j^{(l,\kappa)}+\varepsilon)$. At activation states the two $\varepsilon$ terms cancel, leaving $D_p=\Sigma_j^{(l,+)}-\Sigma_j^{(l,-)}=z_j^{(l)}$. The selected gate gives $a_j^{(l)}=\relu(z_j^{(l)})$; its opponent receives $-\infty$ whether the gate continues or stops. This proves all four identities.
 \end{proof}
@@ -489,17 +495,17 @@ while first-layer, bias and outside actions keep their fixed gains. Both recursi
 \]
 Since $\ell$ is non-decreasing, neither player can raise its log-space utility in any subgame, whatever the number of states at which it deviates. The choices of Definition~\ref{ptnb:def:routing-recursion} are the local optimizers of $U$: the controlling player continues exactly when $D_p>0$, and the Gibbs mixture maximizes the routed mass by~\eqref{ptnb:eq:gibbs-lse}.
 
-A value of $-\infty$ means that the player's signed mass is non-positive. Where every action of the controlling player gives $-\infty$---an activation state with $D_p\le0$, or a linear state whose stream is empty---that player is indifferent; stopping at ties and the absorbing outside action select the canonical profile among these equilibria (Remark~\ref{ptnb:rem:routing-spne-uniqueness}). The Lean development linked at Theorem~\ref{ptnb:thm:routing-forward} defines the utilities of all profiles and proves subgame perfection in this sense.
+A value of $-\infty$ means that the player's signed mass is non-positive. Where every action of the controlling player gives $-\infty$---an activation state with $D_p\le0$, or a linear state whose sign stream is empty---that player is indifferent; stopping at ties and the absorbing outside action select the canonical profile among these equilibria (Remark~\ref{ptnb:rem:routing-spne-uniqueness}). The Lean development linked at Theorem~\ref{ptnb:thm:routing-forward} defines the utilities of all profiles and proves subgame perfection in this sense.
 \end{remark}
 
 \begin{remark}[Uniqueness]\label{ptnb:rem:routing-spne-uniqueness}
-Strict concavity makes Gibbs routing unique when finite-score support is nonempty; otherwise every mixture is optimal and the selected outside action absorbs the trajectory. At an activation state, $D_p\leq0$ makes both active-player action values $-\infty$, so multiple best responses exist. Our \emph{stop-at-tie-breaks} convention resolves these ties as well as empty streams. At $\tau=1$ it selects the activation-vector entry $\chi_j^{(l)}(x)$.
+Strict concavity makes Gibbs routing unique when finite-score support is nonempty; otherwise every mixture is optimal and the selected outside action absorbs the trajectory. At an activation state, $D_p\leq0$ makes both active-player action values $-\infty$, so multiple best responses exist. The convention of stopping at activation ties resolves these ties, as it does for empty sign streams. At $\tau=1$ it selects the activation-vector entry $\chi_j^{(l)}(x)$.
 \end{remark}
 
 \begin{figure}[ht]
  \centering
- \includegraphics[width=0.6\textwidth]{figures/ptnb_v2/RoutingGame.png}
- \caption[Routing Game: a local routing subgame]{Routing around $s_{2,+}^{(2,\mathrm{act})}$ in the toy network of Figure~\ref{ptnb:fig:Stopping-Game-illustration}. Since $V^+=\log9>-\infty$, $P^+$ continues, retaining the turn on the positive branch or switching to $P^-$ on the negative branch, each with probability $1/2$. Linear states use Gibbs routing. Along $s_{2,+,+}^{(2,\mathrm{lin})}\to s_{1,+}^{(1,\mathrm{act})}$ the active payoff is $\log W_{12}^{(2,+)}=\log7$ and the opponent's is $-\infty$; zero-mass edges have $\log0=-\infty$. The layer-1 activation copies are collapsed, and the intermediate payoff $\log2$ on the position-$2$ to $2$ transition is omitted. This is an illustrative variant: neuron 3 is assigned active payoff $60$ here, whereas the Stopping Game illustration uses the configuration in which neuron 3 stops.}
+ \includegraphics[width=0.6114\textwidth]{figures/ptnb_v2/RoutingGame.png}
+ \caption[Routing Game: a local routing subgame]{Routing around $s_{2,+}^{(2,\mathrm{act})}$ in the toy network of Figure~\ref{ptnb:fig:Stopping-Game-illustration}. Since $V^+=\log30>-\infty$, $P^+$ continues, retaining the turn on the positive branch or switching to $P^-$ on the negative branch, each with probability $1/2$. Linear states use Gibbs routing. Along $s_{2,+,+}^{(2,\mathrm{lin})}\to s_{1,+}^{(1,\mathrm{act})}$ the active payoff is $\log W_{12}^{(2,+)}=\log7$ and the opponent's is $-\infty$; zero-mass edges have $\log0=-\infty$. The layer-1 activation copies are collapsed, and the intermediate payoff $\log2$ on the position-$2$ to $2$ transition is omitted. This is an illustrative variant: neuron 3 is assigned active payoff $60$ here, whereas the Stopping Game illustration uses the configuration in which neuron 3 stops.}
  \label{ptnb:fig:Routing-Game-illustration}
 \end{figure}
 
@@ -510,11 +516,14 @@ Use the addition oracle of Section~\ref{ptnb:app:skip-connections} (uniform oper
  V_r(s^{\mathrm{add}}_{z,p})=\ell(e^{V_r(s_{x,p})}+e^{V_r(s_{y,p})}),
  \qquad V_p(s^{\max}_{z,p})=\max_kV_p(s_{x_k,p}).
 \end{equation}
-At $\tau=1$, for the active player and non-negative operand activations, these equal $\ell(a_x+a_y)$ and $\ell(\max_k a_{x_k})$, extending forward equivalence. Addition's \emph{trajectory} discount is $1$, so each operand receives half its incoming occupation. More generally, an oracle with probabilities $(\rho,1-\rho)$, $0<\rho<1$, and value discounts $(1/\rho,1/(1-\rho))$ preserves forward values but splits relevance as $(\rho,1-\rho)$: uniform splitting is a routing convention. The implementation instead sends full relevance to both operands (trajectory discount $2$). Every input-reaching trajectory in the evaluated ResNet/\ac{vit} crosses each of its $B$ addition nodes once, so this multiplies input occupations by $2^B$ and preserves normalized maps.
+At $\tau=1$, for the active player and non-negative operand activations, these equal $\ell(a_x+a_y)$ and $\ell(\max_k a_{x_k})$, extending forward equivalence. Addition's \emph{trajectory} discount is $1$, so each operand receives half its incoming occupation. More generally, an oracle with probabilities $(\rho,1-\rho)$, $0<\rho<1$, and value discounts $(1/\rho,1/(1-\rho))$ preserves forward values but splits relevance as $(\rho,1-\rho)$: uniform splitting is a routing convention. Uniform addition routing is distinct from activation-proportional \ac{lrp} redistribution, and the forward equivalence of~\eqref{ptnb:eq:routing-add-max} needs non-negative operands, whereas ResNet-50 and ViT-B/16 also add signed ones; $\alpha\beta$-\ac{lrp} recovery on these networks is therefore understood relative to this convention. The implementation instead sends full relevance to both operands (trajectory discount $2$). Every input-reaching trajectory in the evaluated ResNet/\ac{vit} crosses each of its $B$ addition nodes once, so this multiplies input occupations by $2^B$ and preserves normalized maps.
+
+\paragraph{Average pooling and batch normalization.}
+Two affine operations of ResNet-50, which the linear states would cover, are handled by implementation conventions instead: the relevance of the global average pool is redistributed uniformly, which deviates from the $\alpha\beta$ rule, and batch normalization is merged into the preceding convolution with an $\varepsilon$-stabilized rule. VGG-16, whose average pool is the identity at $224\times224$, and ViT-B/16 are unaffected.
 
 \subsection{Occupation Measures and Relevance Recovery}\label{ptnb:app:routing-attribution}
 
-Let $\Pi_x$ start at $s_{u,+}^{(L,\mathrm{act})}$ with unit mass. For $\alpha,\beta\geq0$ with $\alpha-\beta=1$, use Definition~\ref{ptnb:def:occupation} with the \emph{entered-state} trajectory discounts
+Let $\Pi_x$ be the trajectory law of Definition~\ref{ptnb:def:trajectory-distribution} for the Routing Game kernels and equilibrium policies, started at $s_{u,+}^{(L,\mathrm{act})}$ with unit mass. For $\alpha,\beta\geq0$ with $\alpha-\beta=1$, which we call the \emph{discount pair} $(\alpha,\beta)$, use Definition~\ref{ptnb:def:occupation} with the \emph{entered-state} trajectory discounts
 \begin{equation}\label{ptnb:eq:routing-edge-discount}
  \gamma(s)=\begin{cases}
  2\alpha,&s=s_{j,q,+}^{(l,\mathrm{lin})},\\
@@ -533,7 +542,7 @@ These discounts differ from those evaluating game values and keep each occupatio
 Independently of the game, the $\alpha\beta$-\ac{lrp}-$\varepsilon$ relevance vector follows the recursion~\eqref{ptnb:eq:lrp-eps-recursion} from $R_j^{(L)}=r\delta_{j,u}$. Bias and outside shares are absorbed. This combines Bach et al.'s $\alpha\beta$-\ac{lrp} with a separate $\varepsilon$ in each sign denominator: \textcite{Bach2015} present the two rules as alternative constructions and do not state this combined form; it is the convention of common \ac{lrp} implementations~\parencite{Anders2021Zennit}. At $\varepsilon=0$, the affine rule is the original $\alpha\beta$-\ac{lrp}, with bias absorption retained. This separate stabilization of the two sign denominators differs from the ordinary $\varepsilon$-rule in~\eqref{eq:lrp_gamma_overview} (\hyperref[par:other_lrp_games]{discussion of other LRP rules}).
 
 \begin{theoremenv}[Recovery of Multi-Path $\alpha\beta$-\ac{lrp}, \LeanResult{ptnb:thm:ab-recovery}, \LeanResult{ptnb:thm:lrp-recovery}]\label{ptnb:thm:ab-recovery}\label{ptnb:thm:lrp-recovery}\label{thm:lrp_recovery}
-Consider the \ac{mlp} above with non-negative activations. The Gibbs policies and selected continuation decisions give the canonical SPNE of Theorem~\ref{ptnb:thm:routing-forward} for every $\tau>0$. At $\tau=1$, for $\varepsilon\geq0$ and $f(x)=a_u^{(L)}>0$, using stop-at-log-ties and empty-stream absorption, the projected occupations satisfy
+Consider the \ac{mlp} above with non-negative activations. The Gibbs policies and selected continuation decisions give the canonical SPNE of Theorem~\ref{ptnb:thm:routing-forward} for every $\tau>0$. At $\tau=1$, for $\varepsilon\geq0$ and $f(x)=a_u^{(L)}>0$, using the convention of stopping at activation ties and the absorption of empty sign streams, the projected occupations satisfy
  \begin{equation}\label{ptnb:eq:lrp-eps-recovery}
  \Gamma_i^{(l-1)}=\sum_j\left(
  \alpha\frac{[a_i^{(l-1)}W_{ij}^{(l)}]^+}{\Sigma_j^{(l,+)}+\varepsilon}
@@ -543,13 +552,13 @@ Consider the \ac{mlp} above with non-negative activations. The Gibbs policies an
  The unit starting mass gives unit-seeded relevance; multiplying by the initial relevance $r$ gives $R_j^{(l)}=r\Gamma_j^{(l)}$ at every layer. Taking $r=f(x)$ recovers the usual output-seeded LRP map. At the input, sign fusion (Section~\ref{ptnb:app:routing-kernel}) gives the same rule with $a^{(0)}=x$ and $0/0=0$. If $f(x)=0$, the root stops and output-seeded relevance is zero at every layer.
 \end{theoremenv}
 \begin{proof}
-The process starts with unit mass at the positive copy of output neuron $u$, giving $\Gamma_j^{(L)}=\delta_{j,u}$. For $\tau=1$, the Gibbs policy assigns the following action probabilities to each nonempty linear stream:
+The process starts with unit mass at the positive copy of output neuron $u$, giving $\Gamma_j^{(L)}=\delta_{j,u}$. For $\tau=1$, the Gibbs policy assigns the following action probabilities to each nonempty sign stream:
 \begin{equation}\label{ptnb:eq:lrp-eps-policy}
  \pi_{j,\kappa}^\star(i)=\frac{[a_i^{(l-1)}W_{ij}^{(l)}]^\kappa}{\Sigma_j^{(l,\kappa)}+\varepsilon},\quad
  \pi_{j,\kappa}^\star(\mathrm{bias})=\frac{[b_j^{(l)}]^\kappa}{\Sigma_j^{(l,\kappa)}+\varepsilon},\quad
  \pi_{j,\kappa}^\star(\perp_{\mathrm{lin}})=\frac{\varepsilon}{\Sigma_j^{(l,\kappa)}+\varepsilon}.
 \end{equation}
-A zero activation has zero incoming routing mass, so every occupied activation and the positive root continue; empty streams absorb. Writing $g_j^{(l)}=\chi_j^{(l)}(x)$, the uniform branch probabilities cancel the factors $2$ in the trajectory discounts, while negative branches switch players. Thus, for either player $p$,
+A zero activation has zero incoming routing mass, so every occupied activation and the positive root continue; empty sign streams absorb. Writing $g_j^{(l)}=\chi_j^{(l)}(x)$, the uniform branch probabilities cancel the factors $2$ in the trajectory discounts, while negative branches switch players. Thus, for either player $p$,
 \begin{equation}\label{ptnb:eq:routing-per-state-recursion}
  \Gamma_x(s_{i,p}^{(l-1,\mathrm{act})})=\sum_j g_j^{(l)}\left[
  \alpha\pi_{j,+}^\star(i)\Gamma_x(s_{j,p}^{(l,\mathrm{act})})+
@@ -573,9 +582,11 @@ Solving every subgame at $\tau>0$ yields an SPNE, with exact forward recovery an
  \exp\!\bigl(Q_q(s_{j,q,\kappa}^{(l,\mathrm{lin})},i)/\tau\bigr),
  \qquad V(s_{i,q}^{(l-1,\mathrm{act})})\text{ fixed at its }\tau=1\text{ value}.
 \end{equation}
-The players are therefore \emph{unaware} of the $\tau$-deformation: their decisions rest on the Bellman equations at temperature 1 (the network forward pass), and only the local routing readout is perturbed. Re-solving downstream at $\tau$ would change those values. For non-negative predecessor activations, ordinary route weights become $(a_i^{(l-1)}W_{ij}^{(l,\kappa)})^{1/\tau}$: $\tau<1$ sharpens and $\tau>1$ flattens routing. No exactness is claimed for this deformation at $\tau\neq1$.
+The downstream continuation values remain fixed at their $\tau=1$ values: decisions rest on the Bellman equations at temperature 1 (the network forward pass), and only the local routing readout is perturbed. Re-solving downstream at $\tau$ would change those values. For non-negative predecessor activations, ordinary route weights become $(a_i^{(l-1)}W_{ij}^{(l,\kappa)})^{1/\tau}$: $\tau<1$ sharpens and $\tau>1$ flattens routing. No exactness is claimed for this deformation at $\tau\neq1$.
 \begin{changed}Figure~\ref{fig:vit_temperature} compares the resulting heatmaps at four temperatures with all other settings fixed; Table~\ref{ptnb:tab:vit-temperature} quantifies their localization and Pixel Flipping performance.\end{changed}
-The implementation raises activations, weights and bias-node masses to the power $1/\tau$ but keeps the outside-option weight at $\varepsilon$ rather than $\varepsilon^{1/\tau}$. On ResNet-50 it redistributes global-average-pool relevance uniformly and merges batch normalization into the preceding convolution with an $\varepsilon$-stabilized rule. These are additional implementation conventions beyond the addition and activation-gate rules above; VGG-16 (identity average pool at $224\times224$) and ViT-B/16 are unaffected.
+The implementation raises activations, weights and bias-node masses to the power $1/\tau$ but keeps the outside-option weight at $\varepsilon$ rather than $\varepsilon^{1/\tau}$.
+
+``Myopic'' can be read literally: the players account for the changed entropy regularization in their current routing decision while evaluating future play with the unchanged anchor continuation values. With the implementation's fixed outside-option convention (equivalently, a local outside score $\tau\log\varepsilon$), their locally optimal policies generate exactly the implemented trajectory law. This retains non-negative trajectory masses and a signed discounted readout, but it is generally not the SPNE of the recursively re-solved game, whose activation stopping decisions need not equal the original ReLU gates. Exact $\alpha\beta$-\ac{lrp} recovery is the $\tau=1$ anchor result.
 
 \subsection{Signed Affine Output Logits}\label{ptnb:app:affine-readout}
 
@@ -619,8 +630,8 @@ Here $\alpha,\beta\geq0$, $\alpha-\beta=1$, and $\varepsilon\geq0$; bias and sta
 are absorbed. For an empty sign stream the ordinary masses are zero (including the $0/0=0$ case
 when $\varepsilon=0$), and that branch goes to the cemetery. The logarithms in the Routing Game
 are applied only to these non-negative masses, never to the signed logit itself. With
-$\Gamma^{\mathrm{RG}}_{j,\sigma}(i)$ the corresponding unit-source hidden occupations of the
-Routing Game, set
+$\Gamma^{\mathrm{RG}}_{j,\sigma}(i)$ the occupation of the positive input terminal
+$s_{i,+}^{(0,\mathrm{act})}$ from a unit source at hidden neuron $j$ with player $\sigma$, set
 \[
  \widehat\Gamma_\sigma(i)=\sum_j\bigl(q_j^+\Gamma^{\mathrm{RG}}_{j,\sigma}(i)
                   +q_j^-\Gamma^{\mathrm{RG}}_{j,\opp{\sigma}}(i)\bigr).
@@ -639,15 +650,15 @@ is nonzero. In contrast, the ReLU-gated root of Theorem~\ref{ptnb:thm:ab-recover
 nonpositive output, so there even the unit-seeded map vanishes.
 The released routine uses the unit seed at the affine logit. The affine readout formulas are a composition of
 the established hidden-game recursions, not a claim of a new signed-output equilibrium theorem;
-independent numerical recovery checks are reported in Appendix~\ref{app:rebuttal-rg}.
+independent numerical recovery checks are reported in Section~\ref{sec:additional-controls}.
 
 \section{Game-Theoretic Modes}\label{ptnb:sec:modes}\label{sec:risk_aversion_regularization}\label{ptnb:sec:controls}\label{ptnb:app:modes}
 
-Game-theoretic concepts like risk aversion and entropy regularization map back to modes of the backward rules for probing and tuning explanation properties. The exact \ac{sg} and \ac{rg} anchors recover gradients and $\alpha\beta$-\ac{lrp}; temperature, risk aversion, gate smoothing and equivariant averaging deform the backward rule and recover the anchor at their defaults. Replacing ReLU by Softplus or applying the fan-in entropy bias changes the explained network's forward pass. Here $(\alpha,\beta)$ denotes the \ac{lrp} discount pair with $\alpha-\beta=1$, distinct from the backward shift $\alpha\in[0,\tfrac12]$ of Section~\ref{subsec:backward_stabilization}. Section~\ref{ptnb:app:dual-sweeps} reports the empirical sweeps.
+Game-theoretic concepts like risk aversion and entropy regularization map back to modes of the backward rules for probing and tuning explanation properties. The exact \ac{sg} and \ac{rg} anchors recover gradients and $\alpha\beta$-\ac{lrp}; temperature, risk aversion, gate smoothing and averaging over sampled transformations deform the backward rule and recover the anchor at their defaults. Replacing ReLU by Softplus or applying the fan-in entropy bias changes the explained network's forward pass. Here $(\alpha,\beta)$ denotes the \ac{lrp} discount pair with $\alpha-\beta=1$, distinct from the backward shift $\alpha\in[0,\tfrac12]$ of Section~\ref{subsec:backward_stabilization}. Section~\ref{ptnb:app:dual-sweeps} reports the empirical sweeps.
 
 \subsection{Modes and Defaults}\label{ptnb:app:mode-guide}
 
-Table~\ref{ptnb:tab:modes} summarizes the modes and their defaults. Measured costs and the validation-selection protocol are reported in Section~\ref{sec:results_vit}.
+Table~\ref{ptnb:tab:modes} summarizes the modes and their defaults. Measured costs are reported in Table~\ref{ptnb:tab:eval-vit} and Section~\ref{app:game_timing}, and the validation-selection protocol in Section~\ref{sec:results_vit}.
 
 \begin{table}[t]
     \centering
@@ -661,13 +672,13 @@ Table~\ref{ptnb:tab:modes} summarizes the modes and their defaults. Measured cos
         \toprule
         Mode & Default & Effect \\
         \midrule
-        $(\alpha,\beta)$, $\varepsilon$ & $(2,1)$, $0.5$ & Stream discounts and outside-option absorption (exact) \\
+        $(\alpha,\beta)$, $\varepsilon$ & $(2,1)$, $0.5$ & \ac{lrp} discount pair and outside-option absorption (exact) \\
         $\tau$ & $1$ & sharper ($\tau<1$) or more diffuse ($\tau>1$) routing \\
         $\lambda$, $\sigma^2$ & $\lambda{=}0$ & lowers high-variance activation-state values \\
         $\lambda_{\mathrm{sm}}$, $\sigma^2$ & $0$ & shifts attention logits by per-key uncertainty \\
         $\tilde\Phi$ & off & smooth stop/continue gate \\
         $\theta$ & $0$ (limit) & replaces ReLU by Softplus through entropy-regularized stopping \\
-        $N$ & off & equivariant averaging (token-grid artifacts) \\
+        $N$ & off & averaging over sampled transformations (token-grid artifacts) \\
         $\lambda_{\mathrm{ent}}$ & $0$ & fan-in entropy penalty on the forward bias \\
         \bottomrule
     \end{tabularx}
@@ -677,19 +688,19 @@ Table~\ref{ptnb:tab:modes} summarizes the modes and their defaults. Measured cos
 
 \paragraph{Focus and exact modes.}
 The myopic Gibbs temperature retains the $\tau=1$ game values (Section~\ref{ptnb:app:routing-temp}):
-low $\tau$ concentrates routing on dominant predecessors; high $\tau$ spreads mass more uniformly, exposing broader contextual features as well as architectural priors. The exact $(\alpha,\beta)$ parameters weight support and opposition; the \ac{lrp} stabilizer $\varepsilon$ adds an outside option with log-score $\log\varepsilon$, leaking weak-evidence neurons into the
-cemetery while leaving neurons with strong evidence nearly unaffected (Theorem~\ref{ptnb:thm:ab-recovery}).
+low $\tau$ concentrates routing on dominant predecessors; high $\tau$ spreads mass more uniformly, exposing broader contextual features as well as architectural priors. The discount pair $(\alpha,\beta)$, an exact mode, weights support and opposition; the \ac{lrp} stabilizer $\varepsilon$ adds an outside option with log-score $\log\varepsilon$, absorbing a larger fraction of relevance where the sign-stream mass is small,
+while leaving neurons with strong evidence nearly unaffected (Theorem~\ref{ptnb:thm:ab-recovery}).
 
-\paragraph{Equivariant averaging.}\label{subsec:technicalities}
+\paragraph{Averaging over sampled transformations.}\label{subsec:technicalities}
 The $16\times16$ patch tokenization breaks translation equivariance. Following DAVE's transform-averaging strategy~\parencite{Wrobel2024}, \ac{rg}+Eq computes explanations on transformed inputs, maps each explanation back to the original image coordinates, and averages the aligned maps (a Monte Carlo average over transformations). Sections~\ref{sec:vit_implementation} and~\ref{ptnb:app:equivariant} specify the conditioned operators and spatial transforms.
 
 \subsection{Activation-Side Risk Aversion \texorpdfstring{$\lambda$}{lambda} via ADF Variance Propagation}\label{ptnb:app:adf-variance}
 
 \Ac{ptnbADF}~\parencite{gast2018lightweight} propagates a Gaussian mean and variance for every pre-activation from variance $\sigma^2$ at every input in one additional moment pass. We use the exact
 $\E[\relu(X)]$ for $X\sim\mathcal N(\mu,\sigma^2)$; our implementation approximates its variance
-by $\sigma^2\Phi(\mu/\sigma)$. At activation states, risk aversion uses the lower-confidence value
-$V_\lambda=\mu+\lambda\sigma$, $\lambda\le0$, based on the ADF pre-activation mean and
-standard deviation. The propagated post-ReLU mean $\E[\relu(X)]$ can differ from the deterministic
+by $\sigma^2\Phi(\mu/\sigma)$. At activation states, the active player compares the lower-confidence value
+$V_\lambda=z+\lambda\sigma$, $\lambda\le0$, of the original pre-activation $z$ and the ADF
+standard deviation $\sigma$ with the stopping payoff zero, so $\lambda=0$ gives the anchor gate. The propagated post-ReLU mean $\E[\relu(X)]$ can differ from the deterministic
 activation $\relu(z)$, but the captured \ac{sg} gate uses the original pre-activation. With the
 probabilistic gate enabled, routing can still differ at $\lambda=0$ through $\Phi(z/\sigma)$
 instead of the hard gate.
@@ -698,7 +709,7 @@ The attention variant shifts logits by $\lambda_{\mathrm{sm}}$ times a token-ind
 square root of feature-averaged variance of the key token's query projection, not a per-logit
 standard deviation (Section~\ref{ptnb:app:risk-attn}).
 
-\begin{changed}The validation-selected ViT attention-risk mode reduces both sensitivity metrics on 565 test images, with a substantial localization cost (Table~\ref{tab:rebuttal-risk}). This motivates separating the intended effect of a risk penalty from its measured effects on different attribution criteria.\end{changed}
+\begin{changed}The validation-selected ViT attention-risk mode reduces both sensitivity metrics on 565 test images, with a substantial localization cost (Section~\ref{sec:additional-controls}). This motivates separating the intended effect of a risk penalty from its measured effects on different attribution criteria.\end{changed}
 
 \subsection{Regularized Activation Gates}\label{ptnb:app:regularized-gates}
 
@@ -739,7 +750,7 @@ At every activation state,
 \end{equation}
 Here the Softplus split starts at $a_{\mathrm{soft},k}^{(0,\sigma,\theta)}=x_k^\sigma$, follows the affine
 recursion~\eqref{ptnb:eq:split-pos}--\eqref{ptnb:eq:split-neg}, and uses the entropy pair
-\eqref{eq:fsoft_def}, with $\mathrm{sp}_\theta=\sigma_\theta$ and
+\eqref{eq:fsoft_def}, with $\mathrm{sp}_\theta=s_{1/\theta}$, $z_j^{(l)}$ the pre-activations of the Softplus network with the same weights and biases, and
 $\Entropy_\theta(z)=\Entropy(\mathrm{sp}'_\theta(z))$.
 \end{theoremenv}
 \begin{proof}
@@ -785,13 +796,13 @@ entropy-regularized stopping. Whether the Hellinger response of the resulting tr
 
 \subsubsection{Noisy-Observation Gate \texorpdfstring{$\tilde\Phi$}{Phi}}\label{ptnb:app:noisy-gate-mode}
 
-Replace the hard activation gate $\1[\mu/\sigma+\lambda>0]$ by continuation probability
+Replace the hard activation gate $\1[z/\sigma+\lambda>0]$ by continuation probability
 \begin{equation}\label{ptnb:eq:noisy-gate-defn}
-    \tilde\Phi(z_i^{(l)})=\Phi\bigl(\mu_i^{(l)}/\sigma_i^{(l)}+\lambda\bigr),
+    \tilde\Phi_i^{(l)}=\Phi\bigl(z_i^{(l)}/\sigma_i^{(l)}+\lambda\bigr),
 \end{equation}
-with stopping probability $1-\tilde\Phi$, where $\Phi$ is the standard normal \ac{ptnbCDF} and
-$\mu_i^{(l)},\sigma_i^{(l)}$ are the \ac{ptnbADF} pre-activation mean and standard deviation.
-Thus input variance remains active whenever $\tilde\Phi$ is on. For $\mu=z$, $\sigma=1$,
+with stopping probability $1-\tilde\Phi_i^{(l)}$, where $\Phi$ is the standard normal \ac{ptnbCDF} and
+$\sigma_i^{(l)}$ is the \ac{ptnbADF} pre-activation standard deviation.
+Thus input variance remains active whenever $\tilde\Phi$ is on. For $\sigma=1$,
 $\lambda=0$, the gate has a variational interpretation using the normal density $\phi$ and quantile
 $\Phi^{-1}$:
 \begin{equation}\label{ptnb:eq:noisy-gate-regulariser}
@@ -816,7 +827,7 @@ The inverse-function rule and $\phi'(y)=-y\phi(y)$ give
     \RegBonus_\Phi''(\pi)=-1/\phi(\Phi^{-1}(\pi))<0.
 \end{equation}
 Strict concavity and the first-order condition give $\pi^\star=\Phi(z)$; substitution and Gaussian
-integration give the displayed value. For $\sigma>0$, replace $z$ by $\mu+\lambda\sigma$ and
+integration give the displayed value. For $\sigma>0$, replace $z$ by $z+\lambda\sigma$ and
 $\RegBonus_\Phi$ by $\sigma\RegBonus_\Phi$ to obtain~\eqref{ptnb:eq:noisy-gate-defn}.
 \end{proof}
 

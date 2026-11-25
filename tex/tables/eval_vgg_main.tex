@@ -2,10 +2,9 @@
 \begin{table}[htb!]
     \centering
     \small
-    \caption[Selected interpretability evaluation configurations: VGG-16]{Selected interpretability evaluation configurations (VGG-16, ImageNet-S test split). The \emph{wta} abbreviation indicates the use of the ``winner-take-all'' max-pooling implementation; \emph{sc} emphasizes the scaling procedure in the forward pass (Section~\ref{sec:stabilization_dc}). Best values per metric among the displayed rows are bold with dark blue shading; the full comparison is in Table~\ref{tab:xai_eval_comprehensive_vgg}. The bracket notation in the layer column follows the upper indices of the split methods as introduced in Section~\ref{sec:split_attribution_concept}.}
+    \caption[Selected interpretability evaluation configurations: VGG-16]{Selected interpretability evaluation configurations (VGG-16, ImageNet-S test split). The \emph{wta} abbreviation indicates the use of the ``winner-take-all'' max-pooling implementation; \emph{sc} emphasizes the scaling procedure in the forward pass (Section~\ref{sec:stabilization_dc}). Within each block, the best value of each metric is bold with dark blue shading; the full comparison is in Table~\ref{tab:xai_eval_comprehensive_vgg}. The bracket notation in the layer column follows the upper indices of the split methods as introduced in Section~\ref{sec:split_attribution_concept}.}
     \label{tab:eval_vgg_main}
 \TableContent{
-    \resizebox{\textwidth}{!}{%
     \begin{tabular}{p{4cm}cc cccccc}
         \toprule
     Method & Layer & Abs & Sel$\downarrow$ & AL$\uparrow$ & PG$\uparrow$ & PF$^{\mathrm{drop}}_5$$\uparrow$ & PF$^{\mathrm{drop}}_{20}$$\uparrow$ & MaxS$\downarrow$ \\
@@ -13,7 +12,7 @@
         \multicolumn{9}{c}{\textit{Split Methods}} \\
         \midrule
         SplitCAM (sc, $\alpha = 0.4$) & (12, g) & n & 4.720 & \cellbest{\textbf{0.651}} & 0.912 & 0.213 & 1.794 & 0.389 \\
-        SplitCAM (sc, $\alpha = 0.4$) & (14, g) & n & \cellbest{\textbf{2.727}} & 0.563 & 0.836 & 0.300 & 2.404 & 1.012 \\
+        SplitCAM (sc, $\alpha = 0.4$) & (14, g) & n & \cellbest{\textbf{2.727}} & 0.563 & 0.836 & \cellbest{\textbf{0.300}} & \cellbest{\textbf{2.404}} & 1.012 \\
         SplitCAM (sc, $\alpha = 0.4$, wta) & (26, +, g) & y & 4.711 & 0.635 & \cellbest{\textbf{0.938}} & 0.165 & 1.590 & 0.456 \\
         SplitGrad ($\alpha = 0.4$, wta) & (12, +, g) & n & 4.735 & 0.635 & 0.883 & 0.186 & 1.756 & 0.651 \\
         SplitGrad ($\alpha = 0.4$, wta) & (14, +, g) & y & 3.287 & 0.540 & 0.818 & 0.249 & 2.186 & 0.857 \\
@@ -21,24 +20,23 @@
         \midrule
         \multicolumn{9}{c}{\textit{Baselines (With Layer Optimization)}} \\
         \midrule
-        Guided Backprop & 2 & n & 3.276 & 0.632 & 0.883 & 0.281 & 2.302 & 0.571 \\
-        Guided Backprop & 5 & n & 3.448 & 0.614 & 0.887 & 0.240 & 2.091 & 0.375 \\
-        LCAM & 14 & n/a & 2.792 & 0.576 & 0.798 & \cellbest{\textbf{0.317}} & \cellbest{\textbf{2.474}} & 2.656 \\
+        Guided Backprop & 2 & n & 3.276 & \cellbest{\textbf{0.632}} & 0.883 & 0.281 & 2.302 & 0.571 \\
+        Guided Backprop & 5 & n & 3.448 & 0.614 & \cellbest{\textbf{0.887}} & 0.240 & 2.091 & \cellbest{\textbf{0.375}} \\
+        LCAM & 14 & n/a & \cellbest{\textbf{2.792}} & 0.576 & 0.798 & \cellbest{\textbf{0.317}} & \cellbest{\textbf{2.474}} & 2.656 \\
         LCAM & 2 & n/a & 3.128 & 0.580 & 0.855 & 0.300 & 2.191 & 5.508 \\
         LRP $\gamma=0.25$ & 0 & n & 3.189 & 0.615 & 0.680 & 0.218 & 1.918 & 0.519 \\
         LRP $\gamma=0.25$ & 14 & n & 3.593 & 0.577 & 0.611 & 0.279 & 2.255 & 0.491 \\
         \midrule
         \multicolumn{9}{c}{\textit{Baselines}} \\
         \midrule
-        DeepLIFT & 0 & y & 4.447 & 0.551 & 0.726 & 0.281 & 1.945 & 1.053 \\
+        DeepLIFT & 0 & y & 4.447 & 0.551 & 0.726 & \cellbest{\textbf{0.281}} & \cellbest{\textbf{1.945}} & 1.053 \\
         Feature Ablation & 0 & y & 6.029 & 0.479 & 0.624 & 0.123 & 1.250 & 0.859 \\
         GradientSHAP & 0 & y & 4.808 & 0.552 & 0.783 & 0.261 & 1.862 & 1.142 \\
-        GCAM++ & 30 & n & 5.955 & 0.564 & 0.827 & 0.130 & 1.245 & 0.401 \\
+        GCAM++ & 30 & n & 5.955 & \cellbest{\textbf{0.564}} & \cellbest{\textbf{0.827}} & 0.130 & 1.245 & \cellbest{\textbf{0.401}} \\
         IntGrad & 0 & y & 4.838 & 0.554 & 0.797 & 0.262 & 1.851 & 1.069 \\
         Occlusion & 0 & y & 5.214 & 0.499 & 0.716 & 0.130 & 1.217 & 0.699 \\
-        Random Baseline & 0 & y & 3.570 & 0.425 & 0.458 & 0.203 & 1.585 & n/r \\
+        Random Baseline & 0 & y & \cellbest{\textbf{3.570}} & 0.425 & 0.458 & 0.203 & 1.585 & n/r \\
         \bottomrule
     \end{tabular}
-    }%
 }%
 \end{table}

@@ -5,7 +5,7 @@
     \caption[Selected ViT-B/16 attribution results]{ViT-B/16 on the ImageNet-S test split (565 images): localization-selected configurations and the theorem-fixed RG/RG+Eq anchors. Cells report means with 95\% bootstrap confidence intervals; MaxS and AvgS use the fixed 200-image subset. Bold/dark shading marks the best displayed value per metric; $^{\approx}$/light shading marks no detected difference from it under Holm-corrected paired tests over the selected main-table rows. Runtime is seconds per image. Full localization- and faithfulness-selected results with additional baselines appear in Table~\ref{ptnb:tab:test-ci-vit} in Appendix~\ref{ptnb:app:test-ci}.}
     \label{ptnb:tab:eval-vit}\label{tab:eval-vit}
     \TableContent{
-        \fontsize{8.5pt}{9.2pt}\selectfont
+        \small\def\tiny{\fontsize{5}{5.5}\selectfont}%
         \setlength{\tabcolsep}{1pt}
         \renewcommand{\arraystretch}{0.9}
         \appfitgen{tables/ptnb_v2/generated/main_vit_tabular}

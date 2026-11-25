@@ -11,7 +11,7 @@ Early Transformer-head analyses combined attention patterns, LRP-based importanc
 A second line adapts \ac{lrp} \parencite{Bach2015}. \textcite{Chefer2021GenericAttention} combined relevance with attention gradients for class-specific self-attention attribution, later extended to co-attention and encoder--decoder architectures \parencite{Chefer2021ICCV}. \textcite{Ali2022AttnLRP} showed that naive gradients through attention and LayerNorm can \emph{violate conservation}; detaching attention and the LayerNorm denominator while retaining linear centering gives conservative local rules. AttnLRP \parencite{Achtibat2024AttnLRP} introduced bilinear-product and non-linearity rules scaling to \acp{llm}. Other variants yield concept-level \parencite{Achtibat2023CRP} and magnitude-aware \parencite{vukadin2024abslrp} explanations. DAVE \parencite{Wrobel2024} addresses patch-grid attribution artifacts in \acp{vit} \parencite{Dosovitskiy2021vit} through conditioned operators and spatial averaging; \textcite{darcet2024vision} mitigated high-norm artifact tokens with registers. At \ac{llm} scale, gradient approximations of activation patching \parencite{Syed2024AttributionPatching,Kramar2024AtPStar} localize circuits against interventions \parencite{Hanna2024Faithfulness}. RelP replaces local gradients in attribution patching with LRP propagation coefficients, improving its approximation of activation-patching effects on the evaluated language-model tasks~\parencite{Jafari2025RelP}; attribution also supports head identification and guided decoding \parencite{Kahardipraja2025Atlas,Komorowski2026AGD}.
 ResLRP~\parencite[Section~4.1 and Appendix~A.2]{Berend2026ResLRP} addresses unstable relevance propagation at residual additions: when branches nearly cancel, dividing by their small sum can produce very large positive and negative relevance scores. It adapts the $\gamma$-rule (Section~\ref{sec:related_work}, \eqref{eq:lrp_gamma_overview}) by increasing branch contributions whose sign agrees with the residual output before renormalizing. This preserves total signed relevance while limiting amplification of absolute relevance at each addition with nonzero output.
 
-The structural question asks whether the full forward map, including attention generation, admits explicit convex streams (Sections~\ref{sec:multiplicative_splits} and~\ref{sec:transformer_dc}). The attribution question concerns Value routing under fixed realized attention. The KL-regularized game of Section~\ref{sec:attention_routing_game} recovers the conservative attention-block rule of \textcite{Ali2022AttnLRP}, formalizing a routing calculation motivated by \textcite{Abnar2020attention} with explicit conditioning. Inside our game semantics, the QK-softmax is the oracle player's reference policy, while attribution lives on the Value-routing trajectories. The \ac{rg}+Eq mode adds Reynolds averaging to suppress tokenization-grid artifacts (Section~\ref{ptnb:app:equivariant}).
+The structural question asks whether the full forward map, including attention generation, admits explicit convex split-streams (Sections~\ref{sec:multiplicative_splits} and~\ref{sec:transformer_dc}). The attribution question concerns Value routing under fixed realized attention. The KL-regularized game of Section~\ref{sec:attention_routing_game} recovers composite $\alpha\beta$-\ac{lrp} on the Value path under the conditioning of \textcite{Ali2022AttnLRP}, with attention held fixed, formalizing a routing calculation motivated by \textcite{Abnar2020attention}. Inside our game semantics, the QK-softmax is the oracle player's reference policy, while attribution lives on the Value-routing trajectories. The \ac{rg}+Eq mode adds averaging over sampled transformations to suppress tokenization-grid artifacts (Section~\ref{ptnb:app:equivariant}).
 
 \section{Decomposing Multiplicative Operations}\label{sec:multiplicative_splits}
 
@@ -36,7 +36,7 @@ P-Q=\tfrac12(2AC+2BD-2AD-2BC)=(A-B)(C-D).
 Squares of affine forms are convex and non-negative; their derivatives on the orthant are non-negative.
 \end{proof}
 
-Monotonicity requires the orthant: $\partial_A(A+C)^2=2(A+C)$ can be negative elsewhere. Thus Transformer streams use non-negative input pairs, although softmax permits a larger domain. For compatible matrix decompositions $U=U^+-U^-$ and $V=V^+-V^-$ with non-negative components, apply~\eqref{eq:polarized_product_pair} to $(A,B,C,D)=(U^+_{ik},U^-_{ik},V^+_{kj},V^-_{kj})$ and sum $P$ and $Q$ separately over $k$. Their difference is $(UV)_{ij}$. This splits attention's matrix products $QK^\top$ and $AV$. The query, key and value matrices may have arbitrary signed entries; non-negativity is required only of their split-streams. The squares in the proposition are scalar squares.
+Monotonicity requires the orthant: $\partial_A(A+C)^2=2(A+C)$ can be negative elsewhere. Thus Transformer split-streams use non-negative input pairs, although softmax permits a larger domain. For compatible matrix decompositions $U=U^+-U^-$ and $V=V^+-V^-$ with non-negative components, apply~\eqref{eq:polarized_product_pair} to $(A,B,C,D)=(U^+_{ik},U^-_{ik},V^+_{kj},V^-_{kj})$ and sum $P$ and $Q$ separately over $k$. Their difference is $(UV)_{ij}$. This splits the score and Value products of attention. The query, key and value matrices may have arbitrary signed entries; non-negativity is required only of their split-streams. The squares in the proposition are scalar squares.
 
 \paragraph{Relation to Hidden Monotonicity.}\label{thm:multiplicative_split}
 \textcite{hiddenMono} used the sign-sorted pair $(AC+BD,AD+BC)$, giving monotone split-streams (\LeanResult{thm:multiplicative_split}). Polarization adds the same term $\tfrac12(A^2+B^2+C^2+D^2)$ to both components, preserving their difference and making both convex. The theorem below uses this strengthened construction.
@@ -48,7 +48,7 @@ Let $N\colon\RR^d\to\RR$ be a finite network built from signed affine maps, ReLU
 \end{equation}
 \end{theoremenv}
 \begin{proof}
-Process each operation after its inputs have been decomposed and construct its split-streams from those input pairs. Signed affine maps and ReLU use the split rules of Chapter~\ref{ch:decompositions}; residual additions sum the streams. Reduce finite maxima to $\max\{a,b\}=\relu(a-b)+b$ and matrix or Hadamard products to scalar products and sums. Proposition~\ref{prop:convex_product_pair} handles each scalar product. Every step recovers the original value and preserves non-negativity, convexity and coordinatewise monotonicity by composition. The canonical input split is convex componentwise, so composition also gives convex split-streams as functions of $x$.
+Process each operation after its inputs have been decomposed and construct its split-streams from those input pairs. Signed affine maps and ReLU use the split rules of Chapter~\ref{ch:decompositions}; residual additions sum the split-streams. Reduce finite maxima to $\max\{a,b\}=\relu(a-b)+b$ and matrix or Hadamard products to scalar products and sums. Proposition~\ref{prop:convex_product_pair} handles each scalar product. Every step recovers the original value and preserves non-negativity, convexity and coordinatewise monotonicity: if $F$ is convex on $\RR^k$ and coordinatewise non-decreasing on $\RR^k_{\ge0}$, and $G$ is convex, coordinatewise non-decreasing and $\RR^k_{\ge0}$-valued, then $F\circ G$ is convex and coordinatewise non-decreasing, since $G(\theta a+(1-\theta)b)$ and $\theta G(a)+(1-\theta)G(b)$ are coordinatewise ordered points of $\RR^k_{\ge0}$. The canonical input split is convex componentwise, so composition also gives convex split-streams as functions of $x$.
 \end{proof}
 
 \section{A Constructive DC Decomposition of Transformers}\label{sec:transformer_dc}
@@ -67,7 +67,7 @@ For $\varepsilon>0$ and $d\ge1$, LayerNorm on $u\in\RR^d$ uses
 \end{gathered}
     \label{eq:layernorm_dc_definition}
 \end{equation}
-Centering, scale and bias are signed affine; variance is a positive sum of squares. Extending the remaining reciprocal square root to negative arguments permits independently varying variance streams.
+Centering, scale and bias are signed affine; variance is a positive sum of squares. Extending the remaining reciprocal square root to negative arguments permits independently varying variance split-streams.
 
 \begin{proposition}[Reciprocal-square-root pair, \LeanResult{prop:reciprocal_sqrt_pair}]\label{prop:reciprocal_sqrt_pair}
 Let $\varepsilon>0$, put $M=(2\varepsilon^{3/2})^{-1}$, and define
@@ -92,7 +92,7 @@ are convex and coordinatewise non-decreasing on $\RR^2$, are non-negative on $\R
 The pieces meet with derivative $-M$; their second derivatives are $0$ and $3/(4(\varepsilon+t)^{5/2})>0$. Thus $r_\varepsilon$ is convex with $-M\le r_\varepsilon'\le0$. Apply Proposition~\ref{prop:dc_profile_lift} to $p(t)=r_\varepsilon(t)+Mt$, $q(t)=Mt$, whose derivatives lie in $[0,M]$ and origin values are $\varepsilon^{-1/2},0$. Cancellation gives the difference.
 \end{proof}
 
-To split~\eqref{eq:layernorm_dc_definition}, split affine centering, square each centered pair using~\eqref{eq:polarized_product_pair}, and average streams to obtain $v=v^+-v^-$. Apply~\eqref{eq:reciprocal_sqrt_pair}: recovered $v\ge0$ makes its extension exactly the normalization factor. Multiply by each centered pair using polarization, then apply signed scale and bias. These operations preserve non-negative convex monotone streams on the input orthant; $\varepsilon>0$ covers every input, including constant vectors.
+To split~\eqref{eq:layernorm_dc_definition}, split affine centering, square each centered pair using~\eqref{eq:polarized_product_pair}, and average the split-streams to obtain $v=v^+-v^-$. Apply~\eqref{eq:reciprocal_sqrt_pair}: recovered $v\ge0$ makes its extension exactly the normalization factor. Multiply by each centered pair using polarization, then apply signed scale and bias. These operations preserve non-negative convex monotone split-streams on the input orthant; $\varepsilon>0$ covers every input, including constant vectors.
 
 \subsection{An Explicit Pre-Normalization Architecture}
 
@@ -168,15 +168,15 @@ With shared intermediate values, evaluation at each input satisfies
     \qquad C\text{ universal},
     \label{eq:transformer_dc_linear_cost}
 \end{equation}
-where $S$ is the size of the original scalar computation graph, including constant nodes, counting arithmetic, comparisons and scalar activation or special-function evaluations at unit cost, with constant-time access to stored values and parameters.
+where $S$ is the size of the scalar computation graph that evaluates Definition~\ref{def:prenorm_transformer} with shared mean, variance and softmax-denominator reductions, including constant nodes, counting arithmetic, comparisons and scalar activation or special-function evaluations at unit cost, with constant-time access to stored values and parameters.
 \end{theoremenv}
 
 \begin{proof}
-Each constituent split recovers its operation and preserves non-negativity, convexity and coordinatewise monotonicity under composition (Theorem~\ref{thm:general_dc_network}). Induction over the operations and blocks, followed by the affine readout, gives~\eqref{eq:transformer_dc_recovery}. Composing with the convex positive and negative parts $\posneg{u}{\sigma}$ gives convex $g,h$ with difference $N(u)$.
-Each scalar split uses a bounded number of operations; softmax and LayerNorm share their reductions across each row or token. Evaluating each intermediate once therefore gives~\eqref{eq:transformer_dc_linear_cost}.
+Each constituent split recovers its operation and preserves non-negativity, convexity and coordinatewise monotonicity under composition, by the orthant composition step in the proof of Theorem~\ref{thm:polarized_multiplicative_split}. Induction over the operations and blocks, followed by the affine readout, gives~\eqref{eq:transformer_dc_recovery}. Composing with the convex positive and negative parts $\posneg{u}{\sigma}$ gives convex $g,h$ with difference $N(u)$.
+Each scalar split uses a bounded number of operations; softmax and LayerNorm share their reductions across each row or token, and the centering split is computed from the shared sums $\sum_ju_j^\pm$. Evaluating each intermediate once therefore gives~\eqref{eq:transformer_dc_linear_cost}.
 \end{proof}
 
-Numerical stability is separate: repeated products and the LayerNorm factor $M=(2\varepsilon^{3/2})^{-1}$ can amplify common stream values and cause floating-point cancellation. Appendix~\ref{app:transformer_dc_numeric} reports machine-precision gradient recovery for the stabilized implementation on the full pretrained ViT-B/16, whose pre-normalization arrangement matches Definition~\ref{def:prenorm_transformer}. The completed SplitCAM benchmark uses the stabilized, conditioned variant (Section~\ref{sec:vit-extension}).
+Numerical stability is separate: repeated products and the LayerNorm factor $M=(2\varepsilon^{3/2})^{-1}$ can amplify common split-stream values and cause floating-point cancellation. Appendix~\ref{app:transformer_dc_numeric} reports machine-precision gradient recovery for the stabilized implementation on the full pretrained ViT-B/16, whose pre-normalization arrangement matches Definition~\ref{def:prenorm_transformer}. The completed SplitCAM benchmark uses the stabilized, conditioned variant (Section~\ref{sec:vit-extension}).
 
 \section{Attention via a Detached-Logit Oracle}\label{ptnb:sec:attention}\label{ptnb:app:vit-extension}\label{sec:attention_routing_game}\label{ptnb:app:attention-subgame}\label{app:supp_attention}
 
@@ -192,10 +192,10 @@ We focus on a single attention head with output/query token $t$, key token $k\in
 \end{align}
 AV mixing acts independently per feature dimension $d$. ViT-B/16 implements the Value projection as a single $D\times D$ linear $v=XW_v$ followed by a reshape into $n_h$ heads; $W_v^{(h)}\in\RR^{D\times d_h}$ is its head-$h$ column block. Each input embedding $X_{k,e}$ feeds Value entries of every head, and the per-head $R^X$ contributions sum there.
 
-The composite weights $W^{\mathrm{eff}}_{(k,e),(t,d)}=A_{t,k}W_{v,e,d}$ inherit the projection signs. For $\kappa\in\{+,-\}$, define the projection-stream and output masses
+The composite weights $W^{\mathrm{eff}}_{(k,e),(t,d)}=A_{t,k}W_{v,e,d}$ inherit the projection signs. For $\kappa\in\{+,-\}$, define the sign streams of the composite contributions, fused as in Section~\ref{ptnb:app:routing-kernel}, and the output masses
 \begin{align}
-    [W^{\mathrm{eff}}_{(k,e),(t,d)}]^\kappa
-      &=A_{t,k}W_{v,e,d}^\kappa,\label{ptnb:eq:attn-composite-weight}\\
+    [W^{\mathrm{eff}}_{(k,e),(t,d)}X_{k,e}]^\kappa
+      &=A_{t,k}[X_{k,e}W_{v,e,d}]^\kappa,\label{ptnb:eq:attn-composite-weight}\\
     \tilde v_{k,d}^\kappa&=\sum_e[X_{k,e}W_{v,e,d}]^\kappa+[b_{v,d}]^\kappa,
     \qquad
     Z_{t,d}^\kappa=\sum_k A_{t,k}\tilde v_{k,d}^\kappa
@@ -203,15 +203,15 @@ The composite weights $W^{\mathrm{eff}}_{(k,e),(t,d)}=A_{t,k}W_{v,e,d}$ inherit 
       \label{ptnb:eq:attn-Z-def}
 \end{align}
 \AliasLabel{ptnb:eq:attn-z-def}{ptnb:eq:attn-Z-def}
-These streams retain predecessor signs; netting $v_{k,d}$ before taking its positive or negative part agrees only for single-signed predecessors. Composite $\alpha\beta$-\ac{lrp} applies $(\alpha,\beta)$ once to this split. Sequential $\alpha\beta$-\ac{lrp} on $X\to v\to O$ splits by the sign of the netted Value entry and applies $(\alpha,\beta)$ at both stages; the two rules differ for mixed-sign predecessors. All reported ViT results use the composite rule. Conditioning resembles CP-LRP~\parencite{Ali2022AttnLRP} and DAVE~\parencite{Wrobel2024}; AttnLRP~\parencite{Achtibat2024AttnLRP} also attributes the softmax and QK paths.
+These sign streams retain predecessor signs; netting $v_{k,d}$ before taking its positive or negative part agrees only for single-signed predecessors. Composite $\alpha\beta$-\ac{lrp} applies $(\alpha,\beta)$ once to this split. Sequential $\alpha\beta$-\ac{lrp} on $X\to v\to O$ splits by the sign of the netted Value entry and applies $(\alpha,\beta)$ at both stages; the two rules differ whenever $(\alpha,\beta)\neq(1,0)$, and for mixed-sign predecessors also in their sign streams. All reported ViT results use the composite rule. Conditioning resembles CP-LRP~\parencite{Ali2022AttnLRP} and DAVE~\parencite{Wrobel2024}; AttnLRP~\parencite{Achtibat2024AttnLRP} also attributes the softmax and QK paths.
 
 \paragraph{Zero mass and stabilization.}
 Every contribution ratio uses
 \begin{equation}\label{ptnb:eq:attn-zero-ratio}
-    \rho(u,D)=\begin{cases}u/D,&D>0,\\0,&D=0,\end{cases}
-    \qquad 0\le u\le D.
+    \rho(u,w)=\begin{cases}u/w,&w>0,\\0,&w=0,\end{cases}
+    \qquad 0\le u\le w.
 \end{equation}
-A zero-mass state routes probability one to the cemetery. Zero $Z_{t,d}^\kappa$ forces every $A_{t,k}\tilde v_{k,d}^\kappa$ to vanish; zero $\tilde v_{k,d}^\kappa$ forces all matching input and bias contributions to vanish. The formulas below use $\varepsilon=0$. The positive stabilizer of Section~\ref{ptnb:app:routing-attribution} transfers to the composite block by replacing $Z_{t,d}^\kappa$ with $Z_{t,d}^\kappa+\varepsilon$ and absorbing the remaining share into the outside option.
+A zero-mass state routes probability one to the cemetery. Zero $Z_{t,d}^\kappa$ forces every $A_{t,k}\tilde v_{k,d}^\kappa$ to vanish; zero $\tilde v_{k,d}^\kappa$ forces all matching input and bias contributions to vanish. The formulas below use $\varepsilon=0$. The positive stabilizer of Section~\ref{ptnb:app:routing-attribution} transfers to the composite block by adding to~\eqref{ptnb:eq:attn-value-routing} an outside action with log-gain $\ell(\varepsilon)$ and reference mass $1$; by Lemma~\ref{ptnb:lem:kl-legendre-fenchel}, this replaces $Z_{t,d}^\kappa$ with $Z_{t,d}^\kappa+\varepsilon$ and absorbs the remaining share into the outside option.
 
 \paragraph{Target attribution.}
 For incoming relevance $R^O$, the composite rule~\eqref{ptnb:eq:lrp-ab} factors through Value entries as
@@ -246,7 +246,7 @@ For a finite set $\mathcal X$, full-support reference $\bar\pi\in\Delta(\mathcal
 \begin{proof}
 This is the Gibbs variational principle~\parencite{BoydVandenberghe2004}:
 $\E_\pi[r]-\mathrm{KL}(\pi\|\bar\pi)=\log Z-\mathrm{KL}(\pi\|\pi_r^\star)$,
-which is maximal, with value $\log Z$, exactly at $\pi=\pi_r^\star$.
+which is maximal, with value $\log Z$, exactly at $\pi=\pi_r^\star$. The proof does not use $\sum_x\bar\pi(x)=1$, so the lemma holds for every finite positive reference measure $\bar\pi$.
 \end{proof}
 For $u\ge0$, $r=\ell(u)$ and positive weighted mass, the identity extends to
 \begin{equation}\label{ptnb:eq:kl-lf-linearized}
@@ -256,9 +256,9 @@ For $u\ge0$, $r=\ell(u)$ and positive weighted mass, the identity extends to
 Indeed, $\exp(-\infty)=0$, and policies charging zero-$u$ actions have payoff $-\infty$; the Gibbs identity applies on positive-mass support. For a reference with zeros, restrict admissible policies to its nonempty support. A uniform reference gives $\mathrm{KL}(\pi\|\mathrm{Unif}_{\mathcal X})=\log|\mathcal X|-\Entropy(\pi)$, recovering the entropy bonus and Gibbs optimizer of~\eqref{ptnb:eq:gibbs-lse}, with the value shifted by $-\log|\mathcal X|$.
 
 \paragraph{State space.}\label{ptnb:app:attention-state-space}
-Use four state families in the notation $s^{(\mathrm{att},\mathrm{Side},\mathrm{type})}$ of Section~\ref{ptnb:app:routing-formal}: output activations $O_{tdp}$, output sign branches $L_{tdp\kappa}$, Value-projection linear states $V_{kdp\kappa}$, and input activations $X_{kep}$. Their respective $(\mathrm{Side},\mathrm{type})$ are $(\mathrm O,\mathrm{act})$, $(\mathrm O,\mathrm{lin})$, $(\mathrm{val},\mathrm{lin})$, and $(\mathrm X,\mathrm{act})$. The surrounding recursion enters at $O$ and resumes at $X$. Player $p\in\{+,-\}$ is retained except at the sole sign split:
+Use four state families: output activations $O_{tdp}$, output sign branches $L_{tdp\kappa}$, Value-projection linear states $V_{kdp\kappa}$, and input activations $X_{kep}$. As in Definition~\ref{ptnb:def:routing-recursion}, $O$ and $X$ are activation states and $L$ and $V$ are linear states. The surrounding recursion enters at $O$ and resumes at $X$. Player $p\in\{+,-\}$ is retained except at the sole sign split:
 \begin{enumerate}
-    \item From $O_{tdp}$, an unobserved oracle chooses $L_{tdp+}$ or $L_{tdp'-}$ with probability $1/2$, discounts $2\alpha$ or $2\beta$, and $p'$ the opponent.
+    \item From $O_{tdp}$, an unobserved oracle chooses $L_{tdp+}$ or $L_{tdp'-}$ with probability $1/2$ and trajectory discount $2\alpha$ or $2\beta$ (value discount $2$), and $p'$ the opponent.
     \item From $L_{tdp\kappa}$, the active player chooses key $k$ and moves to $V_{kdp\kappa}$ using the KL policy below; $p,\kappa,d$ are preserved.
     \item From $V_{kdp\kappa}$, the linear-state Gibbs rule routes to $X_{kep}$ or the absorbed bias node. This preserves $p$ and drops $d$.
 \end{enumerate}
@@ -290,7 +290,7 @@ The active-player value at $L$ is $\ell(Z_{t,d}^\kappa)$; the inactive-player va
 \begin{proof}
 Apply the logit specialization~\eqref{ptnb:eq:kl-lf-linearized} with $u(k)=\tilde v_{k,d}^\kappa$. Its payoff is the predecessor Value-state value; the reference weight gives the composite log-payoff $\ell(A_{t,k}\tilde v_{k,d}^\kappa)$. Definition~\ref{ptnb:def:routing-recursion} gives the projection Gibbs rule and inactive-player value, as in~\eqref{ptnb:eq:routing-linear-action}. If $Z=0$, every weighted mass vanishes, giving value $\ell(0)=-\infty$.
 \end{proof}
-Together with the surrounding equilibrium, these local maximizing policies form an SPNE by backward induction.
+Given these values, which treat the input activations $X$ as terminal, the policies are optimal at every state of the block.
 
 \subsection{Occupation-Measure Recovery}\label{ptnb:app:attention-recovery}
 
@@ -302,14 +302,14 @@ For the discounted occupations $\Gamma_x$ of Section~\ref{ptnb:app:routing-attri
 These are the attention entry and exit instances of~\eqref{ptnb:eq:routing-Gamma-pair}.
 
 \begin{theoremenv}[$\alpha\beta$-\ac{lrp} recovery for attention, \LeanResult{ptnb:thm:attn-ab-recovery}]\label{ptnb:thm:attn-ab-recovery}\label{thm:attention_ab_recovery}\label{ptnb:thm:attention}
-For signed inputs $X$, the preceding SPNE with reference $A_{t,\cdot}$ and discounts~\eqref{ptnb:eq:routing-edge-discount} applied only at the sign oracle satisfies
+For signed inputs $X$, the preceding policies with reference $A_{t,\cdot}$ and discounts~\eqref{ptnb:eq:routing-edge-discount} applied only at the sign oracle satisfies
 \begin{equation}\label{ptnb:eq:attn-ab-recovery}
     \Gamma^X_{k,e}=\sum_{t,d}\left(
        \alpha\frac{A_{t,k}[X_{k,e}W_{v,e,d}]^+}{Z_{t,d}^+}
        -\beta\frac{A_{t,k}[X_{k,e}W_{v,e,d}]^-}{Z_{t,d}^-}
        \right)\Gamma^O_{t,d}.
 \end{equation}
-The surrounding recursion supplies $\Gamma^O=R^O$ for the implementation's unit seed, hence $\Gamma^X=R^X$ by~\eqref{ptnb:eq:attn-target-input}. Aggregating input and bias contributions for each Value entry also gives
+If the surrounding recursion supplies $\Gamma^O=R^O$, for example with the unit seed and trajectory discount $2$ at residual additions (Section~\ref{ptnb:app:routing-skip}), then $\Gamma^X=R^X$ by~\eqref{ptnb:eq:attn-target-input}. With $\Gamma^{\mathrm{val}}_{k,d}=\sum_\kappa\bigl(\Gamma_x(V_{kd+\kappa})-\Gamma_x(V_{kd-\kappa})\bigr)$, aggregating input and bias contributions for each Value entry then also gives
 \begin{equation}\label{ptnb:eq:attn-Gamma-V-corollary}
     \Gamma^{\mathrm{val}}_{k,d}=R^{\mathrm{val}}_{k,d}
     \quad\text{as defined in~\eqref{ptnb:eq:attn-target-rule}}.
@@ -361,10 +361,10 @@ Our ViT-B/16 \ac{rg} implementation applies this rule to the attention product a
     \item \emph{QK gradient detachment.}\label{ptnb:app:attention-grad-detach} The softmax and QK-matmul backward hooks return zero gradients. Value routing uses~\eqref{ptnb:eq:attn-value-policy} and~\eqref{ptnb:eq:attn-V-routing-policy}, applying $(\alpha,\beta)$ once per block. The released code's sole rule, \texttt{av\_rule='merged'}, is checked against an independent reference for~\eqref{ptnb:eq:attn-target-input} by the identity tests of Section~\ref{ptnb:app:code-tests}.
 \end{itemize}
 
-\subsection{Equivariant Spatial Averaging}\label{ptnb:app:equivariant}
+\subsection{Averaging over Sampled Transformations}\label{ptnb:app:equivariant}
 
 To suppress artifacts from $16{\times}16$ patch tokenization, \ac{rg}+Eq uses the transform averaging of Section~\ref{subsec:technicalities}:
 \begin{equation}\label{ptnb:eq:equivariant-average}
     \mathcal M_N(x)=\frac1N\sum_{n=1}^N T_n^{-1}[\mathcal M(T_nx)].
 \end{equation}
-Here $\mathcal M$ is the \ac{rg} attribution, $N=50$, and $T_n$ are i.i.d.\ rotations (uniform in $\pm10^\circ$), translations (up to $\pm5\%$ per image axis), and horizontal flips (probability $0.5$), without input noise. The conditioned pass separates operator variation from the effective transformation, following DAVE's argument. The transforms do not form a group, so this Monte Carlo transformation average is an optional smoothing mode without an exactness claim.
+Here $\mathcal M$ is the \ac{rg} attribution, and $T_n$ are i.i.d.\ random rotations, translations and horizontal flips, without input noise (settings in Section~\ref{app:extended_protocol}). The conditioned pass separates operator variation from the effective transformation, following DAVE's argument. The transforms do not form a group, so this Monte Carlo transformation average is an optional smoothing mode without an exactness claim.
