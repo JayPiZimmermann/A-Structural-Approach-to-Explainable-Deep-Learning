@@ -35,7 +35,7 @@ LEAN = ROOT / "formalization"
 MAP = TEX / "preamble" / "lean_links_map.tsv"
 OUT_LINKS = TEX / "preamble" / "lean_links_generated.tex"
 OUT_TABLE = TEX / "tables" / "lean_coverage.tex"
-REPO_URL = "https://github.com/JayPiZimmermann/A-Structural-Approach-to-Interpretable-Deep-Learning"
+REPO_URL = "https://github.com/JayPiZimmermann/A-Structural-Approach-to-Explainable-Deep-Learning"
 LEAN_DIRS = ("HiddenMonotonicity", "Thesis")
 SCOPES = {"full": "Lean variant", "component": "Lean components",
           "definition": "Lean", "equation": "Lean"}

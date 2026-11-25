@@ -1,4 +1,4 @@
-# A Structural Approach to Interpretable Deep Learning
+# A Structural Approach to Explainable Deep Learning
 
 **From DC Decompositions to Two-Player Games**
 

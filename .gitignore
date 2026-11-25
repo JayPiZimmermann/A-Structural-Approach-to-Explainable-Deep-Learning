@@ -155,3 +155,6 @@ formalization/audit.log
 # Local TeX metadata
 tex/main.mw
 tex/pdfa.xmpi
+
+# Local organisational files, never committed
+organisatorial/
