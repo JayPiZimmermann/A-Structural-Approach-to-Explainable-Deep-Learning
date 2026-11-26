@@ -141,6 +141,7 @@
 \DeclareMathOperator{\argmax}{argmax}
 \DeclareMathOperator{\argmin}{argmin}
 \DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\sgm}{sgm}	% logistic sigmoid, kept apart from the sign label \sigma
 
 % Custom math symbols and notation
 \newcommand{\maxout}{\text{Maxout}}
@@ -362,7 +363,7 @@ urlseen = {last access},
 \DeclareDelimFormat[bib]{nametitledelim}{\addcolon\space} % use colon after year in list of references
 \DeclareDelimFormat{finalnamedelim}{\addcomma\space}	  % delimiter between authors
 \DeclareDelimFormat[textcite]{finalnamedelim}{			  % delimiter for textcite
-  \addspace\&\space}
+  \addspace\bibstring{and}\space}
 \DeclareDelimFormat[parencite]{finalnamedelim}{			  % delimiter for parencite
   \addspace\bibstring{and}\space}
 

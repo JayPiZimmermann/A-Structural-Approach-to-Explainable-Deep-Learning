@@ -158,3 +158,6 @@ tex/pdfa.xmpi
 
 # Local organisational files, never committed
 organisatorial/
+
+# Local review annotations, never committed
+fix/

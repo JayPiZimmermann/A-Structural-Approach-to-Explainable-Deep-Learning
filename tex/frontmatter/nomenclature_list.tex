@@ -1,41 +1,86 @@
-% Latin Symbols
-\nomenclature[L]{$f$}{Network function}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[L]{$g$}{Convex, monotone split-stream entering $f=g-h$ with coefficient $+1$}{}{\S~\ref{sec:dc_decompositions}}
-\nomenclature[L]{$h$}{Convex, monotone split-stream entering $f=g-h$ with coefficient $-1$}{}{\S~\ref{sec:dc_decompositions}}
-\nomenclature[L]{$W^{(l)}$}{Weight matrix of layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[L]{$W^{(l,+)}, W^{(l,-)}$}{Positive and negative parts of weight matrix}{}{Def.~\ref{def:posneg_parts}}
-\nomenclature[L]{$x$}{Network input}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[L]{$a^{(l)}$}{Activation values at layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[L]{$a^{(l,+)}, a^{(l,-)}$}{Positive and negative split-stream activations}{}{\S~\ref{sec:general_decomposition_def}}
-\nomenclature[L]{$z^{(l)}$}{Pre-activation at layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[L]{$V_p(s)$}{Value of player $p$ at state $s$}{}{Def.~\ref{ptnb:def:adf-recursion}}
-\nomenclature[L]{$\P(s'\mid s,a)$}{Transition probability from $s$ to $s'$ under action $a$}{}{Def.~\ref{ptnb:def:adf-recursion}}
-\nomenclature[L]{$\tilde Q_p^\pi(s,a)$}{Player $p$'s value under policy $\pi$ after action $a$ at $s$}{}{Def.~\ref{ptnb:def:adf-recursion}}
-\nomenclature[L]{$R^{(l)}$}{LRP relevance score at layer $l$}{}{\S~\ref{ptnb:sec:background}}
-\nomenclature[L]{$\mathrm{H}$, $\mathrm{BC}$}{Hellinger distance and Bhattacharyya coefficient of trajectory laws}{}{Def.~\ref{def:trajectory_hellinger}}
-\nomenclature[L]{$\mathrm{H}_{\mathrm{surv}}$}{Survival-conditioned Hellinger distance}{}{Def.~\ref{def:survival_conditioned_distances}}
-\nomenclature[L]{$L$}{Number of affine layers; $L-1$ hidden layers}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[L]{$d^{(l)}$}{Width of layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
-% Greek Symbols
-\nomenclature[G]{$\chi^{(l)}(x),\chi(x)$}{Layer-wise and full activation vectors}{}{Def.~\ref{def:activation_vector}}
-\nomenclature[G]{$\alpha$}{Backward shift parameter (DC chapters); first entry of the LRP discount pair $(\alpha,\beta)$ (game chapters)}{}{\S~\ref{subsec:backward_stabilization}; \S~\ref{ptnb:sec:background}}
-\nomenclature[G]{$\gamma$}{Discount factor / LRP emphasis parameter}{}{\S~\ref{ptnb:sec:background}; \S~\ref{ptnb:sec:routing}}
-\nomenclature[G]{$\delta$}{Network gradient (sensitivity)}{}{\S~\ref{subsec:gradient_occupation}}
-\nomenclature[G]{$\delta^g, \delta^h$}{Split-stream gradients}{}{\S~\ref{sec:split_grad}}
-\nomenclature[G]{$\tau$}{Temperature / entropy regularization parameter}{}{\S~\ref{ptnb:app:routing-temp}}
-\nomenclature[G]{$\Pi_x$}{Backward trajectory law at input $x$}{}{Def.~\ref{ptnb:def:trajectory-distribution}}
-\nomenclature[G]{$\Gamma_x$}{Discounted occupation measure}{}{Def.~\ref{ptnb:def:occupation}}
-\nomenclature[G]{$\pi$}{Policy}{}{Def.~\ref{ptnb:def:adf-recursion}}
-\nomenclature[G]{$\sigma$}{Sign index in $\{+,-\}$}{}{Def.~\ref{def:posneg_parts}}
-
-\nomenclature[G]{$\varepsilon$}{Numerical stability constant}{}{\S~\ref{ptnb:sec:background}}
-% Operators
-\nomenclature[O]{$\nabla$}{Gradient operator}{}{\S~\ref{subsec:gradient_occupation}}
-\nomenclature[O]{$\operatorname{ReLU}$}{Rectified linear unit, $\max\{0,x\}$}{}{\S~\ref{sec:nn_notation_pwl}}
-
-\nomenclature[O]{$\odot$}{Hadamard (elementwise) product}{}{\S~\ref{sec:nn_notation_pwl}}
-% Indices
-\nomenclature[I]{$l$}{Layer index}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[I]{$i,j$}{Neuron indices}{}{\S~\ref{sec:nn_notation_pwl}}
-
-\nomenclature[I]{$c$}{Channel index}{}{\S~\ref{sec:cnn_decompositions}}
+% List of symbols, grouped by topic. The prefix letter selects the group
+% (A general, B networks and decompositions, C games and attribution,
+% D probability and trajectory distances); the two digits fix the order.
+%------------------------------
+% A: GENERAL NOTATION AND OPERATORS
+%------------------------------
+\nomenclature[A01]{$[N]$}{The set $\{1,\dots,N\}$}{}{}
+\nomenclature[A02]{$u^{+}, u^{-}$}{Positive and negative parts $\max\{u,0\}$, $\max\{-u,0\}$}{}{Def.~\ref{def:posneg_parts}}
+\nomenclature[A03]{$[W]^{\sigma}$}{Entrywise positive ($\sigma=+$) or negative ($\sigma=-$) part}{}{Def.~\ref{def:posneg_parts}}
+\nomenclature[A04]{$\1[\cdot]$}{Indicator: $1$ if the condition holds, else $0$}{}{}
+\nomenclature[A05]{$\E$}{Expectation}{}{}
+\nomenclature[A06]{$\odot$}{Hadamard (elementwise) product}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[A07]{$\nabla$}{Gradient operator}{}{\S~\ref{subsec:gradient_occupation}}
+\nomenclature[A08]{$\nabla^2$, $D^2g(z)[v,v]$}{Hessian and its quadratic form $v^\top\nabla^2g(z)\,v$}{}{\S~\ref{sec:closed_form_dc_activations}}
+\nomenclature[A09]{$\operatorname{ReLU}$}{Rectified linear unit, $\max\{0,x\}$}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[A10]{$\operatorname{sgm}$}{Logistic sigmoid, $(1+e^{-z})^{-1}$}{}{\S~\ref{sec:closed_form_dc_activations}}
+\nomenclature[A11]{$s_\beta$}{Softplus with sharpness $\beta$, $\beta^{-1}\log(1+e^{\beta z})$}{}{\S~\ref{sec:closed_form_dc_activations}}
+\nomenclature[A12]{$\Phi$, $\varphi$}{Standard Gaussian distribution function and density}{}{\S~\ref{sec:closed_form_dc_activations}}
+\nomenclature[A13]{$\Entropy$}{Shannon entropy}{}{\S~\ref{subsec:softplus_decomposition}}
+\nomenclature[A14]{$\operatorname{conv}$}{Convex hull}{}{\S~\ref{sec:polytope_foundations}}
+\nomenclature[A15]{$\operatorname{Newt}$}{Newton polytope of a max-affine function}{}{Def.~\ref{def:newton_polytope}}
+\nomenclature[A16]{$h_P$}{Support function of a compact convex set $P$}{}{Def.~\ref{def:support_function}}
+\nomenclature[A17]{$l$}{Layer index}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[A18]{$i,j$}{Neuron indices}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[A19]{$c$}{Channel index}{}{\S~\ref{sec:cnn_decompositions}}
+%------------------------------
+% B: NETWORKS AND DECOMPOSITIONS
+%------------------------------
+\nomenclature[B01]{$f$}{Network function}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[B02]{$x$}{Network input}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[B03]{$L$}{Number of affine layers; $L-1$ hidden layers}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[B04]{$d^{(l)}$}{Width of layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[B05]{$W^{(l)}$}{Weight matrix of layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[B06]{$W^{(l,+)}, W^{(l,-)}$}{Positive and negative parts of weight matrix}{}{Def.~\ref{def:posneg_parts}}
+\nomenclature[B07]{$\varrho_l$}{Hidden activation function of layer $l$}{}{Def.~\ref{def:ffn_relu}}
+\nomenclature[B08]{$z^{(l)}$}{Pre-activation at layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[B09]{$a^{(l)}$}{Activation values at layer $l$}{}{\S~\ref{sec:nn_notation_pwl}}
+\nomenclature[B10]{$\chi^{(l)}(x),\chi(x)$}{Layer-wise and full activation vectors}{}{Def.~\ref{def:activation_vector}}
+\nomenclature[B11]{$g$}{Convex, monotone split-stream with sign $+1$ in $f=g-h$}{}{\S~\ref{sec:dc_decompositions}}
+\nomenclature[B12]{$h$}{Convex, monotone split-stream with sign $-1$ in $f=g-h$}{}{\S~\ref{sec:dc_decompositions}}
+\nomenclature[B13]{$a^{(l,+)}, a^{(l,-)}$}{Positive and negative split-stream activations}{}{\S~\ref{sec:general_decomposition_def}}
+\nomenclature[B14]{$\sigma$}{Sign label in $\{+,-\}$}{}{Def.~\ref{def:posneg_parts}}
+\nomenclature[B15]{$\eta$}{Mixing parameter of the mixing decomposition}{}{\S~\ref{sec:mixing_decomposition}}
+\nomenclature[B16]{$\Omega$, $\Omega^*$}{Gate regularizer and its conjugate activation}{}{Def.~\ref{def:freg}}
+\nomenclature[B17]{$\pi_\Omega$, $\Delta$}{Regularized gate and its argument $\Delta=z^+-z^-$}{}{Def.~\ref{def:freg}}
+\nomenclature[B18]{$\theta$}{Softplus temperature}{}{\S~\ref{subsec:softplus_decomposition}}
+\nomenclature[B19]{$\alpha$}{Backward shift parameter (DC chapters)}{}{\S~\ref{subsec:backward_stabilization}}
+\nomenclature[B20]{$\delta$}{Network gradient (sensitivity)}{}{\S~\ref{subsec:gradient_occupation}}
+\nomenclature[B21]{$\delta^g, \delta^h$}{Split-stream gradients}{}{\S~\ref{sec:split_grad}}
+\nomenclature[B22]{$\sigma_{\mathrm{BN}}^2$}{Running variance of batch normalization}{}{\S~\ref{sec:cnn_decompositions}}
+\nomenclature[B23]{$\varepsilon$}{Numerical stability constant}{}{\S~\ref{ptnb:sec:background}}
+%------------------------------
+% C: GAMES AND ATTRIBUTION
+%------------------------------
+\nomenclature[C01]{$p,q,r$}{Player, turn, or sign labels in $\{+,-\}$}{}{\S~\ref{sec:game_theory_mdp_foundations}}
+\nomenclature[C02]{$p'$}{Opponent of player $p$}{}{\S~\ref{sec:game_theory_mdp_foundations}}
+\nomenclature[C03]{$P^{+}, P^{-}$}{Players collecting positive and negative evidence}{}{\S~\ref{sec:game_theory_mdp_foundations}}
+\nomenclature[C035]{$p\oplus q$}{Sign-XOR: $+$ if $p=q$, $-$ otherwise}{}{\S~\ref{sec:game_theory_mdp_foundations}}
+\nomenclature[C04]{$\xi_p$}{Numerical sign $\pm1$ of the label $p$}{}{\S~\ref{sec:game_theory_mdp_foundations}}
+\nomenclature[C05]{$\kappa$}{Sign-stream label in attention}{}{\S~\ref{ptnb:sec:attention}}
+\nomenclature[C06]{$S$, $A(s)$, $R(s,a)$}{States, actions at $s$, reward}{}{Def.~\ref{def:mdp}}
+\nomenclature[C07]{$\P(s'\mid s,a)$}{Transition probability from $s$ to $s'$ under action $a$}{}{Def.~\ref{def:mdp}}
+\nomenclature[C08]{$\dagger$}{Cemetery: absorbing terminal state with zero payoff}{}{Def.~\ref{def:relu_net_game}}
+\nomenclature[C09]{$\pi$}{Policy}{}{Def.~\ref{ptnb:def:adf-recursion}}
+\nomenclature[C10]{$\gamma$}{Discount; structural discount $\gamma^{(l)}_i$; LRP $\gamma$-rule}{}{Def.~\ref{def:mdp}; \S~\ref{ptnb:sec:background}}
+\nomenclature[C11]{$V^{\pi}$, $V^{\star}$}{Value and optimal value function}{}{Def.~\ref{def:mdp}}
+\nomenclature[C12]{$Q_V(s,a)$}{Action value for the value function $V$}{}{Prop.~\ref{prop:bellman}}
+\nomenclature[C13]{$V_p(s)$}{Value of player $p$ at state $s$}{}{Def.~\ref{ptnb:def:adf-recursion}}
+\nomenclature[C14]{$\tilde Q_p^\pi(s,a)$}{Player $p$'s value under policy $\pi$ after action $a$ at $s$}{}{Def.~\ref{ptnb:def:adf-recursion}}
+\nomenclature[C15]{$\Gamma_x$}{Discounted occupation measure}{}{Def.~\ref{ptnb:def:occupation}}
+\nomenclature[C16]{$R^{(l)}$}{LRP relevance score at layer $l$}{}{\S~\ref{ptnb:sec:background}}
+\nomenclature[C17]{$\alpha$, $\beta$}{LRP discount pair $(\alpha,\beta)$}{}{\S~\ref{ptnb:sec:background}}
+\nomenclature[C18]{$\tau$}{Routing temperature (entropy regularization)}{}{\S~\ref{ptnb:app:routing-temp}}
+\nomenclature[C19]{$\lambda$}{Activation-side risk aversion}{}{\S~\ref{ptnb:app:adf-variance}}
+\nomenclature[C20]{$\lambda_{\mathrm{sm}}$}{Attention-side risk aversion}{}{\S~\ref{ptnb:app:risk-attn}}
+\nomenclature[C21]{$\lambda_{\mathrm{ent}}$}{Fan-in entropy bias}{}{\S~\ref{ptnb:app:entropy-mode}}
+\nomenclature[C22]{$\sigma$, $\sigma^2$}{Standard deviation and variance of Gaussian input noise}{}{\S~\ref{ptnb:app:adf-variance}}
+%------------------------------
+% D: PROBABILITY AND TRAJECTORY DISTANCES
+%------------------------------
+\nomenclature[D01]{$\Delta(\mathcal Y)$}{Probability distributions on a finite set $\mathcal Y$}{}{\S~\ref{sec:probability_distances}}
+\nomenclature[D02]{$d_{\mathrm{TV}}$, $\mathrm{KL}$}{Total variation distance, Kullback--Leibler divergence}{}{Def.~\ref{def:probability_divergences}}
+\nomenclature[D03]{$J$, $\mathrm{JS}$}{Jeffreys and Jensen--Shannon divergences}{}{Def.~\ref{def:probability_divergences}}
+\nomenclature[D04]{$\Pi_x$}{Backward trajectory law at input $x$}{}{Def.~\ref{ptnb:def:trajectory-distribution}}
+\nomenclature[D05]{$\mathrm{H}$, $\mathrm{BC}$}{Hellinger distance, Bhattacharyya coefficient of trajectory laws}{}{Def.~\ref{def:trajectory_hellinger}}
+\nomenclature[D06]{$\mathrm{H}_{\mathrm{surv}}$}{Survival-conditioned Hellinger distance}{}{Def.~\ref{def:survival_conditioned_distances}}

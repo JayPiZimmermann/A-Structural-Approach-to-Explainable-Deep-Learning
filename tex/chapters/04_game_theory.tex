@@ -91,8 +91,7 @@ Integrated Gradients~\parencite{Sundararajan2017} is not covered by a single fix
 \paragraph{Transformers.} In a Vision Transformer (\acs{vit}), \ch{LayerNorm couples the features of a token through its
 input-dependent mean and variance,} and the attention matrix $A = \softmax(QK^\top/\sqrt{d})$
 depends on the input, which breaks conservation~\parencite{Ali2022AttnLRP}.
-\ch{Transformer-specific rules therefore \emph{condition} on the forward pass: conservative
-propagation~\parencite{Ali2022AttnLRP} and DAVE~\parencite{Wrobel2024} hold $A$ and the LayerNorm denominator fixed,
+\ch{Transformer-specific rules therefore \emph{condition} on the forward pass: \ac{ptnbCPLRP}~\parencite{Ali2022AttnLRP} and \ac{ptnbDAVE}~\parencite{Wrobel2024} hold $A$ and the LayerNorm denominator fixed,
 retain linear mean-centering, and propagate attention relevance through the Value path only;
 AttnLRP~\parencite{Achtibat2024AttnLRP} also propagates through the softmax and the QK product.}
 
@@ -378,7 +377,7 @@ Modeling $\alpha\beta$-\ac{lrp} or attention modules via the \ac{sg} would requi
 activation-dependent transitions. The \ac{rg} moves activation-dependence into the players'
 policies, opening a continuous family of deformations.
 
-\section{The Routing Game}\label{ptnb:sec:routing}\label{subsec:routing_game_def}\label{ptnb:app:routing-formal}
+\section{Routing Game}\label{ptnb:sec:routing}\label{subsec:routing_game_def}\label{ptnb:app:routing-formal}
 
 The Routing Game places activation-dependent routing in the players' policies. Its entropy-regularized log-space subgames have a Gibbs SPNE for every $\tau>0$; at $\tau=1$, their occupations recover $\alpha\beta$-\ac{lrp} under the assumptions of Theorem~\ref{ptnb:thm:ab-recovery}. This global construction assumes non-negative activation outputs; at the first layer, signed raw inputs enter through the fused contributions $[x_iW_{ij}]^\kappa$. In ViT-B/16, the activations after LayerNorm, GELU and residual additions are signed as well. They are handled by applying the fused contributions locally at each block (Section~\ref{ptnb:sec:attention}), so the ViT rule composes conditioned local rules and is not an instance of Theorem~\ref{ptnb:thm:ab-recovery}. The later GELU discussion concerns local gates conditioned on a fixed forward pass.
 
@@ -692,9 +691,9 @@ low $\tau$ concentrates routing on dominant predecessors; high $\tau$ spreads ma
 while leaving neurons with strong evidence nearly unaffected (Theorem~\ref{ptnb:thm:ab-recovery}).
 
 \paragraph{Averaging over sampled transformations.}\label{subsec:technicalities}
-The $16\times16$ patch tokenization breaks translation equivariance. Following DAVE's transform-averaging strategy~\parencite{Wrobel2024}, \ac{rg}+Eq computes explanations on transformed inputs, maps each explanation back to the original image coordinates, and averages the aligned maps (a Monte Carlo average over transformations). Sections~\ref{sec:vit_implementation} and~\ref{ptnb:app:equivariant} specify the conditioned operators and spatial transforms.
+The $16\times16$ patch tokenization breaks translation equivariance. Following \ac{ptnbDAVE}'s transform-averaging strategy~\parencite{Wrobel2024}, \ac{rg}+Eq computes explanations on transformed inputs, maps each explanation back to the original image coordinates, and averages the aligned maps (a Monte Carlo average over transformations). Sections~\ref{sec:vit_implementation} and~\ref{ptnb:app:equivariant} specify the conditioned operators and spatial transforms.
 
-\subsection{Activation-Side Risk Aversion \texorpdfstring{$\lambda$}{lambda} via ADF Variance Propagation}\label{ptnb:app:adf-variance}
+\subsection{Activation-Side Risk Aversion \texorpdfstring{$\lambda$}{lambda} via Assumed Density Filtering}\label{ptnb:app:adf-variance}
 
 \Ac{ptnbADF}~\parencite{gast2018lightweight} propagates a Gaussian mean and variance for every pre-activation from variance $\sigma^2$ at every input in one additional moment pass. We use the exact
 $\E[\relu(X)]$ for $X\sim\mathcal N(\mu,\sigma^2)$; our implementation approximates its variance
@@ -709,7 +708,7 @@ The attention variant shifts logits by $\lambda_{\mathrm{sm}}$ times a token-ind
 square root of feature-averaged variance of the key token's query projection, not a per-logit
 standard deviation (Section~\ref{ptnb:app:risk-attn}).
 
-\begin{changed}The validation-selected ViT attention-risk mode reduces both sensitivity metrics on 565 test images, with a substantial localization cost (Section~\ref{sec:additional-controls}). This motivates separating the intended effect of a risk penalty from its measured effects on different attribution criteria.\end{changed}
+\begin{changed}The validation-selected ViT attention-risk mode reduces Maximum and Average Sensitivity (\acs{ptnbMaxS}, \acs{ptnbAvgS}) on 565 test images, with a substantial localization cost (Section~\ref{sec:additional-controls}). This motivates separating the intended effect of a risk penalty from its measured effects on different attribution criteria.\end{changed}
 
 \subsection{Regularized Activation Gates}\label{ptnb:app:regularized-gates}
 
@@ -854,5 +853,5 @@ Replacing $\theta\Entropy$ by $\RegBonus_\Phi$ in the binary game gives value $z
 Fan-in entropy lowers the continuation bias (\ac{sg}) or bias-node payoff (\ac{rg}) for diffuse
 fan-in, using $b_j^{(l)}\mapsto b_j^{(l)}-\lambda_{\mathrm{ent}}\tilde{\Entropy}_j^{(l)}$, where
 $\tilde{\Entropy}_j^{(l)}=-\sum_i p_{ij}\log p_{ij}/\log n_j$,
-$p_{ij}=|W_{ij}^{(l)}|/\gamma_j^{(l)}$, for fan-in $n_j>1$ and $\gamma_j^{(l)}>0$. This weight-only mode changes the explained forward pass and is inactive at $\lambda_{\mathrm{ent}}=0$.
+$p_{ij}=|W_{ij}^{(l)}|/\gamma_j^{(l)}$ with the fan-in weight mass $\gamma_j^{(l)}=\sum_i|W_{ij}^{(l)}|$, the structural discount~\eqref{eq:structural_discount} in the game's index convention, for fan-in $n_j>1$ and $\gamma_j^{(l)}>0$. This weight-only mode changes the explained forward pass and is inactive at $\lambda_{\mathrm{ent}}=0$.
 

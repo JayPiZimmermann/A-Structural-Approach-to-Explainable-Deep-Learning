@@ -21,7 +21,7 @@ A \emph{decomposition} of the $L$-layer network of Definition~\ref{def:ffn_relu}
 	\item \textbf{affine maps with non-negative weights and biases}, and
 	\item \textbf{pairwise activation functions} $\phi \colon \RR^2_{\ge 0} \to \RR^2_{\ge 0}$, $(z^+, z^-) \mapsto (a^+, a^-) = \phi(z^+, z^-)$, applied at every hidden neuron; the final affine readout uses the identity on the pair.
 \end{enumerate}
-Activations are indexed by $l \in \{0,\dots,L\}$, affine parameters by $l \in \{1,\dots,L\}$. The layer-$0$ pair is any non-negative split of the input,
+As in Definition~\ref{def:ffn_relu}, activations are indexed by $l \in \{0,\dots,L\}$ with $\actl{0}=x$, and affine parameters by $l \in \{1,\dots,L\}$. The layer-$0$ pair is therefore any non-negative split of the input,
 \begin{equation}
 	\bigl(\act{0}{+}_k, \act{0}{-}_k\bigr) \coloneqq \bigl(x_k^+, x_k^-\bigr),
 	\qquad
@@ -178,7 +178,7 @@ Since $A+B=|s_-|+\|f''\|_1$ and $A-B=s_+$, their maximum is precisely~\eqref{eq:
 \caption{Convex $p$ and concave $-q$.}
 \label{fig:smooth_curvature_components}
 \end{subfigure}
-\caption[Absolute-curvature DC decomposition in one dimension.]{Absolute-curvature DC decomposition of $f(z)=z^4/12-z^2/2+2z/3$ on $[-2,2]$, extended by its endpoint tangents outside this interval. Blue arcs are convex; orange arcs are concave. The profiles of Theorem~\ref{thm:absolute_curvature_split} give $f=p+(-q)$, with $p(0)=q(0)=0$ and both curves starting with zero slope at $z=-2$.}
+\caption[Absolute-curvature DC decomposition in one dimension]{Absolute-curvature DC decomposition of $f(z)=z^4/12-z^2/2+2z/3$ on $[-2,2]$, extended by its endpoint tangents outside this interval. Blue arcs are convex; orange arcs are concave. The profiles of Theorem~\ref{thm:absolute_curvature_split} give $f=p+(-q)$, with $p(0)=q(0)=0$ and both curves starting with zero slope at $z=-2$.}
 \label{fig:smooth_curvature}
 \end{figure}
 
@@ -283,10 +283,10 @@ At an inactive neuron, $\preactl{l}_i\le0$, ReLU outputs $\actl{l}_i=0$, discard
 
 \subsection{Closed Formulas for Smooth Activations}\label{sec:closed_form_dc_activations}
 
-We give simple closed-form DC decompositions for GELU, Swish, sigmoid, and Softplus; among the simple formulas in Table~\ref{tab:closed_form_dc_profiles}, only the Softplus decomposition has minimal curvature. Write $\sigma(z)=(1+e^{-z})^{-1}$, let $\varphi,\Phi$ be the standard Gaussian density and distribution function, and set $s_\beta(z)=\beta^{-1}\log(1+e^{\beta z})$ for $\beta>0$.
+We give simple closed-form DC decompositions for GELU, Swish, sigmoid, and Softplus; among the simple formulas in Table~\ref{tab:closed_form_dc_profiles}, only the Softplus decomposition has minimal curvature. Write $\sgm(z)=(1+e^{-z})^{-1}$, let $\varphi,\Phi$ be the standard Gaussian density and distribution function, and set $s_\beta(z)=\beta^{-1}\log(1+e^{\beta z})$ for $\beta>0$.
 
 \begin{corollary}[Explicit convex, monotone activation pairs, \LeanResult{cor:closed_form_dc_activations}]\label{cor:closed_form_dc_activations}
-For $f(z)=z\Phi(z)$ (GELU), $f(z)=z\sigma(\beta z)$ (Swish), $f=\sigma$ (sigmoid), and $f=s_{1/\theta}$ (Softplus), choose the corresponding row of Table~\ref{tab:closed_form_dc_profiles}. Then the functions $F_+(x,y)=p(x-y)+Ly$ and $F_-(x,y)=q(x-y)+Ly$ are convex and coordinatewise non-decreasing on $\RR^2$, map $\RR^2_{\ge0}$ to itself, and satisfy $F_+-F_-=f(x-y)$.
+For $f(z)=z\Phi(z)$ (GELU), $f(z)=z\sgm(\beta z)$ (Swish), $f=\sgm$ (sigmoid), and $f=s_{1/\theta}$ (Softplus), choose the corresponding row of Table~\ref{tab:closed_form_dc_profiles}. Then the functions $F_+(x,y)=p(x-y)+Ly$ and $F_-(x,y)=q(x-y)+Ly$ are convex and coordinatewise non-decreasing on $\RR^2$, map $\RR^2_{\ge0}$ to itself, and satisfy $F_+-F_-=f(x-y)$.
 \end{corollary}
 
 \begin{table}[htbp]
@@ -299,8 +299,8 @@ For $f(z)=z\Phi(z)$ (GELU), $f(z)=z\sigma(\beta z)$ (Swish), $f=\sigma$ (sigmoid
 Activation & $p(z)$ & $q(z)$ & $L$ \\
 \midrule
 GELU & $2z\Phi(z)+2\varphi(z)$ & $z\Phi(z)+2\varphi(z)$ & $2$ \\[3pt]
-Swish & $2s_\beta(z)$ & $2s_\beta(z)-z\sigma(\beta z)$ & $2$ \\[3pt]
-Sigmoid & $\tfrac12(s_1(z)+\sigma(z))$ & $\tfrac12(s_1(z)-\sigma(z))$ & $\tfrac12$ \\[3pt]
+Swish & $2s_\beta(z)$ & $2s_\beta(z)-z\sgm(\beta z)$ & $2$ \\[3pt]
+Sigmoid & $\tfrac12(s_1(z)+\sgm(z))$ & $\tfrac12(s_1(z)-\sgm(z))$ & $\tfrac12$ \\[3pt]
 Softplus & $s_{1/\theta}(z)$ & $0$ & $1$ \\
 \bottomrule
 \end{tabularx}
@@ -315,9 +315,9 @@ Subtracting the profiles in each row recovers the corresponding activation:
 \text{GELU:}\quad p(z)-q(z)
     &=\bigl(2z\Phi(z)+2\varphi(z)\bigr)-\bigl(z\Phi(z)+2\varphi(z)\bigr)=z\Phi(z),\\
 \text{Swish:}\quad p(z)-q(z)
-    &=2s_\beta(z)-\bigl(2s_\beta(z)-z\sigma(\beta z)\bigr)=z\sigma(\beta z),\\
+    &=2s_\beta(z)-\bigl(2s_\beta(z)-z\sgm(\beta z)\bigr)=z\sgm(\beta z),\\
 \text{Sigmoid:}\quad p(z)-q(z)
-    &=\tfrac12\bigl(s_1(z)+\sigma(z)\bigr)-\tfrac12\bigl(s_1(z)-\sigma(z)\bigr)=\sigma(z),\\
+    &=\tfrac12\bigl(s_1(z)+\sgm(z)\bigr)-\tfrac12\bigl(s_1(z)-\sgm(z)\bigr)=\sgm(z),\\
 \text{Softplus:}\quad p(z)-q(z)
     &=s_{1/\theta}(z)-0=\theta\log\bigl(1+e^{z/\theta}\bigr).
 \end{align*}
@@ -328,17 +328,17 @@ For GELU \parencite{Hendrycks2016}, direct differentiation gives
 \end{equation*}
 Hence both profiles are convex; $p'$ increases from $0$ to $2$ and $q'$ from $0$ to $1$. For Swish \parencite{Ramachandran2017_swish}, writing $u=\beta z$ gives
 \begin{equation*}
-    p'=2\sigma(u),\quad p''=2\beta\sigma'(u),\qquad
-    q'=\sigma(u)-u\sigma'(u),\quad
-    q''=\beta u\bigl(2\sigma(u)-1\bigr)\sigma'(u)\ge0.
+    p'=2\sgm(u),\quad p''=2\beta\sgm'(u),\qquad
+    q'=\sgm(u)-u\sgm'(u),\quad
+    q''=\beta u\bigl(2\sgm(u)-1\bigr)\sgm'(u)\ge0.
 \end{equation*}
-The last inequality uses that $u$ and $2\sigma(u)-1$ have the same sign. The slopes again have limits $0,2$ for $p'$ and $0,1$ for $q'$, so they lie in $[0,2]$. For the sigmoid profiles,
+The last inequality uses that $u$ and $2\sgm(u)-1$ have the same sign. The slopes again have limits $0,2$ for $p'$ and $0,1$ for $q'$, so they lie in $[0,2]$. For the sigmoid profiles,
 \begin{equation*}
-    p'=\tfrac12\sigma(2-\sigma),\quad
-    q'=\tfrac12\sigma^2,\qquad
-    p''=\sigma'(1-\sigma)\ge0,\quad q''=\sigma'\sigma\ge0,
+    p'=\tfrac12\sgm(2-\sgm),\quad
+    q'=\tfrac12\sgm^2,\qquad
+    p''=\sgm'(1-\sgm)\ge0,\quad q''=\sgm'\sgm\ge0,
 \end{equation*}
-with slopes in $[0,1/2]$. Softplus has $p'=\sigma(z/\theta)\in[0,1]$ and $p''=\sigma'(z/\theta)/\theta\ge0$, while $q=0$. All profile values at zero are non-negative (for sigmoid, $s_1(0)=\log2>1/2$). Proposition~\ref{prop:dc_profile_lift} proves the claim.
+with slopes in $[0,1/2]$. Softplus has $p'=\sgm(z/\theta)\in[0,1]$ and $p''=\sgm'(z/\theta)/\theta\ge0$, while $q=0$. All profile values at zero are non-negative (for sigmoid, $s_1(0)=\log2>1/2$). Proposition~\ref{prop:dc_profile_lift} proves the claim.
 \end{proof}
 
 The lifted pairs require no quadrature or root solve. Writing $d=x-y$ for the scalar input difference, their values at $(x,y)$ are
@@ -351,7 +351,7 @@ The lifted pairs require no quadrature or root solve. Writing $d=x-y$ for the sc
     \label{eq:gelu_dc_closed}\\
     \text{Swish:}\quad &\begin{aligned}
         F_+(x,y)&=\frac{2}{\beta}\log(e^{\beta x}+e^{\beta y}),\\
-        F_-(x,y)&=\frac{2}{\beta}\log(e^{\beta x}+e^{\beta y})-(x-y)\sigma\bigl(\beta(x-y)\bigr).
+        F_-(x,y)&=\frac{2}{\beta}\log(e^{\beta x}+e^{\beta y})-(x-y)\sgm\bigl(\beta(x-y)\bigr).
     \end{aligned}
     \label{eq:swish_dc_closed}
 \end{align}
@@ -362,10 +362,10 @@ Stable implementations of the exponential formulas should evaluate log-sum-exp, 
 Evaluating the integrals of Theorem~\ref{thm:absolute_curvature_split} between zeros of $f''$ gives piecewise closed forms. These minimize each profile's curvature (Proposition~\ref{prop:curvature_minimality}) and the common slope bound $L$ within~\eqref{eq:asymmetric_dc_pair}: the profiles of any such pair have non-negative slopes with difference $f'\to s_-$ at $-\infty$, so their slopes start there from at least $\max\{s_-,0\}$ and $\max\{-s_-,0\}$, rise by at least $\int_{\RR}P$ and $\int_{\RR}N$, and their bound is at least $\max\{A,B\}=L$ (proof of Theorem~\ref{thm:absolute_curvature_split}). For sigmoid,
 \begin{equation}
     p(z)=\begin{cases}
-        \sigma(z),&z\le0,\\
+        \sgm(z),&z\le0,\\
         \tfrac12+\tfrac14z,&z\ge0,
     \end{cases}
-    \qquad q(z)=p(z)-\sigma(z),\qquad L=\tfrac14.
+    \qquad q(z)=p(z)-\sgm(z),\qquad L=\tfrac14.
     \label{eq:sigmoid_canonical_dc}
 \end{equation}
 For both GELU and Swish, let $a>0$ be the positive zero of $f''$, and define $m=f'(a)-1$, $c=af'(a)-f(a)$ and $L=1+2m$. Then
@@ -476,7 +476,7 @@ F_{i,+}(x,y)-F_{i,-}(x,y)
 
 For fixed masked softmax, apply the theorem to each row's nonempty allowed set and assign masked outputs $(0,0)$. Fully masked rows require a separate convention and lie outside this theorem. Fixed positive temperatures and fixed additive score biases enter the preceding affine map. Section~\ref{sec:transformer_dc} combines this pair with convex product and normalization pairs to split the full Transformer.
 
-\section{The Mixing Decomposition Family}\label{sec:mixing_decomposition}
+\section{Mixing Decomposition Family}\label{sec:mixing_decomposition}
 
 ReLU networks compute \ac{cpwl} functions \parencite{Arora2018} admitting \ac{dc} decompositions \parencite{Melzer1986_PLasDC,Kripfganz1987_PWAasDC,hiddenMono}. The ReLU pair extends to a one-parameter interpolation between two arithmetic extremes.
 
@@ -497,7 +497,7 @@ At $\eta=1$, we recover the maximum/identity pair~\eqref{eq:splitting_identity} 
 For $\eta=0$, every split activation is concave and coordinatewise non-decreasing in the independent split inputs $(x^+,x^-)$: both components of $\fmix[0](z^+,z^-)=(z^+,\min\{z^+,z^-\})$ are concave and non-decreasing, and non-negative affine maps and composition preserve both properties.
 \end{remark}
 
-\section{The Stopping Decomposition}\label{sec:stopping_decomposition}
+\section{Stopping Decomposition}\label{sec:stopping_decomposition}
 
 The mixing family uses maxima and minima per split-stream. The Stopping Decomposition instead gates both split-streams by the same activation-vector entry $\chi_i^{(l)}(x)$ (Definition~\ref{def:activation_vector}).
 
@@ -630,14 +630,14 @@ which is strictly convex on $[0,1]$ and satisfies $\Omega_\theta \le 0$.
 \begin{corollary}[Softplus Decomposition, \LeanResult{cor:fsoft}]\label{cor:fsoft}
 For $\Omega = \Omega_\theta$ as in~\eqref{eq:entropy_regularizer}, the regularized gate and conjugate activation are
 \begin{equation}
-	\pi_{\Omega_\theta}(\Delta) = \sigma(\Delta/\theta) = \frac{1}{1 + e^{-\Delta/\theta}},
+	\pi_{\Omega_\theta}(\Delta) = \sgm(\Delta/\theta) = \frac{1}{1 + e^{-\Delta/\theta}},
 	\qquad
 	\Omega_\theta^*(\Delta) = s_{1/\theta}(\Delta) = \theta \log\bigl( 1 + e^{\Delta/\theta} \bigr),
 	\label{eq:sigmoid_gate}
 \end{equation}
 the sigmoid gate and the Softplus function at temperature $\theta$. The resulting decomposition function is the \emph{Softplus decomposition function}
 \begin{equation}
-	\fsoft(z^+, z^-) = \Bigl(\, \sigma(\Delta/\theta)\, z^+ + \theta\, \Entropy\bigl(\sigma(\Delta/\theta)\bigr), \;\; \sigma(\Delta/\theta)\, z^- \,\Bigr),
+	\fsoft(z^+, z^-) = \Bigl(\, \sgm(\Delta/\theta)\, z^+ + \theta\, \Entropy\bigl(\sgm(\Delta/\theta)\bigr), \;\; \sgm(\Delta/\theta)\, z^- \,\Bigr),
 	\qquad
 	\Delta = z^+ - z^-,
 	\label{eq:fsoft_def}
@@ -646,18 +646,18 @@ the sigmoid gate and the Softplus function at temperature $\theta$. The resultin
 and by Theorem~\ref{thm:freg_validity} it yields a valid decomposition---the \emph{Softplus Decomposition}---of the Softplus network with parameter $\beta = 1/\theta$. In the limit $\theta \to 0$, $\fsoft \to \fstop$ pointwise on $\{\Delta \neq 0\}$.\end{corollary}
 
 \begin{proof}
-The objective $\pi \Delta + \theta \Entropy(\pi)$ is strictly concave on $(0,1)$ with derivative $\Delta - \theta \log\frac{\pi}{1-\pi}$; the first-order condition gives the unique maximizer $\pi = \sigma(\Delta/\theta)$. Substituting back, with $\log \sigma(\Delta/\theta) = \Delta/\theta - \log(1 + e^{\Delta/\theta})$ and $\log(1 - \sigma(\Delta/\theta)) = -\log(1 + e^{\Delta/\theta})$, yields the optimal value
+The objective $\pi \Delta + \theta \Entropy(\pi)$ is strictly concave on $(0,1)$ with derivative $\Delta - \theta \log\frac{\pi}{1-\pi}$; the first-order condition gives the unique maximizer $\pi = \sgm(\Delta/\theta)$. Substituting back, with $\log \sgm(\Delta/\theta) = \Delta/\theta - \log(1 + e^{\Delta/\theta})$ and $\log(1 - \sgm(\Delta/\theta)) = -\log(1 + e^{\Delta/\theta})$, yields the optimal value
 \begin{equation}
-	\sigma(\Delta/\theta)\, \Delta + \theta \Entropy\bigl(\sigma(\Delta/\theta)\bigr) = \theta \log\bigl( 1 + e^{\Delta/\theta} \bigr) = s_{1/\theta}(\Delta),
+	\sgm(\Delta/\theta)\, \Delta + \theta \Entropy\bigl(\sgm(\Delta/\theta)\bigr) = \theta \log\bigl( 1 + e^{\Delta/\theta} \bigr) = s_{1/\theta}(\Delta),
 	\label{eq:legendre_fenchel_softplus}
 \end{equation}
-the Legendre--Fenchel form of binary log-sum-exp over $\{0,\Delta\}$ at temperature $\theta$. Substituting $-\Omega_\theta=\theta \Entropy$ into~\eqref{eq:freg_def} gives~\eqref{eq:fsoft_def} and validity by Theorem~\ref{thm:freg_validity}. For $\Delta\neq0$, as $\theta\to0$, the gate tends to $\1[\Delta>0]$ and its bonus $\theta \Entropy(\sigma(\Delta/\theta))=s_{1/\theta}(\Delta)-\sigma(\Delta/\theta)\Delta$ tends to zero.
+the Legendre--Fenchel form of binary log-sum-exp over $\{0,\Delta\}$ at temperature $\theta$. Substituting $-\Omega_\theta=\theta \Entropy$ into~\eqref{eq:freg_def} gives~\eqref{eq:fsoft_def} and validity by Theorem~\ref{thm:freg_validity}. For $\Delta\neq0$, as $\theta\to0$, the gate tends to $\1[\Delta>0]$ and its bonus $\theta \Entropy(\sgm(\Delta/\theta))=s_{1/\theta}(\Delta)-\sgm(\Delta/\theta)\Delta$ tends to zero.
 \end{proof}
 
-The $+$ split-stream carries the entire entropy bonus $\theta \Entropy(\sigma(\Delta/\theta))$ in~\eqref{eq:fsoft_def}, leaving the $-$ split-stream purely gated. In Chapter~\ref{ch:game_theory}, the entropy bonus is the active player's surplus from being allowed to mix.
+The $+$ split-stream carries the entire entropy bonus $\theta \Entropy(\sgm(\Delta/\theta))$ in~\eqref{eq:fsoft_def}, leaving the $-$ split-stream purely gated. In Chapter~\ref{ch:game_theory}, the entropy bonus is the active player's surplus from being allowed to mix.
 
 \begin{remark}[Loss of split-stream monotonicity]\label{rem:soft-monotone}
-In the negative split-stream $\act{l}{-}=\sigma(\Delta/\theta)z^-$, increasing $z^-$ at fixed $z^+$ raises one factor while lowering the gate through $\Delta=z^+-z^-$. Its derivative $\partial\act{l}{-}/\partial z^- = \sigma(\Delta/\theta)\bigl(1-z^-(1-\sigma(\Delta/\theta))/\theta\bigr)$ is negative when $z^->\theta/(1-\sigma(\Delta/\theta))$. Thus the soft-gated family loses the per-region monotonicity of Lemma~\ref{lem:stop_monotone} and need not inherit the hard-gated or \ac{dc} split-streams' monotone/convex structure; difference recovery still holds by Theorem~\ref{thm:freg_validity}.
+In the negative split-stream $\act{l}{-}=\sgm(\Delta/\theta)z^-$, increasing $z^-$ at fixed $z^+$ raises one factor while lowering the gate through $\Delta=z^+-z^-$. Its derivative $\partial\act{l}{-}/\partial z^- = \sgm(\Delta/\theta)\bigl(1-z^-(1-\sgm(\Delta/\theta))/\theta\bigr)$ is negative when $z^->\theta/(1-\sgm(\Delta/\theta))$. Thus the soft-gated family loses the per-region monotonicity of Lemma~\ref{lem:stop_monotone} and need not inherit the hard-gated or \ac{dc} split-streams' monotone/convex structure; difference recovery still holds by Theorem~\ref{thm:freg_validity}.
 \end{remark}
 
 \begin{remark}[Probit regularizer and GELU]\label{rem:probit_gelu}
@@ -805,7 +805,7 @@ The first equality groups terms using $M^{(l+1,+)} + M^{(l+1,-)} = I$; the secon
 \end{proof}
 Section~\ref{sec:split_attribution_concept} uses these stabilized gradients for split saliency.
 
-\section{Generalization to Convolutional Neural Networks (CNNs)}\label{sec:cnn_decompositions}
+\section{Generalization to Convolutional Neural Networks}\label{sec:cnn_decompositions}
 
 Definitions~\ref{def:decomposition} and~\ref{def:valid_decomposition} extend to \acp{cnn}~\parencite{Simonyan2015,He2016resnet}. Each \emph{chunk} implements one operation on split activations; separating affine layers from ReLU permits successive affine operations. Chunks preserve non-negativity and recovery, and where applicable convexity and monotonicity (Theorem~\ref{prop:stream_properties}). Convolution and max-pooling need specific rules; one affine-chunk lemma covers the remaining operations. Section~\ref{subsec:split_implementations} compares the PyTorch implementations~\parencite{Paszke2019PyTorch}.
 
@@ -847,7 +847,7 @@ Split convolution~\eqref{eq:conv_split} is the instance $A = K*(\cdot)$; the rem
 }%
 \end{table}
 
-Batch normalization in evaluation mode reduces to an affine map and can be treated as a special convolution. With running mean $\mu$ and variance $\sigma^2$ and learned $\gamma,\beta$, its per-channel scale $c_{\mathrm{bn}}=\gamma/\sqrt{\sigma^2+\varepsilon}$ may carry either sign \parencite{Guillemot2020BreakingBN,Hui2019BNDecomposition}; in practice we merge it into an adjacent convolution before splitting. Training-mode batch normalization, whose statistics depend on the batch, is genuinely multiplicative and requires the techniques of Chapter~\ref{ch:transformers}. Training-mode dropout uses the \emph{same} realized mask $m$ on both split-streams and on $u = u^+ - u^-$, so the split network drops exactly the units the original does.
+Batch normalization in evaluation mode reduces to an affine map and can be treated as a special convolution. With running mean $\mu$ and variance $\sigma_{\mathrm{BN}}^2$ and learned $\gamma,\beta$, its per-channel scale $c_{\mathrm{bn}}=\gamma/\sqrt{\sigma_{\mathrm{BN}}^2+\varepsilon}$ may carry either sign \parencite{Guillemot2020BreakingBN,Hui2019BNDecomposition}; in practice we merge it into an adjacent convolution before splitting. Training-mode batch normalization, whose statistics depend on the batch, is genuinely multiplicative and requires the techniques of Chapter~\ref{ch:transformers}. Training-mode dropout uses the \emph{same} realized mask $m$ on both split-streams and on $u = u^+ - u^-$, so the split network drops exactly the units the original does.
 
 \paragraph{Gated max-pooling.}
 Max-pooling over a window $[q]$ computes $\max_{j \in [q]} u_j$ per channel, which is neither linear nor a shared gate on a single pair. It is a \ac{cpwl} function of the window and admits its own convexity-preserving splitting identity.
@@ -882,7 +882,7 @@ The forward scaling implementation multiplies activations by $0.1$ when their ma
 
 The newer DC engine distributed with \textcite{playingBackward2026} patches module forwards and supplies custom \texttt{autograd.Function} backward rules. For batch size $B$, intermediate tensors pack $[a^+,a^-,a^+,a^-]$ along the batch axis. The pair is duplicated to carry four sensitivities of the chosen rule---one from each output split-stream $g,h$ to each split-stream activation $a^+,a^-$---in a single backward pass: autograd requires each returned input gradient to match its forward input's shape. These patches preserve channel counts and parameter shapes. Ordinary addition combines matching blocks, and autograd accumulates residual gradients. FX still exposes functional operations as modules; the default addition module also applies re-centering and optional alignment or sensitivity shifts. Both implementations retain reference caches for numerical alignment.
 
-The Transformer DC experiments (Section~\ref{sec:vit-extension}) extend the CVPR graph implementation with the convex operator pairs of Section~\ref{sec:transformer_dc}; Section~\ref{sec:vit_implementation} describes the conditioned game implementation.
+The Transformer DC experiments (Section~\ref{sec:vit-extension}) extend the graph implementation of \emph{Hidden Monotonicity}~\parencite{hiddenMono} with the convex operator pairs of Section~\ref{sec:transformer_dc}; Section~\ref{sec:vit_implementation} describes the conditioned game implementation.
 
 \section{Split-Based Attribution}\label{sec:split_attribution_concept}
 

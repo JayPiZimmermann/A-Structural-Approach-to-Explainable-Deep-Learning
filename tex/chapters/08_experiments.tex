@@ -83,7 +83,7 @@ The split methods cost more than the baselines they are compared with. SplitCAM 
 \input{tables/vit_extension/generated/integration}
 % END VIT_EXTENSION_GENERATED
 
-\section{Directly Trained Difference-of-Convex Models on MNIST}\label{sec:dcinns}
+\section{Directly Trained DC Models on MNIST}\label{sec:dcinns}
 
 To study mechanisms exposed by the \ac{dc} decomposition of pretrained networks (Sections~\ref{sec:split_cam}--\ref{sec:split_grad}), we directly train small DC input neural networks and their monotone relatives on MNIST. Their shared opposing split-stream structure provides a controlled setting for examining class-dependent sensitivities on present and candidate missing strokes.
 
@@ -315,7 +315,7 @@ Table~\ref{tab:cdinn_acc} reports the median test accuracy of all eight variants
 
 
 \paragraph{Protocol.}
-Methods are evaluated under a two-stage protocol. The same validation/test separation and selection objectives apply to baselines and our games; the method-specific grids differ. Stage~1 runs a validation grid search for every tunable method, including DAVE$^{*}$ (Table~\ref{ptnb:tab:main-search-grid}; \nValGrid{} configurations in total). Stage~2 independently selects the localization and faithfulness rank-sum configurations and evaluates both once on the test split. Confidence intervals and Holm-corrected paired comparisons follow Section~\ref{ptnb:app:stats}. At $\tau=1$, the \ac{rg} anchor recovers the specified $\alpha\beta$-\ac{lrp} rule under the stated operator conventions (Theorem~\ref{ptnb:thm:lrp-recovery}); the \ac{rg}+Eq anchor averages aligned attributions from transformed inputs and carries no exactness claim. Table~\ref{ptnb:tab:eval-vit} reports the paper's selected localization configurations and anchors, with their original testing family. Table~\ref{ptnb:tab:test-ci-vit} in Appendix~\ref{ptnb:app:test-ci} gives both selections, further baselines and confidence intervals. Reporting faithfulness-selected rows separately preserves the distinction between mask agreement and faithfulness.
+Methods are evaluated under a two-stage protocol. The same validation/test separation and selection objectives apply to baselines and our games; the method-specific grids differ. Stage~1 runs a validation grid search for every tunable method, including \acs{ptnbDAVE}$^{*}$ (Table~\ref{ptnb:tab:main-search-grid}; \nValGrid{} configurations in total). Stage~2 independently selects the localization and faithfulness rank-sum configurations and evaluates both once on the test split. Confidence intervals and Holm-corrected paired comparisons follow Section~\ref{ptnb:app:stats}. At $\tau=1$, the \ac{rg} anchor recovers the specified $\alpha\beta$-\ac{lrp} rule under the stated operator conventions (Theorem~\ref{ptnb:thm:lrp-recovery}); the \ac{rg}+Eq anchor averages aligned attributions from transformed inputs and carries no exactness claim. Table~\ref{ptnb:tab:eval-vit} reports the paper's selected localization configurations and anchors, with their original testing family. Table~\ref{ptnb:tab:test-ci-vit} in Appendix~\ref{ptnb:app:test-ci} gives both selections, further baselines and confidence intervals. Reporting faithfulness-selected rows separately preserves the distinction between mask agreement and faithfulness.
 
 \input{tables/eval_vit_main}
 \input{figures/experiments/vit_saliency_comparison_main}
@@ -324,7 +324,7 @@ Methods are evaluated under a two-stage protocol. The same validation/test separ
 Figure~\ref{fig:vit_saliency_comparison_main} compares the selected methods on six images.
 Under the localization-selected protocol, the \ac{rg} family beats every baseline on attribution
 localization, including the prior Transformer-specific backward methods
-AttnLRP~\parencite{Achtibat2024AttnLRP}, our DAVE variant DAVE$^{*}$~\parencite{Wrobel2024} (Section~\ref{ptnb:app:baselines}),
+AttnLRP~\parencite{Achtibat2024AttnLRP}, our \ac{ptnbDAVE} variant \acs{ptnbDAVE}$^{*}$~\parencite{Wrobel2024} (Section~\ref{ptnb:app:baselines}),
 \ac{ptnbTIBAV}~\parencite{Chefer2021GenericAttention} and \ac{ptnbGAE}~\parencite{Chefer2021ICCV}: the selected mode
 reaches AL \vitRGlocAL{} against \vitBestBaseAL{} for the best baseline (\vitBestBaseALname), and
 \ac{rg}+Eq \vitRGEqlocAL{}, both significantly ahead of every baseline row after Holm correction.
@@ -342,7 +342,7 @@ localization-selected mode reaches MaxS \vitRGlocMaxS{}: sharper routing trades 
 faithfulness for localization. \ac{ptnbADF} adds modest overhead (\ac{rg}: \vitRGlocTime\,s vs.\
 \vitRGanchorTime\,s base), still below the sampling baseline SmoothGrad ($1.12$\,s). Averaging over 50 transformations
 increases runtime to \vitRGEqTime{} seconds per image, exceeding even the perturbation method
-KernelSHAP (\vitSHAPTime\,s). We follow DAVE's transform-averaging strategy~\parencite{Wrobel2024} with 50 transformed inputs for \ac{rg}+Eq (Section~\ref{ptnb:app:equivariant}); we did not test smaller averaging counts. The measurement scope and the mode costs on the CNNs are in Section~\ref{app:game_timing}.
+KernelSHAP (\vitSHAPTime\,s). We follow \ac{ptnbDAVE}'s transform-averaging strategy~\parencite{Wrobel2024} with 50 transformed inputs for \ac{rg}+Eq (Section~\ref{ptnb:app:equivariant}); we did not test smaller averaging counts. The measurement scope and the mode costs on the CNNs are in Section~\ref{app:game_timing}.
 
 \paragraph{Higher $\tau$ spreads attribution into context.}
 The localization-selected configurations place mass on the few patches that align with the segmentation mask. As $\tau$ increases, routing spreads over more predecessors: the displayed examples retain object focus while extending attribution into context, without establishing which contextual features the model uses. Around the selected ViT-B/16 setting (Table~\ref{ptnb:tab:vit-temperature}), AL peaks at $0.723$ for $\tau{=}0.3$ and decreases to $0.461$ at $\tau{=}1$; lowering $\tau$ further to $0.2$ gives AL $0.699$ and PG $0.720$. Faithfulness is non-monotonic. The temperature sweep illustrates how AL rewards concentration of attribution mass within object masks. User-perceived informativeness remains untested.
@@ -385,7 +385,7 @@ One-factor mode ablations around validation-selected configurations (Section~\re
 
 \paragraph{Gradient-fallback attention.}\label{ptnb:app:abl-gradient-fallback}
 
-The \ac{rg} backward holds the realized attention policy fixed and routes relevance only through the Value path, with zero gradient on $Q$, $K$, as in CP-LRP~\parencite{Ali2022AttnLRP} (Section~\ref{ptnb:app:vit-implementation}). Gradient fallback applies the $\varepsilon$-rule to the first operand of both attention products and ordinary backpropagation to the second operand and the softmax; Value-routing risk $\lambda_\text{sm}$ is inactive. Fallback lowers all three localization metrics in every configuration (AL and TK significantly throughout) and worsens every PF$_5$, PF$_{20}$ and Sel cell, significantly in four of nine.
+The \ac{rg} backward holds the realized attention policy fixed and routes relevance only through the Value path, with zero gradient on $Q$, $K$, as in \ac{ptnbCPLRP}~\parencite{Ali2022AttnLRP} (Section~\ref{ptnb:app:vit-implementation}). Gradient fallback applies the $\varepsilon$-rule to the first operand of both attention products and ordinary backpropagation to the second operand and the softmax; Value-routing risk $\lambda_\text{sm}$ is inactive. Fallback lowers all three localization metrics in every configuration (AL and TK significantly throughout) and worsens every PF$_5$, PF$_{20}$ and Sel cell, significantly in four of nine.
 
 \subsection{Additional Experimental Controls}\label{sec:additional-controls}
 

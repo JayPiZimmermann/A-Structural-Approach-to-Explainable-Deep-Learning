@@ -11,27 +11,17 @@
 }
 \iflanguage{english}{
 	\renewcommand\nomgroup[1]{%
-  		\ifx#1G\relax
-    	\nomgroupX{Greek Symbols}{Symbol}{Description}{}{Unit}
-  		\fi
-  		\ifx#1O\relax
-		\nomgroupX{Operators}{Symbol}{Description}{}{Definition}
-  		\fi
-  		\ifx#1I\relax
-		\nomgroupX{Latin Symbols and Indices}{Symbol}{Description}{}{}
-  		\fi
+		\ifx#1A\relax\nomgroupX{General Notation and Operators}{Symbol}{Description}{}{}\fi
+		\ifx#1B\relax\nomgroupX{Networks and Decompositions}{Symbol}{Description}{}{}\fi
+		\ifx#1C\relax\nomgroupX{Games and Attribution}{Symbol}{Description}{}{}\fi
+		\ifx#1D\relax\nomgroupX{Probability and Trajectory Distances}{Symbol}{Description}{}{}\fi
 	}
 }{\iflanguage{ngerman}{
 	\renewcommand\nomgroup[1]{%
-  		\ifx#1G\relax
-    	\nomgroupX{Griechische Symbole}{Symbol}{Beschreibung}{}{Einheit}
-  		\fi
-  		\ifx#1O\relax
-		\nomgroupX{Operatoren}{Symbol}{Beschreibung}{}{Definition}
-		\fi
-  		\ifx#1I\relax
-		\nomgroupX{Lateinische Symbole und Indizes}{Symbol}{Beschreibung}{}{}
-  		\fi
-		}
+		\ifx#1A\relax\nomgroupX{Allgemeine Notation und Operatoren}{Symbol}{Beschreibung}{}{}\fi
+		\ifx#1B\relax\nomgroupX{Netze und Dekompositionen}{Symbol}{Beschreibung}{}{}\fi
+		\ifx#1C\relax\nomgroupX{Spiele und Attribution}{Symbol}{Beschreibung}{}{}\fi
+		\ifx#1D\relax\nomgroupX{Wahrscheinlichkeit und Trajektorienabst\"ande}{Symbol}{Beschreibung}{}{}\fi
+	}
 	}{}
 }

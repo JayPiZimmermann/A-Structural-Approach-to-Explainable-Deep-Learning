@@ -1,8 +1,8 @@
 \chapter{Mathematical Foundations}\label{ch:foundations}
 
-We establish network notation, the \ac{relu}--\ac{cpwl} equivalence and two-polytope DC representations (Section~\ref{sec:nn_notation_pwl}); monotone networks, \acp{icnn}, and Maxout units (Section~\ref{sec:convex_monotone_foundations}); and \acp{mdp}, zero-sum games, and the ReLU Net Game of Gaubert and Vlassopoulos (Section~\ref{sec:game_theory_mdp_foundations}). Probability distances and layered Markov processes (Section~\ref{sec:probabilistic_foundations}) support the trajectory diagnostics of Chapter~\ref{ch:trajectory}. The network and game foundations underpin Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory}; the absolute-curvature construction for smooth activations accompanies the decomposition theorem in Section~\ref{sec:dc_splitting_smooth}. Throughout the thesis, a grey reference \texttt{Lean\_$n$} in a heading links to a declaration in the accompanying Lean~4 formalization that checks the statement or a part of it; Section~\ref{app:lean} and Table~\ref{tab:lean_coverage} list the declarations and their scope.
+We establish network notation, the \ac{relu}--\ac{cpwl} equivalence and the representation of a DC decomposition by two polytopes (Section~\ref{sec:nn_notation_pwl}, Proposition~\ref{prop:dc_polytope_representation}); monotone networks, \acp{icnn}, and Maxout units (Section~\ref{sec:convex_monotone_foundations}); and \acp{mdp}, zero-sum games, and the ReLU Net Game of Gaubert and Vlassopoulos (Section~\ref{sec:game_theory_mdp_foundations}). Probability distances and layered Markov processes (Section~\ref{sec:probabilistic_foundations}) support the trajectory diagnostics of Chapter~\ref{ch:trajectory}. The network and game foundations underpin Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory}; the absolute-curvature construction for smooth activations accompanies the decomposition theorem in Section~\ref{sec:dc_splitting_smooth}. Throughout the thesis, a grey reference \texttt{Lean\_$n$} in a heading links to a declaration in the accompanying Lean~4 formalization that checks the statement or a part of it; Section~\ref{app:lean} and Table~\ref{tab:lean_coverage} list the declarations and their scope.
 
-\section{Neural Network Notation and PWL Mappings}\label{sec:nn_notation_pwl}
+\section{Neural Network Notation and Piecewise Linear Functions}\label{sec:nn_notation_pwl}
 
 The standard \ac{mlp} architecture serves as the reference model throughout; convolutional and attention-based architectures are treated in Section~\ref{sec:cnn_decompositions} and Chapter~\ref{ch:transformers} as structured special cases and extensions.
 
@@ -48,7 +48,7 @@ so that $\Wl{l} = \Wsig{l}{+} - \Wsig{l}{-}$ and $\abs{\Wl{l}} = \Wsig{l}{+} + \
 The activation labels $\act{l}{\sigma}$, $\sigma \in \{+,-\}$, denote the two non-negative \emph{split-streams} defined in Section~\ref{sec:general_decomposition_def}, distinct from the entrywise parts $\posneg{\actl{l}}{\sigma}$.
 \end{remark}
 
-\subsection*{Continuous Piecewise Linear Functions}
+\subsection{Continuous Piecewise Linear Functions}
 
 \begin{definition}[Convexity, {\cite[Sections~2.1 and~3.1]{BoydVandenberghe2004}}]\label{def:convexity}
 A set $C\subseteq\RR^d$ is \emph{convex} if $\lambda x+(1-\lambda)y\in C$ for all $x,y\in C$ and $\lambda\in[0,1]$. A function $f:C\to\RR$ on a convex set is \emph{convex} if
@@ -146,7 +146,7 @@ Figure~\ref{fig:cpwl_convex_folds} illustrates how convex folds contribute to $g
 \caption{Convex $g$ and concave $-h$.}
 \label{fig:cpwl_convex_folds_components}
 \end{subfigure}
-\caption[Convex-fold DC decomposition in one dimension.]{Convex-fold DC decomposition in one dimension. Blue circles mark convex folds of $f$; orange triangles mark concave folds, with labels giving the slope changes. Summing the two convex folds gives $g(x)=\max\{-x-2,x+2\}+\max\{1,2x-1\}$. The residual $-h=f-g$ is concave, so $g,h$ are convex and $f=g+(-h)$.}
+\caption[Convex-fold DC decomposition in one dimension]{Convex-fold DC decomposition in one dimension. Blue circles mark convex folds of $f$; orange triangles mark concave folds, with labels giving the slope changes. Summing the two convex folds gives $g(x)=\max\{-x-2,x+2\}+\max\{1,2x-1\}$. The residual $-h=f-g$ is concave, so $g,h$ are convex and $f=g+(-h)$.}
 \label{fig:cpwl_convex_folds}
 \end{figure}
 
@@ -172,7 +172,7 @@ Figure~\ref{fig:cpwl_local_maxima} illustrates this minimum identity with four c
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.94\linewidth]{cpwl_local_maxima_envelopes.pdf}
-\caption[A CPWL function as the minimum of convex local maxima.]{Four convex local maxima $u_1(x)=|x+3|$, $u_2(x)=|x+1|+\tfrac12$, $u_3(x)=|x-1|-\tfrac14$, and $u_4(x)=|x-3|+\tfrac34$ (dashed). Their minimum $f$ follows the thick solid segments, colored by the attaining $u_i$. Each $u_i$ is a maximum of two affine functions and supplies two pieces of $f$.}
+\caption[A CPWL function as the minimum of convex local maxima]{Four convex local maxima $u_1(x)=|x+3|$, $u_2(x)=|x+1|+\tfrac12$, $u_3(x)=|x-1|-\tfrac14$, and $u_4(x)=|x-3|+\tfrac34$ (dashed). Their minimum $f$ follows the thick solid segments, colored by the attaining $u_i$. Each $u_i$ is a maximum of two affine functions and supplies two pieces of $f$.}
 \label{fig:cpwl_local_maxima}
 \end{figure}
 
@@ -186,12 +186,10 @@ The layer-wise ReLU decomposition is algebraically closer to the local-maxima co
 
 The finite maxima in~\eqref{eq:cpwl_dc_representation} admit a polytope representation \parencite{Ziegler1995,Zhang2018}. We use the following definitions to interpret the split-streams of Section~\ref{sec:dc_splitting_relu}.
 
-In \emph{max-plus algebra}, addition is $u\oplus v=\max\{u,v\}$ and multiplication is $u\odot v=u+v$, on $\RR\cup\{-\infty\}$. For finite inputs, tropical powers $x^{\odot a}=ax$ extend repeated multiplication to real exponents. A \emph{tropical polynomial} is a finite tropical sum of monomials. Allowing real exponents $a_r\in\RR^d$ and coefficients $b_r\in\RR$, for $N\ge1$,
+In \emph{max-plus algebra} on $\RR\cup\{-\infty\}$, addition is the maximum and multiplication is ordinary addition, so a power $x^a$ becomes $ax$. A \emph{tropical polynomial} is a finite maximum of such monomials. Allowing real exponents $a_r\in\RR^d$ and coefficients $b_r\in\RR$, for $N\ge1$, it is the max-affine function
 \[
-    p(x)=\bigoplus_{r=1}^N\left(b_r\odot\bigodot_{j=1}^d x_j^{\odot a_{rj}}\right)
-    =\max_{r\in[N]}\bigl(b_r+a_r^\top x\bigr).
+    p(x)=\max_{r\in[N]}\bigl(b_r+a_r^\top x\bigr).
 \]
-Thus each monomial is affine, and the polynomial takes their maximum.
 
 \begin{definition}[Newton polytope, \LeanResult{def:newton_polytope}]\label{def:newton_polytope}
 For the fixed max-affine representation $p$ above, its \emph{Newton polytope} is the convex hull of its slopes:
@@ -278,7 +276,7 @@ The first inequality uses convexity of $u$ and monotonicity of $\varphi$; the se
 With $\Wl{1}\ge0$, an \ac{icnn} is both monotone and convex by Propositions~\ref{prop:monotone_represents} and~\ref{prop:icnn_convex}. ReLU and the maximum operation are convex and coordinatewise non-decreasing. Section~\ref{sec:dc_splitting_relu} therefore constructs $g,h$ as monotone networks on a signed input embedding, convex in the original input. Non-negative-weight ReLU networks represent only convex functions; broader monotone architectures add concave activation counterparts \parencite{Runje_2023}.
 \end{remark}
 
-\subsection*{Maxout Units}
+\subsection{Maxout Units}
 
 \begin{definition}[Maxout unit and Maxout network, \cite{Goodfellow2013Maxout}]\label{def:maxout}
 A \emph{rank-$k$ Maxout unit} with weights $w_1, \ldots, w_k \in \RR^{d}$ and biases $\beta_1, \ldots, \beta_k \in \RR$ computes
@@ -338,7 +336,7 @@ Our games use \emph{state-dependent} discounts $\gamma(s)\ge0$ that may exceed $
 restores the mass after normalizing row $i$ of $\abs{\Wl{l}}$ into transition probabilities. Although contraction is unavailable, \emph{layered acyclic} graphs ensure finite trajectories and value sums. Backward induction gives a unique value and optimal policies, possibly nonunique at ties, as the two-player theorem below shows.
 \end{remark}
 
-\subsection*{Zero-Sum Turn-Based Games}
+\subsection{Zero-Sum Turn-Based Games}
 
 Two-player games enter because a decomposed network carries two interacting split-streams: a player $P^{+}$ who collects positive evidence and a player $P^{-}$ who collects negative evidence. We use the following conventions throughout: $p, q, r \in \{+, -\}$ denote player, turn, or sign labels; $\opp{p}$ denotes the opponent ($\opp{+} = -$, $\opp{-} = +$); the \emph{sign-XOR} $p \oplus q$ is $+$ if $p = q$ and $-$ otherwise; and $\xi_{p} \in \{+1, -1\}$ is the numerical sign of the label $p$, so that $\xi_{p}\, \xi_{q} = \xi_{p \oplus q}$.
 
@@ -445,7 +443,7 @@ with the Gibbs distribution $\nu^{\star}_i \propto e^{r_i/\theta}$ as unique max
 \end{remark}
 
 \begin{remark}[What Chapter~\ref{ch:game_theory} inherits and what it changes]\label{rem:inherited_vs_new}
-The \ac{sg} retains the per-neuron states of Definition~\ref{def:relu_net_game} indexed by $\sigma\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Chapter~\ref{ch:game_theory} adds \emph{non-negative player payoffs}: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition split-streams (Section~\ref{sec:stopping_decomposition}), whose difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, and risk aversion, absent from the original game.
+The \ac{sg} retains the per-neuron states of Definition~\ref{def:relu_net_game} indexed by $\sigma\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Our main addition in Chapter~\ref{ch:game_theory} is \emph{player-specific game values} with non-negative payoffs: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition split-streams (Section~\ref{sec:stopping_decomposition}, Theorem~\ref{ptnb:thm:forward-stopping}), and their difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, and risk aversion, absent from the original game. For Softplus networks, the entropy regularization is that of Remark~\ref{rem:softplus_game}; what is new is again the player-specific view: the player values equal the regularized Stopping Decomposition (Theorem~\ref{ptnb:thm:softplus-forward}), and their occupation differences recover the gradient (Theorem~\ref{ptnb:thm:softplus-gradient}).
 \end{remark}
 
 \section{Probability Distances and Layered Markov Processes}\label{sec:probabilistic_foundations}\label{ptnb:app:path-divergence}
@@ -488,7 +486,7 @@ With these normalizations,
 Thus small Hellinger controls total variation, and small KL controls Hellinger~\parencite[Sections~7.3 and~7.6]{PolyanskiyWu2025InformationTheory}.
 
 
-\subsection{Layered Markov Processes with Cemetery}\label{ptnb:sec:lmp-foundations}\label{subsec:trajectory_measures}\label{ptnb:sec:lmp}
+\subsection{Layered Markov Processes with a Cemetery State}\label{ptnb:sec:lmp-foundations}\label{subsec:trajectory_measures}\label{ptnb:sec:lmp}
 
 Fixing a stationary policy $\pi$ in an \ac{mdp} gives the state transition kernel $T(s,s')=\sum_{a\in A(s)}\pi(a\mid s)\P(s'\mid s,a)$. In a turn-based game, $\pi(\cdot\mid s)$ is the fixed policy of the player controlling $s$. On a finite horizon, recording the remaining step count makes the process layered. We compare two such processes, indexed by $M\in\{A,B\}$.
 
@@ -593,7 +591,7 @@ Initialize $m_M^{(L)}$ and $g^{(L)}$ at $s_0$. For $l=L,\ldots,1$, propagate $m_
 \end{algorithm}
 
 \paragraph{Why this recursion?}
-Hellinger remains finite when the path laws have different supports and gives a non-negative decomposition of its square over terminal states; KL and Jeffreys can then be infinite despite admitting linear-time Markov chain-rule passes. For example, if process $A$ can stop at a reachable state where $B$ must continue, some trajectories stopping there have positive probability under $\Pi_A$ and zero under $\Pi_B$, giving $\mathrm{KL}(\Pi_A\|\Pi_B)=\infty$. Jensen--Shannon remains bounded, yet the mixture $(\Pi_A+\Pi_B)/2$ is generally non-Markov, so the same fixed-state recursion does not apply. A Wasserstein distance would additionally require a ground metric on trajectories~\parencite{PeyreCuturi2019OptimalTransport} and would not generally admit this recursion.
+Hellinger remains finite when the path laws have different supports and gives a non-negative decomposition of its square over terminal states. KL and Jeffreys, by contrast, can then be infinite, although they also admit linear-time Markov chain-rule passes. For example, if process $A$ can stop at a reachable state where $B$ must continue, some trajectories stopping there have positive probability under $\Pi_A$ and zero under $\Pi_B$, giving $\mathrm{KL}(\Pi_A\|\Pi_B)=\infty$. Jensen--Shannon remains bounded, yet the mixture $(\Pi_A+\Pi_B)/2$ is generally non-Markov, so the same fixed-state recursion does not apply. A Wasserstein distance would additionally require a ground metric on trajectories~\parencite{PeyreCuturi2019OptimalTransport} and would not generally admit this recursion.
 
 \subsection{Terminal-State Disagreement}\label{ptnb:sec:lmp-disagreement}
 \AliasLabel{ptnb:sec:lmp-per-pixel}{ptnb:sec:lmp-disagreement}
