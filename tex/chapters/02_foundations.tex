@@ -464,7 +464,7 @@ The \emph{total variation distance}, \emph{Kullback--Leibler divergence}, \emph{
 Terms with $p_y=0$ contribute zero; $p_y>0=q_y$ contributes $+\infty$. Total variation is a metric in $[0,1]$; the unnormalized $L^1$ distance is $2d_{\mathrm{TV}}$. KL is finite exactly when $\operatorname{supp}P\subseteq\operatorname{supp}Q$, and Jeffreys exactly when the supports coincide. Neither is a metric. To avoid these infinities, Jensen--Shannon compares each distribution with the mixture $M$, which assigns positive mass wherever either distribution does. It therefore remains finite even for disjoint supports and lies in $[0,\log 2]$; its square root is a metric~\parencite{EndresSchindelin2003Metric}.
 \end{definition}
 
-\begin{definition}[Bhattacharyya coefficient and Hellinger distance]
+\begin{definition}[Bhattacharyya coefficient and Hellinger distance]\label{def:bc_hellinger}
 The \emph{Bhattacharyya coefficient}~\parencite{Bhattacharyya1943} and \emph{squared Hellinger distance}~\parencite{Hellinger1909} are
 \begin{align}\label{ptnb:eq:bc-def}
     \mathrm{BC}(P, Q) \;\coloneqq\; \sum_{y} \sqrt{P(y)\, Q(y)} \;\in\; [0, 1],
