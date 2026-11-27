@@ -26,7 +26,7 @@ of existing backward rules.
 Excitation Backprop~\parencite{Zhang2018pointinggame} is an absorbing Markov chain whose redistribution
 on non-negative activations gives the unstabilized $z^+$-rule with biases omitted: the
 $(\alpha,\beta)=(1,0)$ case of $\alpha\beta$-\ac{lrp}. Our game extends it with an opponent player (enabling negative-weight influence) and replaces
-input-dependent transition probabilities with soft Bellman equations.
+input-dependent transition probabilities with soft (entropy-regularized) Bellman equations.
 Deep Taylor~\parencite{Montavon2017DeepTaylor} justifies $z^+$ on non-negative inputs;
 \ac{rg} constructs a game for the generalized $\alpha\beta$-\ac{lrp}.
 
@@ -88,8 +88,8 @@ The $\gamma$-rule is the basic $z$-rule with modified backward weights $w_{ij}^{
 \paragraph{Integrated Gradients.}
 Integrated Gradients~\parencite{Sundararajan2017} is not covered by a single fixed-input game: it is calculated as an integral along a path in input space, while the game represents the network calculation at one given input. Such path averaging can, however, be applied not only to gradients but also to other attribution methods, including the occupation measures of the Stopping Game and the Routing Game in their different modes.
 
-\paragraph{Transformers.} In a Vision Transformer (\acs{vit}), \ch{LayerNorm couples the features of a token through its
-input-dependent mean and variance,} and the attention matrix $A = \softmax(QK^\top/\sqrt{d})$
+\paragraph{Transformers.} In a \acs{vit}, \ch{LayerNorm couples the features of a token through its
+input-dependent mean and variance,} and the attention matrix $A = \softmax(QK^\top/\sqrt{d_h})$, with head width $d_h$,
 depends on the input, which breaks conservation~\parencite{Ali2022AttnLRP}.
 \ch{Transformer-specific rules therefore \emph{condition} on the forward pass: \ac{ptnbCPLRP}~\parencite{Ali2022AttnLRP} and \ac{ptnbDAVE}~\parencite{Wrobel2024} hold $A$ and the LayerNorm denominator fixed,
 retain linear mean-centering, and propagate attention relevance through the Value path only;
@@ -212,7 +212,7 @@ The active player $q$ maximizes its advantage $V_q$, rather than its individual 
 \end{figure}
 
 \begin{theoremenv}[Forward equivalence, \LeanResult{ptnb:thm:forward-stopping}]\label{ptnb:thm:forward-stopping}
-The game admits a subgame-perfect Nash equilibrium (\acs{ptnbSPNE})
+The game admits an \acs{ptnbSPNE}
 \begin{equation}\label{ptnb:eq:adf-spne-policy}
     \pi_q^\star(s_{j,q}^{(l,\mathrm{act})})=\1[z_j^{(l)}>0],
 \end{equation}

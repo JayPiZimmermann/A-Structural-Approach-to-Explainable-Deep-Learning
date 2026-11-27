@@ -4,7 +4,7 @@
     \small
     \setlength{\tabcolsep}{5pt}
     \renewcommand{\arraystretch}{1.2}
-    \caption[Alpha ablation for SplitGrad and SplitCAM]{Alpha ablation as performed in Section~\ref{sec:ablations} across four SplitGrad and four SplitCAM configurations on layers $14$ and $26$. The notation is similar to Table~\ref{tab:eval_vgg_main}.}
+    \caption[Alpha ablation for SplitGrad and SplitCAM]{Alpha ablation as performed in Section~\ref{sec:ablations} across four SplitGrad and four SplitCAM configurations on layers $14$ and $26$. The notation is similar to Table~\ref{tab:eval_vgg_main}; in each row, the best value is bold with dark blue shading, and equal printed values are all marked.}
     \label{tab:alpha_comparison_by_method}
 \TableContent{
     \begin{adjustbox}{max width=\linewidth}
@@ -23,14 +23,14 @@
      & PF$^{\mathrm{drop}}_{20}$ $\uparrow$ & 1.527 & 1.533 & \cellbest{\textbf{1.588}} & 1.370 & 0.243 & 0.576 \\
     \midrule
     \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{SplitGrad (wta)}\\(14, +, g), abs\end{tabular}} & PG$\uparrow$ & 0.820 & 0.820 & 0.820 & \cellbest{\textbf{0.832}} & 0.813 & 0.790 \\
-     & AL$\uparrow$ & \cellbest{\textbf{0.540}} & 0.540 & 0.540 & 0.501 & 0.494 & 0.486 \\
+     & AL$\uparrow$ & \cellbest{\textbf{0.540}} & \cellbest{\textbf{0.540}} & \cellbest{\textbf{0.540}} & 0.501 & 0.494 & 0.486 \\
      & MaxS$\downarrow$ & 0.858 & 0.860 & 0.858 & 0.088 & 0.068 & \cellbest{\textbf{0.048}} \\
-     & PF$^{\mathrm{drop}}_{20}$ $\uparrow$ & 2.189 & \cellbest{\textbf{2.189}} & 2.187 & 1.874 & 1.830 & 1.768 \\
+     & PF$^{\mathrm{drop}}_{20}$ $\uparrow$ & \cellbest{\textbf{2.189}} & \cellbest{\textbf{2.189}} & 2.187 & 1.874 & 1.830 & 1.768 \\
     \midrule
-    \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{SplitGrad}\\(14, +, g), abs\end{tabular}} & PG$\uparrow$ & 0.820 & \cellbest{\textbf{0.820}} & 0.818 & 0.795 & 0.800 & 0.797 \\
-     & AL$\uparrow$ & 0.540 & \cellbest{\textbf{0.540}} & 0.533 & 0.505 & 0.493 & 0.485 \\
+    \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{SplitGrad}\\(14, +, g), abs\end{tabular}} & PG$\uparrow$ & \cellbest{\textbf{0.820}} & \cellbest{\textbf{0.820}} & 0.818 & 0.795 & 0.800 & 0.797 \\
+     & AL$\uparrow$ & \cellbest{\textbf{0.540}} & \cellbest{\textbf{0.540}} & 0.533 & 0.505 & 0.493 & 0.485 \\
      & MaxS$\downarrow$ & 0.862 & 0.858 & 0.848 & 0.110 & 0.066 & \cellbest{\textbf{0.030}} \\
-     & PF$^{\mathrm{drop}}_{20}$ $\uparrow$ & \cellbest{\textbf{2.189}} & 2.189 & 2.119 & 1.343 & 1.296 & 1.193 \\
+     & PF$^{\mathrm{drop}}_{20}$ $\uparrow$ & \cellbest{\textbf{2.189}} & \cellbest{\textbf{2.189}} & 2.119 & 1.343 & 1.296 & 1.193 \\
     \midrule
     \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{SplitCAM (sc, wta)}\\(26, +, g), abs\end{tabular}} & PG$\uparrow$ & 0.868 & 0.868 & \cellbest{\textbf{0.938}} & 0.933 & 0.613 & 0.855 \\
      & AL$\uparrow$ & 0.550 & 0.554 & 0.635 & \cellbest{\textbf{0.663}} & 0.403 & 0.513 \\
@@ -50,7 +50,7 @@
     \multirow{4}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{SplitCAM (sc)}\\(14, g)\end{tabular}} & PG$\uparrow$ & 0.825 & 0.825 & \cellbest{\textbf{0.843}} & 0.776 & 0.769 & 0.776 \\
      & AL$\uparrow$ & 0.536 & 0.536 & \cellbest{\textbf{0.563}} & 0.536 & 0.527 & 0.521 \\
      & MaxS$\downarrow$ & 1.055 & 1.059 & 1.014 & 0.163 & 0.159 & \cellbest{\textbf{0.156}} \\
-     & PF$^{\mathrm{drop}}_{20}$ $\uparrow$ & 2.417 & \cellbest{\textbf{2.417}} & 2.407 & 1.503 & 1.508 & 1.514 \\
+     & PF$^{\mathrm{drop}}_{20}$ $\uparrow$ & \cellbest{\textbf{2.417}} & \cellbest{\textbf{2.417}} & 2.407 & 1.503 & 1.508 & 1.514 \\
     \bottomrule
     \end{tabular}
 \end{adjustbox}

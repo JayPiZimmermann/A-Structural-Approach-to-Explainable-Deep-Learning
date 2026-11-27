@@ -1,13 +1,13 @@
 \chapter{Mathematical Foundations}\label{ch:foundations}
 
-We establish network notation, the \ac{relu}--\ac{cpwl} equivalence and the representation of a DC decomposition by two polytopes (Section~\ref{sec:nn_notation_pwl}, Proposition~\ref{prop:dc_polytope_representation}); monotone networks, \acp{icnn}, and Maxout units (Section~\ref{sec:convex_monotone_foundations}); and \acp{mdp}, zero-sum games, and the ReLU Net Game of Gaubert and Vlassopoulos (Section~\ref{sec:game_theory_mdp_foundations}). Probability distances and layered Markov processes (Section~\ref{sec:probabilistic_foundations}) support the trajectory diagnostics of Chapter~\ref{ch:trajectory}. The network and game foundations underpin Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory}; the absolute-curvature construction for smooth activations accompanies the decomposition theorem in Section~\ref{sec:dc_splitting_smooth}. Throughout the thesis, a grey reference \texttt{Lean\_$n$} in a heading links to a declaration in the accompanying Lean~4 formalization that checks the statement or a part of it; Section~\ref{app:lean} and Table~\ref{tab:lean_coverage} list the declarations and their scope.
+We establish network notation, the \ac{relu}--\ac{cpwl} equivalence and the representation of a DC decomposition by two polytopes (Section~\ref{sec:nn_notation_pwl}, Proposition~\ref{prop:dc_polytope_representation}); monotone networks, \acp{icnn}, and Maxout units (Section~\ref{sec:convex_monotone_foundations}); and \acp{mdp}, zero-sum games, and the ReLU Net Game of Gaubert and Vlassopoulos (Section~\ref{sec:game_theory_mdp_foundations}). Probability distances and layered Markov processes (Section~\ref{sec:probabilistic_foundations}) support the trajectory diagnostics of Chapter~\ref{ch:trajectory}. The network and game foundations underpin Chapters~\ref{ch:decompositions} and~\ref{ch:game_theory}; the absolute-curvature construction for smooth activations accompanies the decomposition theorem in Section~\ref{sec:dc_splitting_smooth}. Throughout the thesis, a gray reference \texttt{Lean\_$n$} in a heading links to a declaration in the accompanying Lean~4 formalization that checks the statement or a part of it; Section~\ref{app:lean} and Table~\ref{tab:lean_coverage} list the declarations and their scope.
 
 \section{Neural Network Notation and Piecewise Linear Functions}\label{sec:nn_notation_pwl}
 
 The standard \ac{mlp} architecture serves as the reference model throughout; convolutional and attention-based architectures are treated in Section~\ref{sec:cnn_decompositions} and Chapter~\ref{ch:transformers} as structured special cases and extensions.
 
 \begin{definition}[\acl{mlp}]\label{def:ffn_relu}
-A \emph{multilayer perceptron} (\acs{mlp}) of depth $L\in\NN$ has \emph{layer widths} $d^{(0)},\ldots,d^{(L)}\in\NN$, weights $\Wl{l}\in\RR^{d^{(l)}\times d^{(l-1)}}$, biases $b^{(l)}\in\RR^{d^{(l)}}$, and hidden-layer activation functions $\varrho_l:\RR\to\RR$ for $l=1,\ldots,L-1$. For input $\actl{0}=x\in\RR^{d^{(0)}}$, its \emph{pre-activations} $\preactl{l}$, \emph{activations} $\actl{l}$, and function $f:\RR^{d^{(0)}}\to\RR^{d^{(L)}}$ satisfy
+A \emph{Multilayer Perceptron} (\acs{mlp}) of depth $L\in\NN$ has \emph{layer widths} $d^{(0)},\ldots,d^{(L)}\in\NN$, weights $\Wl{l}\in\RR^{d^{(l)}\times d^{(l-1)}}$, biases $b^{(l)}\in\RR^{d^{(l)}}$, and hidden-layer activation functions $\varrho_l:\RR\to\RR$ for $l=1,\ldots,L-1$. For input $\actl{0}=x\in\RR^{d^{(0)}}$, its \emph{pre-activations} $\preactl{l}$, \emph{activations} $\actl{l}$, and function $f:\RR^{d^{(0)}}\to\RR^{d^{(L)}}$ satisfy
 \begin{align}
 	\preactl{l} &\coloneqq \Wl{l}\actl{l-1}+b^{(l)}, && l=1,\ldots,L, \label{eq:forward_recursion}\\
 	\actl{l} &\coloneqq \varrho_l\bigl(\preactl{l}\bigr), && l=1,\ldots,L-1, \notag\\
@@ -19,7 +19,7 @@ Each $\varrho_l$ acts componentwise; the output is affine. Thus depth $L$ counts
 Write $f^{(l)}:\RR^{d^{(l)}}\to\RR^{d^{(L)}}$ for the tail after layer $l$: thus $f^{(0)}=f$, $f^{(L-1)}$ is the affine output map, and $f^{(L)}$ is the identity.
 
 \begin{remark}[Absorbing biases]\label{rem:bias_augmentation}
-Biases can be absorbed by carrying a constant \emph{intercept coordinate} through every hidden layer, using the same activation as the other neurons. Set $c_0=1$ and, for each $l<L$, choose $t_l$ with $c_l=\varrho_l(t_l)\neq0$: use $t_l=1$ when possible, otherwise any point with nonzero activation. Then
+Biases can be absorbed by carrying a constant \emph{intercept coordinate} through every hidden layer, using the same activation as the other neurons. Set $c_0=1$ and, for each $1\le l<L$, choose $t_l$ with $c_l=\varrho_l(t_l)\neq0$: use $t_l=1$ when possible, otherwise any point with nonzero activation. Then
 \[
 \widehat W^{(l)}=
 \begin{pmatrix}\Wl{l}&b^{(l)}/c_{l-1}\\0^\top&t_l/c_{l-1}\end{pmatrix},
@@ -263,13 +263,13 @@ Definition~\ref{def:icnn} covers the plain \ac{mlp} core of the architecture of 
 An \ac{icnn} represents a convex function; each coordinate of every activation $\actl{l}$, $l \ge 1$, is a convex function of the input $x$.\end{proposition}
 
 \begin{proof}
-Non-negative linear combinations plus constants preserve convexity. So does composition with a convex non-decreasing scalar function $\varphi$: for convex $u$ and $\lambda\in[0,1]$,
+Non-negative linear combinations plus constants preserve convexity. So does composition with a convex non-decreasing scalar function $\varrho$: for convex $u$ and $\lambda\in[0,1]$,
 \[
-\varphi\bigl(u(\lambda x+(1-\lambda)y)\bigr)
-\le\varphi\bigl(\lambda u(x)+(1-\lambda)u(y)\bigr)
-\le\lambda\varphi(u(x))+(1-\lambda)\varphi(u(y)).
+\varrho\bigl(u(\lambda x+(1-\lambda)y)\bigr)
+\le\varrho\bigl(\lambda u(x)+(1-\lambda)u(y)\bigr)
+\le\lambda\varrho(u(x))+(1-\lambda)\varrho(u(y)).
 \]
-The first inequality uses convexity of $u$ and monotonicity of $\varphi$; the second uses convexity of $\varphi$. Starting from the affine $\preactl{1}$, these two closure rules give convex coordinates at every layer by induction, including the affine output.
+The first inequality uses convexity of $u$ and monotonicity of $\varrho$; the second uses convexity of $\varrho$. Starting from the affine $\preactl{1}$, these two closure rules give convex coordinates at every layer by induction, including the affine output.
 \end{proof}
 
 \begin{remark}[Monotonicity and convexity combine]\label{rem:monotone_convex_combined}
@@ -308,7 +308,7 @@ A (finite) \emph{\acl{mdp}} (\acs{mdp}) \parencite{Puterman1994mdp,SuttonBarto20
 and the \emph{optimal value function} is $V^{\star}(s) \coloneqq \max_{\pi} V^{\pi}(s)$.
 \end{definition}
 
-Fixing an enumeration of $S$, a pure policy $\pi$ turns the kernel into a row-stochastic \emph{transition matrix} $P^{\pi} \in \RR^{S \times S}$ with $P^{\pi}_{s s'} = \P(s' \mid s, \pi(s))$ and the reward into a vector $R^{\pi}$, and \eqref{eq:mdp_value} becomes the Neumann series $V^{\pi} = \sum_{t \ge 0} \gamma^t (P^{\pi})^t R^{\pi}$. This matrix picture recurs in Chapter~\ref{ch:game_theory}, where the (sub)stochastic matrices are built from the normalized weight parts $\Wsig{l}{\sigma}$ of Definition~\ref{def:posneg_parts}.
+Fixing an enumeration of $S$, a pure policy $\pi$ turns the kernel into a row-stochastic (non-negative, with every row summing to one) \emph{transition matrix} $P^{\pi} \in \RR^{S \times S}$ with $P^{\pi}_{s s'} = \P(s' \mid s, \pi(s))$ and the reward into a vector $R^{\pi}$, and \eqref{eq:mdp_value} becomes the Neumann series $V^{\pi} = \sum_{t \ge 0} \gamma^t (P^{\pi})^t R^{\pi}$. This matrix picture recurs in Chapter~\ref{ch:game_theory}, where the (sub)stochastic matrices are built from the normalized weight parts $\Wsig{l}{\sigma}$ of Definition~\ref{def:posneg_parts}.
 
 \begin{proposition}[Bellman equations, \LeanResult{prop:bellman}]\label{prop:bellman}
 For a finite \ac{mdp} with $\gamma\in[0,1)$, define
@@ -371,7 +371,7 @@ For the saddle inequalities, induct in the same order. At $s\in S_+$, playing th
 \end{proof}
 
 \begin{remark}\label{rem:shapley_history}
-For general discounted stochastic games with cycles, existence of the value and of optimal stationary policies is Shapley's theorem \parencite{Shapley1953stochastic}, proved by the contraction argument of Proposition~\ref{prop:bellman} applied to the \emph{Shapley operator}---the min-max analogue of the Bellman operator \eqref{eq:shapley_bellman}. \textcite{Gaubert2025} formulate their network games in this operator language. The layered acyclic case of Theorem~\ref{thm:shapley_bellman} is all we need, and it additionally delivers subgame perfection, on which Chapter~\ref{ch:trajectory} relies.
+For general discounted stochastic games with cycles (games with action-dependent random state transitions in which states can recur), existence of the value and of optimal stationary policies is Shapley's theorem \parencite{Shapley1953stochastic}, proved by the contraction argument of Proposition~\ref{prop:bellman} applied to the \emph{Shapley operator}, the right-hand side of \eqref{eq:shapley_bellman} as a map of $V^{\star}$---the min-max analogue of the Bellman operator. \textcite{Gaubert2025} formulate their network games in this operator language. The layered acyclic case of Theorem~\ref{thm:shapley_bellman} is all we need, and it additionally delivers subgame perfection, on which Chapter~\ref{ch:trajectory} relies.
 \end{remark}
 
 \subsection{The ReLU Net Game of Gaubert and Vlassopoulos}\label{subsec:relu_net_game}
@@ -427,11 +427,11 @@ Q_{V^{\star}}\bigl(s^{(l)}_{i,q},\mathrm{cont}\bigr)
 =\xi_q\preactl{l}_i,
 \label{eq:rng_cont_value}
 \end{equation}
-since $\sum_r\xi_r\Wsig{l}{q\oplus r}_{ij}=\xi_q\Wl{l}_{ij}$. Stopping yields zero. At $q=+$, maximizing gives the value $\max\{0,\preactl{l}_i\}=\actl{l}_i$; at $q=-$, minimizing gives $\min\{0,-\preactl{l}_i\}=-\actl{l}_i$, both measured as payoffs to $P^+$. Both continue precisely for positive pre-activation, with either action optimal at zero and our convention choosing stop. This proves the value by Theorem~\ref{thm:shapley_bellman}. For uniqueness, every subgame perfect equilibrium is a Nash equilibrium of every subgame, and by~\eqref{eq:saddle_point} every Nash equilibrium of a zero-sum subgame pays its value. The continuation values are therefore those of~\eqref{eq:rng_value_identity}, so at $\preactl{l}_i\neq0$ only the action of~\eqref{eq:rng_equilibrium_policy} is optimal, also among mixed actions. Forced continuation at the affine output gives $V^{\star}(s^{(L)})=\preactl{L}=f(x)$ by the same calculation with $l=L$, $q=+$.
+since $\sum_r\xi_r\Wsig{l}{q\oplus r}_{ij}=\xi_q\Wl{l}_{ij}$. Stopping yields zero. At $q=+$, maximizing gives the value $\max\{0,\preactl{l}_i\}=\actl{l}_i$; at $q=-$, minimizing gives $\min\{0,-\preactl{l}_i\}=-\actl{l}_i$, both measured as payoffs to $P^+$. Both continue precisely for positive pre-activation, with either action optimal at zero and our convention choosing stop. This proves the value by Theorem~\ref{thm:shapley_bellman}. For uniqueness, every SPNE is a Nash equilibrium of every subgame, and by~\eqref{eq:saddle_point} every Nash equilibrium of a zero-sum subgame pays its value. The continuation values are therefore those of~\eqref{eq:rng_value_identity}, so at $\preactl{l}_i\neq0$ only the action of~\eqref{eq:rng_equilibrium_policy} is optimal, also among mixed actions. Forced continuation at the affine output gives $V^{\star}(s^{(L)})=\preactl{L}=f(x)$ by the same calculation with $l=L$, $q=+$.
 \end{proof}
 
 \begin{remark}[Softplus networks from entropy regularization]\label{rem:softplus_game}
-\textcite{Gaubert2025} also treat Softplus networks, by \emph{regularizing} the stop/continue decision. Replace the hard choice at a positive activation state by a mixed policy $\nu \in \Delta(\{\mathrm{stop}, \mathrm{cont}\})$ rewarded with a Shannon-entropy bonus at temperature $\theta > 0$. At a negative state, the entropy term enters with the opposite sign in the payoff to $P^+$. By the Legendre--Fenchel identity for the entropy \parencite{BoydVandenberghe2004},
+\textcite{Gaubert2025} also treat Softplus networks, by \emph{regularizing} the stop/continue decision. Replace the hard choice at a positive activation state by a mixed policy $\nu \in \Delta(\{\mathrm{stop}, \mathrm{cont}\})$, a probability distribution on the two actions, rewarded with a Shannon-entropy bonus at temperature $\theta > 0$. At a negative state, the entropy term enters with the opposite sign in the payoff to $P^+$. By the Legendre--Fenchel identity on the probability simplex $\Delta_n=\{\nu\in\RR^n_{\ge0}:\sum_i\nu_i=1\}$ for the entropy \parencite{BoydVandenberghe2004},
 \begin{equation}
 	\max_{\nu \in \Delta_n} \Bigl\{ \textstyle\sum_{i=1}^{n} \nu_i r_i + \theta\, \Entropy(\nu) \Bigr\}
 	= \theta \log \textstyle\sum_{i=1}^{n} e^{r_i / \theta},
@@ -443,7 +443,7 @@ with the Gibbs distribution $\nu^{\star}_i \propto e^{r_i/\theta}$ as unique max
 \end{remark}
 
 \begin{remark}[What Chapter~\ref{ch:game_theory} inherits and what it changes]\label{rem:inherited_vs_new}
-The \ac{sg} retains the per-neuron states of Definition~\ref{def:relu_net_game} indexed by $\sigma\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Our main addition in Chapter~\ref{ch:game_theory} is \emph{player-specific game values} with non-negative payoffs: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition split-streams (Section~\ref{sec:stopping_decomposition}, Theorem~\ref{ptnb:thm:forward-stopping}), and their difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, and risk aversion, absent from the original game. For Softplus networks, the entropy regularization is that of Remark~\ref{rem:softplus_game}; what is new is again the player-specific view: the player values equal the regularized Stopping Decomposition (Theorem~\ref{ptnb:thm:softplus-forward}), and their occupation differences recover the gradient (Theorem~\ref{ptnb:thm:softplus-gradient}).
+The \ac{sg} retains the per-neuron states of Definition~\ref{def:relu_net_game} indexed by $q\in\{+,-\}$, stop/continue actions, bias and terminal input payoffs, weight-part kernel \eqref{eq:rng_kernel}, cemetery, and structural discounts $\gamma^{(l)}_i$. Our main addition in Chapter~\ref{ch:game_theory} is \emph{player-specific game values} with non-negative payoffs: the values $\Vp{p}{s}$, $p\in\{+,-\}$, equal the Stopping Decomposition split-streams (Section~\ref{sec:stopping_decomposition}, Theorem~\ref{ptnb:thm:forward-stopping}), and their difference recovers the original signed value \eqref{eq:rng_value_identity}. Replacing signed terminal payoffs $\xi_qx_k$ by $(x_k^+,x_k^-)$ (Definition~\ref{def:posneg_parts}) keeps all player-specific quantities non-negative and exposes backward-trajectory parity. The chapter also adds skip connections, max-pooling, and risk aversion, absent from the original game. For Softplus networks, the entropy regularization is that of Remark~\ref{rem:softplus_game}; what is new is again the player-specific view: the player values equal the regularized Stopping Decomposition (Theorem~\ref{ptnb:thm:softplus-forward}), and their occupation differences recover the gradient (Theorem~\ref{ptnb:thm:softplus-gradient}).
 \end{remark}
 
 \section{Probability Distances and Layered Markov Processes}\label{sec:probabilistic_foundations}\label{ptnb:app:path-divergence}
@@ -461,7 +461,7 @@ The \emph{total variation distance}, \emph{Kullback--Leibler divergence}, \emph{
  J(P,Q)&=\mathrm{KL}(P\|Q)+\mathrm{KL}(Q\|P),
  &\mathrm{JS}(P,Q)&=\tfrac12\mathrm{KL}(P\|M)+\tfrac12\mathrm{KL}(Q\|M).
 \end{align*}
-Terms with $p_y=0$ contribute zero; $p_y>0=q_y$ contributes $+\infty$. Total variation is a metric in $[0,1]$; the unnormalized $L^1$ distance is $2d_{\mathrm{TV}}$. KL is finite exactly when $\operatorname{supp}P\subseteq\operatorname{supp}Q$, and Jeffreys exactly when the supports coincide. Neither is a metric. To avoid these infinities, Jensen--Shannon compares each distribution with the mixture $M$, which assigns positive mass wherever either distribution does. It therefore remains finite even for disjoint supports and lies in $[0,\log 2]$; its square root is a metric~\parencite{EndresSchindelin2003Metric}.
+Terms with $p_y=0$ contribute zero; $p_y>0=q_y$ contributes $+\infty$. Total variation is a metric in $[0,1]$ (symmetric, zero only for $P=Q$, and satisfying the triangle inequality); the unnormalized $L^1$ distance is $2d_{\mathrm{TV}}$. KL is finite exactly when $\operatorname{supp}P\subseteq\operatorname{supp}Q$, and Jeffreys exactly when the supports coincide. Neither is a metric. To avoid these infinities, Jensen--Shannon compares each distribution with the mixture $M$, which assigns positive mass wherever either distribution does. It therefore remains finite even for disjoint supports and lies in $[0,\log 2]$; its square root is a metric~\parencite{EndresSchindelin2003Metric}.
 \end{definition}
 
 \begin{definition}[Bhattacharyya coefficient and Hellinger distance]\label{def:bc_hellinger}
@@ -474,7 +474,7 @@ and
     \mathrm{H}^2(P, Q) \;\coloneqq\; \tfrac{1}{2} \sum_y \bigl(\sqrt{P(y)} - \sqrt{Q(y)}\bigr)^2 \;=\;
     1 - \mathrm{BC}(P, Q) \;\in\; [0, 1].
 \end{align}
-The Hellinger distance $\mathrm H(P,Q)=\sqrt{1-\mathrm{BC}(P,Q)}$ is a metric in $[0,1]$, equal to zero iff $P=Q$ and to one iff their supports are disjoint. Mismatched supports cause no infinity, since $\sqrt{0\cdot Q(y)}=0$.
+The Hellinger distance $\mathrm H(P,Q)=\sqrt{1-\mathrm{BC}(P,Q)}$ is a metric in $[0,1]$, equal to zero if and only if $P=Q$ and to one if and only if their supports are disjoint. Mismatched supports cause no infinity, since $\sqrt{0\cdot Q(y)}=0$.
 \end{definition}
 
 \paragraph{Comparison bounds.}\label{ptnb:sec:lmp-hellinger-distance}\label{subsec:hellinger_definition}\label{ptnb:app:why-hellinger}
@@ -591,7 +591,7 @@ Initialize $m_M^{(L)}$ and $g^{(L)}$ at $s_0$. For $l=L,\ldots,1$, propagate $m_
 \end{algorithm}
 
 \paragraph{Why this recursion?}
-Hellinger remains finite when the path laws have different supports and gives a non-negative decomposition of its square over terminal states. KL and Jeffreys, by contrast, can then be infinite, although they also admit linear-time Markov chain-rule passes. For example, if process $A$ can stop at a reachable state where $B$ must continue, some trajectories stopping there have positive probability under $\Pi_A$ and zero under $\Pi_B$, giving $\mathrm{KL}(\Pi_A\|\Pi_B)=\infty$. Jensen--Shannon remains bounded, yet the mixture $(\Pi_A+\Pi_B)/2$ is generally non-Markov, so the same fixed-state recursion does not apply. A Wasserstein distance would additionally require a ground metric on trajectories~\parencite{PeyreCuturi2019OptimalTransport} and would not generally admit this recursion.
+Hellinger remains finite when the path laws have different supports and gives a non-negative decomposition of its square over terminal states. KL and Jeffreys, by contrast, can then be infinite, although they also admit linear-time Markov chain-rule passes. For example, if process $A$ can stop at a reachable state where $B$ must continue, some trajectories stopping there have positive probability under $\Pi_A$ and zero under $\Pi_B$, giving $\mathrm{KL}(\Pi_A\|\Pi_B)=\infty$. Jensen--Shannon remains bounded, yet the mixture $(\Pi_A+\Pi_B)/2$ is generally non-Markov, so the same fixed-state recursion does not apply. A Wasserstein distance, the least expected cost of transporting one law onto the other, would additionally require a ground metric on trajectories, which prices moving one trajectory to another~\parencite{PeyreCuturi2019OptimalTransport}, and would not generally admit this recursion.
 
 \subsection{Terminal-State Disagreement}\label{ptnb:sec:lmp-disagreement}
 \AliasLabel{ptnb:sec:lmp-per-pixel}{ptnb:sec:lmp-disagreement}
@@ -623,7 +623,7 @@ The contributions from Definition~\ref{def:terminal_hellinger_contributions} sat
 \end{theoremenv}
 
 \begin{proof}
-Each $\mathrm H^2(s)$ is non-negative by its sum-of-squares definition. Expanding the square gives the two endpoint masses $m_A^{(0)}(s),m_B^{(0)}(s)$ and the overlap $g^{(0)}(s)$, proving~\eqref{ptnb:eq:per-pixel-h2}. Summing over terminal states and removing $\dagger$ give the two totals. Cauchy--Schwarz and AM--GM also give
+Each $\mathrm H^2(s)$ is non-negative by its sum-of-squares definition. Expanding the square gives the two endpoint masses $m_A^{(0)}(s),m_B^{(0)}(s)$ and the overlap $g^{(0)}(s)$, proving~\eqref{ptnb:eq:per-pixel-h2}. Summing over terminal states and removing $\dagger$ give the two totals. Cauchy--Schwarz and the inequality of arithmetic and geometric means (AM--GM) also give
 $g^{(0)}(s)\le\sqrt{m_A^{(0)}(s)m_B^{(0)}(s)}\le\tfrac12(m_A^{(0)}(s)+m_B^{(0)}(s))$.
 The contribution vanishes exactly when the two restricted path measures agree: either both terminal masses are zero, or their positive masses and conditional path laws coincide.
 \end{proof}

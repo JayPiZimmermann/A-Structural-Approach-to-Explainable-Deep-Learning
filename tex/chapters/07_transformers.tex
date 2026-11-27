@@ -1,8 +1,8 @@
 \chapter{Extensions: Attention and Transformers}\label{ch:transformers}
 
-This chapter extends decomposition and the Routing Game to multiplicative layers and Transformers: the multiplicative split of \textcite{hiddenMono}, strengthened here by polarization, the exact convex split of the full deterministic Transformer, and the conditioned routing rules evaluated experimentally.
+This chapter extends decomposition and the Routing Game to multiplicative layers and Transformers: the multiplicative split of \textcite{hiddenMono}, strengthened here by polarization (writing a product as a difference of two sums of squares), the exact convex split of the full deterministic Transformer, and the conditioned routing rules evaluated experimentally.
 
-Transformers \parencite{Vaswani2017} introduce input-dependent products $QK^\top$, $AV$ and coordinate-coupled softmax and LayerNorm. Section~\ref{sec:multiplicative_splits} preserves the difference, convexity and monotonicity on non-negative input pairs using polarization; Section~\ref{sec:transformer_dc} extends this to softmax and LayerNorm. The full construction is implemented in PyTorch; Appendix~\ref{app:transformer_dc_numeric} documents its numerical behavior. Chapter~\ref{ch:experiments} evaluates conditioned Value-routing games and stabilized SplitCAM with attention and LayerNorm fixed for each input (Section~\ref{sec:vit-extension}).
+Transformers \parencite{Vaswani2017} introduce input-dependent products $QK^\top$, $AV$ and coordinate-coupled softmax and LayerNorm. Section~\ref{sec:multiplicative_splits} preserves the difference, convexity and monotonicity on non-negative input pairs using polarization; Section~\ref{sec:transformer_dc} extends this to softmax and LayerNorm. The full construction is implemented in PyTorch; Appendix~\ref{app:transformer_dc_numeric} documents its numerical behavior. Chapter~\ref{ch:experiments} evaluates conditioned Value-routing games (Section~\ref{sec:results_vit}) and stabilized SplitCAM with attention and LayerNorm fixed for each input (Section~\ref{sec:vit-extension}).
 
 \section{Related Work: Interpretability in Transformers}\label{sec:related_work_transformers}
 
@@ -190,7 +190,7 @@ We focus on a single attention head with output/query token $t$, key token $k\in
     O_{t,d}&=\sum_k A_{t,k}v_{k,d}
       =\sum_{k,e}A_{t,k}W_{v,e,d}X_{k,e}+b_{v,d}.\label{ptnb:eq:attn-AV-forward}
 \end{align}
-AV mixing acts independently per feature dimension $d$. ViT-B/16 implements the Value projection as a single $D\times D$ linear $v=XW_v$ followed by a reshape into $n_h$ heads; $W_v^{(h)}\in\RR^{D\times d_h}$ is its head-$h$ column block. Each input embedding $X_{k,e}$ feeds Value entries of every head, and the per-head $R^X$ contributions sum there.
+AV mixing acts independently per feature dimension $d$. ViT-B/16 implements the Value projection as a single $D\times D$ linear map followed by a reshape into $n_h$ heads; the $W_v\in\RR^{D\times d_h}$ of~\eqref{ptnb:eq:attn-V-forward} is its head-$h$ column block. Each input embedding $X_{k,e}$ feeds Value entries of every head, and the per-head $R^X$ contributions sum there.
 
 The composite weights $W^{\mathrm{eff}}_{(k,e),(t,d)}=A_{t,k}W_{v,e,d}$ inherit the projection signs. For $\kappa\in\{+,-\}$, define the sign streams of the composite contributions, fused as in Section~\ref{ptnb:app:routing-kernel}, and the output masses
 \begin{align}
@@ -203,7 +203,7 @@ The composite weights $W^{\mathrm{eff}}_{(k,e),(t,d)}=A_{t,k}W_{v,e,d}$ inherit 
       \label{ptnb:eq:attn-Z-def}
 \end{align}
 \AliasLabel{ptnb:eq:attn-z-def}{ptnb:eq:attn-Z-def}
-These sign streams retain predecessor signs; netting $v_{k,d}$ before taking its positive or negative part agrees only for single-signed predecessors. Composite $\alpha\beta$-\ac{lrp} applies $(\alpha,\beta)$ once to this split. Sequential $\alpha\beta$-\ac{lrp} on $X\to v\to O$ splits by the sign of the netted Value entry and applies $(\alpha,\beta)$ at both stages; the two rules differ whenever $(\alpha,\beta)\neq(1,0)$, and for mixed-sign predecessors also in their sign streams. All reported ViT results use the composite rule. Conditioning resembles \ac{ptnbCPLRP}~\parencite{Ali2022AttnLRP} and \ac{ptnbDAVE}~\parencite{Wrobel2024}; AttnLRP~\parencite{Achtibat2024AttnLRP} also attributes the softmax and QK paths.
+These sign streams retain predecessor signs; netting $v_{k,d}$ before taking its positive or negative part agrees only for single-signed predecessors. Composite $\alpha\beta$-\ac{lrp} applies $(\alpha,\beta)$ once to this split. Sequential $\alpha\beta$-\ac{lrp} on $X\to v\to O$ splits by the sign of the netted Value entry and applies $(\alpha,\beta)$ at both stages; the two rules differ whenever $(\alpha,\beta)\neq(1,0)$, and for mixed-sign predecessors also in their sign streams. Apart from the gradient-fallback rows of Table~\ref{ptnb:tab:abl-gradient-fallback}, all reported ViT-B/16 \ac{rg} results use the composite rule. Conditioning resembles \ac{ptnbCPLRP}~\parencite{Ali2022AttnLRP} and \ac{ptnbDAVE}~\parencite{Wrobel2024}; AttnLRP~\parencite{Achtibat2024AttnLRP} also attributes the softmax and QK paths.
 
 \paragraph{Zero mass and stabilization.}
 Every contribution ratio uses
@@ -258,7 +258,7 @@ Indeed, $\exp(-\infty)=0$, and policies charging zero-$u$ actions have payoff $-
 \paragraph{State space.}\label{ptnb:app:attention-state-space}
 Use four state families: output activations $O_{tdp}$, output sign branches $L_{tdp\kappa}$, Value-projection linear states $V_{kdp\kappa}$, and input activations $X_{kep}$. As in Definition~\ref{ptnb:def:routing-recursion}, $O$ and $X$ are activation states and $L$ and $V$ are linear states. The surrounding recursion enters at $O$ and resumes at $X$. Player $p\in\{+,-\}$ is retained except at the sole sign split:
 \begin{enumerate}
-    \item From $O_{tdp}$, an unobserved oracle chooses $L_{tdp+}$ or $L_{tdp'-}$ with probability $1/2$ and trajectory discount $2\alpha$ or $2\beta$ (value discount $2$), and $p'$ the opponent.
+    \item From $O_{tdp}$, an unobserved oracle chooses $L_{tdp+}$ or $L_{tdp'-}$ with probability $1/2$ and trajectory discount $2\alpha$ or $2\beta$ (value discount $2$), where $p'$ is the opponent.
     \item From $L_{tdp\kappa}$, the active player chooses key $k$ and moves to $V_{kdp\kappa}$ using the KL policy below; $p,\kappa,d$ are preserved.
     \item From $V_{kdp\kappa}$, the linear-state Gibbs rule routes to $X_{kep}$ or the absorbed bias node. This preserves $p$ and drops $d$.
 \end{enumerate}

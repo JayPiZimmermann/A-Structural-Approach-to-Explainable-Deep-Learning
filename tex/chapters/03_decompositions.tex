@@ -435,7 +435,7 @@ Let $n\ge1$, and define
 For each output coordinate $i$, set
 \begin{equation}
     F_{i,\sigma}(x,y)
-    =\frac{H(x-y)+\xi_\sigma\pi_i(x-y)+\sum_{j=1}^n y_j}{2}-c_n.
+    =\frac{\Lambda(x-y)+\xi_\sigma\pi_i(x-y)+\sum_{j=1}^n y_j}{2}-c_n.
     \label{eq:softmax_dc_pair}
 \end{equation}
 Both components are finite, convex, and coordinatewise non-decreasing on all of $\RR^{2n}$. They are non-negative on $\RR^{2n}_{\ge0}$ and satisfy
@@ -467,8 +467,8 @@ $|D^2\pi_i(z)[v,v]|\le D^2\Lambda(z)[v,v]$. Thus $\Lambda+\pi_i$ and $\Lambda-\p
 Every entry lies in $[0,1/2]$; for the last entry, use $\pi_j\le1-\pi_i$. The lift~\eqref{eq:multivariate_dc_lift} with $\ell_j=1/2$ gives global convexity and monotonicity. At the origin, $F_{i,+}(0,0)=1/n$ and $F_{i,-}(0,0)=0$, proving non-negativity on the orthant. With $z=x-y$, subtraction cancels the common terms:
 \begin{align*}
 F_{i,+}(x,y)-F_{i,-}(x,y)
-&=\left(\frac{H(z)+\pi_i(z)+\sum_j y_j}{2}-c_n\right)
- -\left(\frac{H(z)-\pi_i(z)+\sum_j y_j}{2}-c_n\right)\\
+&=\left(\frac{\Lambda(z)+\pi_i(z)+\sum_j y_j}{2}-c_n\right)
+ -\left(\frac{\Lambda(z)-\pi_i(z)+\sum_j y_j}{2}-c_n\right)\\
 &=\frac{2\pi_i(z)}{2}=\pi_i(x-y)
  =\frac{e^{x_i-y_i}}{\sum_j e^{x_j-y_j}}.
 \end{align*}
@@ -830,7 +830,7 @@ Split convolution~\eqref{eq:conv_split} is the instance $A = K*(\cdot)$; the rem
 
 \begin{table}[htbp]
 	\centering
-	\caption[Linear CNN chunks]{Linear \ac{cnn} chunks as instances of Lemma~\ref{lem:linear_chunk}.}
+	\caption[Linear CNN chunks]{Linear \ac{cnn} chunks as instances of Lemma~\ref{lem:linear_chunk}; $p$ is the dropout probability.}
 	\label{tab:linear_chunks}
 \TableContent{
 	\small

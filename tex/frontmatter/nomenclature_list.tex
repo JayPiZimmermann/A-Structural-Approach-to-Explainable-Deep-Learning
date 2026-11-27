@@ -9,20 +9,20 @@
 \nomenclature[A03]{$[W]^{\sigma}$}{Entrywise positive ($\sigma=+$) or negative ($\sigma=-$) part}{}{Def.~\ref{def:posneg_parts}}
 \nomenclature[A04]{$\1[\cdot]$}{Indicator: $1$ if the condition holds, else $0$}{}{}
 \nomenclature[A05]{$\E$}{Expectation}{}{}
-\nomenclature[A06]{$\odot$}{Hadamard (elementwise) product}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[A07]{$\nabla$}{Gradient operator}{}{\S~\ref{subsec:gradient_occupation}}
-\nomenclature[A08]{$\nabla^2$, $D^2g(z)[v,v]$}{Hessian and its quadratic form $v^\top\nabla^2g(z)\,v$}{}{\S~\ref{sec:closed_form_dc_activations}}
+\nomenclature[A06]{$\odot$}{Hadamard (elementwise) product}{}{\S~\ref{sec:split_cam}}
+\nomenclature[A07]{$\nabla$}{Gradient operator}{}{\S~\ref{sec:multivariate_dc_softmax}}
+\nomenclature[A08]{$\nabla^2$, $D^2w(z)[v,v]$}{Hessian and its quadratic form $v^\top\nabla^2w(z)\,v$}{}{\S~\ref{sec:multivariate_dc_softmax}}
 \nomenclature[A09]{$\operatorname{ReLU}$}{Rectified linear unit, $\max\{0,x\}$}{}{\S~\ref{sec:nn_notation_pwl}}
 \nomenclature[A10]{$\operatorname{sgm}$}{Logistic sigmoid, $(1+e^{-z})^{-1}$}{}{\S~\ref{sec:closed_form_dc_activations}}
 \nomenclature[A11]{$s_\beta$}{Softplus with sharpness $\beta$, $\beta^{-1}\log(1+e^{\beta z})$}{}{\S~\ref{sec:closed_form_dc_activations}}
 \nomenclature[A12]{$\Phi$, $\varphi$}{Standard Gaussian distribution function and density}{}{\S~\ref{sec:closed_form_dc_activations}}
-\nomenclature[A13]{$\Entropy$}{Shannon entropy}{}{\S~\ref{subsec:softplus_decomposition}}
+\nomenclature[A13]{$\Entropy$}{Shannon entropy}{}{Rem.~\ref{rem:softplus_game}}
 \nomenclature[A14]{$\operatorname{conv}$}{Convex hull}{}{\S~\ref{sec:polytope_foundations}}
 \nomenclature[A15]{$\operatorname{Newt}$}{Newton polytope of a max-affine function}{}{Def.~\ref{def:newton_polytope}}
 \nomenclature[A16]{$h_P$}{Support function of a compact convex set $P$}{}{Def.~\ref{def:support_function}}
 \nomenclature[A17]{$l$}{Layer index}{}{\S~\ref{sec:nn_notation_pwl}}
 \nomenclature[A18]{$i,j$}{Neuron indices}{}{\S~\ref{sec:nn_notation_pwl}}
-\nomenclature[A19]{$c$}{Channel index}{}{\S~\ref{sec:cnn_decompositions}}
+\nomenclature[A19]{$c$}{Channel index}{}{\S~\ref{sec:split_cam}}
 %------------------------------
 % B: NETWORKS AND DECOMPOSITIONS
 %------------------------------
@@ -43,10 +43,10 @@
 \nomenclature[B15]{$\eta$}{Mixing parameter of the mixing decomposition}{}{\S~\ref{sec:mixing_decomposition}}
 \nomenclature[B16]{$\Omega$, $\Omega^*$}{Gate regularizer and its conjugate activation}{}{Def.~\ref{def:freg}}
 \nomenclature[B17]{$\pi_\Omega$, $\Delta$}{Regularized gate and its argument $\Delta=z^+-z^-$}{}{Def.~\ref{def:freg}}
-\nomenclature[B18]{$\theta$}{Softplus temperature}{}{\S~\ref{subsec:softplus_decomposition}}
+\nomenclature[B18]{$\theta$}{Softplus temperature}{}{Rem.~\ref{rem:softplus_game}}
 \nomenclature[B19]{$\alpha$}{Backward shift parameter (DC chapters)}{}{\S~\ref{subsec:backward_stabilization}}
-\nomenclature[B20]{$\delta$}{Network gradient (sensitivity)}{}{\S~\ref{subsec:gradient_occupation}}
-\nomenclature[B21]{$\delta^g, \delta^h$}{Split-stream gradients}{}{\S~\ref{sec:split_grad}}
+\nomenclature[B20]{$\delta$}{Network gradient (sensitivity)}{}{\S~\ref{subsec:backward_stabilization}}
+\nomenclature[B21]{$\delta^{(l,g)}, \delta^{(l,h)}$}{Split-stream gradients}{}{\S~\ref{subsec:backward_stabilization}}
 \nomenclature[B22]{$\sigma_{\mathrm{BN}}^2$}{Running variance of batch normalization}{}{\S~\ref{sec:cnn_decompositions}}
 \nomenclature[B23]{$\varepsilon$}{Numerical stability constant}{}{\S~\ref{ptnb:sec:background}}
 %------------------------------
@@ -57,7 +57,7 @@
 \nomenclature[C03]{$P^{+}, P^{-}$}{Players collecting positive and negative evidence}{}{\S~\ref{sec:game_theory_mdp_foundations}}
 \nomenclature[C035]{$p\oplus q$}{Sign-XOR: $+$ if $p=q$, $-$ otherwise}{}{\S~\ref{sec:game_theory_mdp_foundations}}
 \nomenclature[C04]{$\xi_p$}{Numerical sign $\pm1$ of the label $p$}{}{\S~\ref{sec:game_theory_mdp_foundations}}
-\nomenclature[C05]{$\kappa$}{Sign-stream label in attention}{}{\S~\ref{ptnb:sec:attention}}
+\nomenclature[C05]{$\kappa$}{Sign-stream label of the Routing Game}{}{\S~\ref{ptnb:sec:routing}}
 \nomenclature[C06]{$S$, $A(s)$, $R(s,a)$}{States, actions at $s$, reward}{}{Def.~\ref{def:mdp}}
 \nomenclature[C07]{$\P(s'\mid s,a)$}{Transition probability from $s$ to $s'$ under action $a$}{}{Def.~\ref{def:mdp}}
 \nomenclature[C08]{$\dagger$}{Cemetery: absorbing terminal state with zero payoff}{}{Def.~\ref{def:relu_net_game}}
