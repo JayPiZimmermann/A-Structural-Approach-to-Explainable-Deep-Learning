@@ -122,7 +122,7 @@ Monotonicity refers to independent pair coordinates. Under $x^\sigma=\posneg{x}{
 
 \subsection{Construction from Absolute Second Derivatives}\label{sec:dc_splitting_smooth}
 
-Finite positive and negative curvature gives bounded profile slopes. We construct them from $|f''|$, with $f$ now denoting a scalar activation. As in the convex-fold construction (Figure~\ref{fig:cpwl_convex_folds}), positive and negative curvature are separated, here along smooth arcs instead of at slope jumps (Figure~\ref{fig:smooth_curvature}). A set of \emph{measure zero} can be covered by countably many intervals of arbitrarily small total length, and a property holds \emph{almost everywhere} if it holds outside such a set. A function $g$ is \emph{absolutely continuous} on an interval if $g'$ exists almost everywhere, is integrable there, and $g(v)-g(u)=\int_u^v g'(t)\,\diff t$ for all $u<v$ in it, and \emph{locally absolutely continuous} if this holds on every bounded interval. We write $C^1(I)$ for the continuously differentiable functions on an interval $I$, and $f''\in L^1(\RR)$ means $\|f''\|_{L^1(\RR)}\coloneqq\int_{\RR}|f''(t)|\,\diff t<\infty$.
+Finite positive and negative curvature gives bounded profile slopes. We construct them from $|f''|$, with $f$ now denoting a scalar activation. As in the convex-fold construction (Figure~\ref{fig:cpwl_convex_folds}), positive and negative curvature are separated, here along smooth arcs instead of at slope jumps (Figure~\ref{fig:smooth_curvature}). A set of \emph{measure zero} can be covered by countably many intervals of arbitrarily small total length, and a property holds \emph{almost everywhere} if it holds outside such a set. A function $w$ is \emph{absolutely continuous} on an interval if $w'$ exists almost everywhere, is integrable there, and $w(v)-w(u)=\int_u^v w'(t)\,\diff t$ for all $u<v$ in it, and \emph{locally absolutely continuous} if this holds on every bounded interval. We write $C^1(I)$ for the continuously differentiable functions on an interval $I$, and $f''\in L^1(\RR)$ means $\|f''\|_{L^1(\RR)}\coloneqq\int_{\RR}|f''(t)|\,\diff t<\infty$.
 
 \begin{theoremenv}[Absolute-curvature construction, \LeanResult{thm:absolute_curvature_split}]\label{thm:absolute_curvature_split}
 Let $f\colon\RR\to\RR$ be differentiable, let $f'$ be locally absolutely continuous, and assume $f''\in L^1(\RR)$. Set
@@ -161,7 +161,7 @@ Differentiating~\eqref{eq:absolute_curvature_primitive} yields
 Both derivatives are non-negative, non-decreasing, and bounded, and $p''=P$, $q''=N$ almost everywhere. Their upper limits are
 $A=\max\{s_-,0\}+\int_{\RR}P$ and
 $B=\max\{-s_-,0\}+\int_{\RR}N$.
-Since $A+B=|s_-|+\|f''\|_1$ and $A-B=s_+$, their maximum is precisely~\eqref{eq:absolute_curvature_coefficient}. The difference and origin values follow directly from the definition. Proposition~\ref{prop:dc_profile_lift} now proves all pair properties.
+Since $A+B=|s_-|+\|f''\|_{L^1(\RR)}$ and $A-B=s_+$, their maximum is precisely~\eqref{eq:absolute_curvature_coefficient}. The difference and origin values follow directly from the definition. Proposition~\ref{prop:dc_profile_lift} now proves all pair properties.
 \end{proof}
 
 \begin{figure}[htbp]
@@ -207,7 +207,7 @@ ReLU's slope jumps from $0$ to $1$ at zero, although its classical second deriva
 
 More generally, local absolute continuity means that $f(b)-f(a)=\int_a^b v(t)\,\diff t$ on every finite interval. Here $v$ is the \emph{weak derivative}, agreeing with $f'$ almost everywhere. Assume it has a right-continuous \emph{representative} (a choice of values on a set of measure zero) with \emph{bounded variation}: the sums $\sum_{i=1}^n|v(t_i)-v(t_{i-1})|$ have a common finite bound over all finite increasing sequences $t_0<\cdots<t_n$ in $\RR$. Its slope changes define the curvature measure by $\mu((a,b])=v(b)-v(a)$. This is a \emph{signed measure}: it extends from half-open intervals to all sets built from them by complements and countable unions, and it adds over countably many disjoint sets~\parencite[Sections~3.A--3.C]{Hunter2014PDE}. In the smooth case $\mu=f''(t)\,\diff t$; for a scalar \ac{cpwl} function, each slope jump contributes a point mass of its signed size.
 
-The \emph{Jordan parts} $\mu_+,\mu_-$ record upward and downward slope variation: $\mu=\mu_+-\mu_-$, while $|\mu|=\mu_++\mu_-$ records total variation, finite on $\RR$ by bounded variation. In Theorem~\ref{thm:absolute_curvature_split}, use $V(t)=|\mu|(({-\infty},t])$, $s_\pm=\lim_{t\to\pm\infty}v(t)$, and replace $\|f''\|_1$ by $|\mu|(\RR)$. The profiles remain convex and satisfy the derivative-free increment bound~\eqref{eq:dc_profile_increments}: with $v$ right-continuous, their right derivatives are $\max\{s_-,0\}+\mu_+((-\infty,z])$ and $\max\{-s_-,0\}+\mu_-((-\infty,z])$, in place of~\eqref{eq:canonical_profile_slopes}.
+The \emph{Jordan parts} $\mu_+,\mu_-$ record upward and downward slope variation: $\mu=\mu_+-\mu_-$, while $|\mu|=\mu_++\mu_-$ records total variation, finite on $\RR$ by bounded variation. In Theorem~\ref{thm:absolute_curvature_split}, use $V(t)=|\mu|(({-\infty},t])$, $s_\pm=\lim_{t\to\pm\infty}v(t)$, and replace $\|f''\|_{L^1(\RR)}$ by $|\mu|(\RR)$. The profiles remain convex and satisfy the derivative-free increment bound~\eqref{eq:dc_profile_increments}: with $v$ right-continuous, their right derivatives are $\max\{s_-,0\}+\mu_+((-\infty,z])$ and $\max\{-s_-,0\}+\mu_-((-\infty,z])$, in place of~\eqref{eq:canonical_profile_slopes}.
 
 Section~\ref{sec:dc_splitting_relu} carries out this construction for ReLU.
 \end{remark}
@@ -423,12 +423,12 @@ For an activation with several outputs, apply the scalar profile idea to each co
 \end{equation}
 As in Proposition~\ref{prop:dc_profile_lift}, the common affine term preserves convexity and cancels in the difference $F_+-F_-=f(x-y)$. The coordinate derivatives $\partial_jC_\sigma$ and $\ell_j-\partial_jC_\sigma$ give monotonicity. If $C_\sigma(0)\ge0$, both components are also non-negative for $x,y\ge0$.
 
-For softmax, the log-sum-exp Hessian supplies the needed curvature bound. The \emph{Hessian} $\nabla^2g(z)$ of a twice continuously differentiable $g\colon\RR^n\to\RR$ at $z$ is the matrix with entries $\partial_j\partial_kg(z)$, and $D^2g(z)[v,v]\coloneqq v^\top\nabla^2g(z)\,v$ is the second derivative of $t\mapsto g(z+tv)$ at $t=0$. A symmetric matrix $A\in\RR^{n\times n}$ is \emph{positive semidefinite} if $v^\top Av\ge0$ for all $v\in\RR^n$, and $g$ is convex exactly when $\nabla^2g(z)$ is positive semidefinite for every $z$.
+For softmax, the log-sum-exp Hessian supplies the needed curvature bound. The \emph{Hessian} $\nabla^2w(z)$ of a twice continuously differentiable $w\colon\RR^n\to\RR$ at $z$ is the matrix with entries $\partial_j\partial_kw(z)$, and $D^2w(z)[v,v]\coloneqq v^\top\nabla^2w(z)\,v$ is the second derivative of $t\mapsto w(z+tv)$ at $t=0$. A symmetric matrix $A\in\RR^{n\times n}$ is \emph{positive semidefinite} if $v^\top Av\ge0$ for all $v\in\RR^n$, and $w$ is convex exactly when $\nabla^2w(z)$ is positive semidefinite for every $z$.
 
 \begin{theoremenv}[Explicit convex, monotone softmax pair, \LeanResult{thm:softmax_dc_split}]\label{thm:softmax_dc_split}
 Let $n\ge1$, and define
 \begin{equation*}
-    H(z)=\log\!\left(\sum_{j=1}^n e^{z_j}\right),
+    \Lambda(z)=\log\!\left(\sum_{j=1}^n e^{z_j}\right),
     \qquad \pi_i(z)=\frac{e^{z_i}}{\sum_{j=1}^n e^{z_j}},
     \qquad c_n=\frac{\log n-1/n}{2}.
 \end{equation*}
@@ -446,7 +446,7 @@ $F_{i,+}(x,y)-F_{i,-}(x,y)=\pi_i(x-y)$.
 For $z,v\in\RR^n$, differentiation along $z+tv$ gives
 \begin{equation}
 \begin{aligned}
-    D^2H(z)[v,v]
+    D^2\Lambda(z)[v,v]
     &=\sum_j\pi_j(z)\left(v_j-\sum_k\pi_k(z)v_k\right)^2,\\
     D^2\pi_i(z)[v,v]
     &=\sum_j\pi_j(z)\bigl(\1[j=i]-\pi_i(z)\bigr)
@@ -455,7 +455,7 @@ For $z,v\in\RR^n$, differentiation along $z+tv$ gives
     \label{eq:softmax_curvature_domination}
 \end{equation}
 Since $|\1[j=i]-\pi_i|\le1$, it follows that
-$|D^2\pi_i(z)[v,v]|\le D^2H(z)[v,v]$. Thus $H+\pi_i$ and $H-\pi_i$ have positive semidefinite Hessians and are convex. For the profiles $C_{i,\sigma}=(H+\xi_\sigma\pi_i)/2-c_n$, their partial derivatives are
+$|D^2\pi_i(z)[v,v]|\le D^2\Lambda(z)[v,v]$. Thus $\Lambda+\pi_i$ and $\Lambda-\pi_i$ have positive semidefinite Hessians and are convex. For the profiles $C_{i,\sigma}=(\Lambda+\xi_\sigma\pi_i)/2-c_n$, their partial derivatives are
 \begin{equation}
 \begin{array}{c|cc}
  & \partial_j C_{i,+} & \partial_j C_{i,-}\\ \hline
@@ -593,7 +593,7 @@ where an arbitrary maximizer is fixed if several exist. The \emph{regularized de
 \end{equation}
 \end{definition}
 
-Lower semicontinuity of $\Omega$ ensures that the maximum in~\eqref{eq:regularized_gate} is attained on the compact interval $[0,1]$; $\Omega^*$ is the Fenchel conjugate of $\Omega$ extended by $+\infty$ outside $[0,1]$. Since $\pi_\Omega(\Delta) \in [0,1]$, $z^\sigma \ge 0$, and $-\Omega \ge 0$, both components of~\eqref{eq:freg_def} are non-negative, making $\freg$ a pairwise activation (Definition~\ref{def:decomposition}). All maximizers recover $\Omega^*(\Delta)$, but their components can differ: for $\Omega=0$, $z^+=z^-=1$, the choices $\pi=0,1$ produce $(0,0),(1,1)$. Hence Definition~\ref{def:freg} fixes a selection. Here the untagged pair $\bigl(\act{l}{+}_i, \act{l}{-}_i\bigr)$ denotes regularized-family activations, replacing the \ac{dc} ($\eta=1$) meaning in~\eqref{eq:dc_split_activations}. A function $g$ is \emph{$1$-Lipschitz} if $|g(u)-g(v)|\le|u-v|$ for all $u,v$.
+Lower semicontinuity of $\Omega$ ensures that the maximum in~\eqref{eq:regularized_gate} is attained on the compact interval $[0,1]$; $\Omega^*$ is the Fenchel conjugate of $\Omega$ extended by $+\infty$ outside $[0,1]$. Since $\pi_\Omega(\Delta) \in [0,1]$, $z^\sigma \ge 0$, and $-\Omega \ge 0$, both components of~\eqref{eq:freg_def} are non-negative, making $\freg$ a pairwise activation (Definition~\ref{def:decomposition}). All maximizers recover $\Omega^*(\Delta)$, but their components can differ: for $\Omega=0$, $z^+=z^-=1$, the choices $\pi=0,1$ produce $(0,0),(1,1)$. Hence Definition~\ref{def:freg} fixes a selection. Here the untagged pair $\bigl(\act{l}{+}_i, \act{l}{-}_i\bigr)$ denotes regularized-family activations, replacing the \ac{dc} ($\eta=1$) meaning in~\eqref{eq:dc_split_activations}. A function $w$ is \emph{$1$-Lipschitz} if $|w(u)-w(v)|\le|u-v|$ for all $u,v$.
 
 \begin{theoremenv}[Validity of regularized decompositions, \LeanResult{thm:freg_validity}]\label{thm:freg_validity}
 Let $\Omega$ be as in Definition~\ref{def:freg}, and let the activation pairs be propagated by the canonical non-negative linear map \eqref{eq:split_pos}--\eqref{eq:split_neg}, initialized by~\eqref{eq:input_split_convention}, and updated by $\freg$ at hidden layers, with the identity pair at the final affine readout. Let $\preactl{l}$ be the pre-activations of the network of Definition~\ref{def:ffn_relu} with $\varrho_l=\Omega^*$ and the given weights and biases. Then for every hidden layer $l$ and neuron $i$,
@@ -661,11 +661,11 @@ In the negative split-stream $\act{l}{-}=\sgm(\Delta/\theta)z^-$, increasing $z^
 \end{remark}
 
 \begin{remark}[Probit regularizer and GELU]\label{rem:probit_gelu}
-The framework is not tied to the entropy. For the probit regularizer $\Omega_\Phi(\pi) \coloneqq -\phi\bigl(\Phi^{-1}(\pi)\bigr)$ on $(0,1)$ and $\Omega_\Phi(0)=\Omega_\Phi(1)\coloneqq0$, with $\phi, \Phi$ the standard Gaussian density and distribution function, $\Omega_\Phi$ is continuous and, since $\Omega_\Phi''(\pi)=1/\phi(\Phi^{-1}(\pi))>0$, convex; one has $\frac{\diff}{\diff \pi}\bigl(-\Omega_\Phi\bigr)(\pi) = -\Phi^{-1}(\pi)$, so the first-order condition for~\eqref{eq:regularized_gate} gives the gate $\pi_{\Omega_\Phi}(\Delta) = \Phi(\Delta)$ and the conjugate activation
+The framework is not tied to the entropy. For the probit regularizer $\Omega_\Phi(\pi) \coloneqq -\varphi\bigl(\Phi^{-1}(\pi)\bigr)$ on $(0,1)$ and $\Omega_\Phi(0)=\Omega_\Phi(1)\coloneqq0$, with $\varphi, \Phi$ the standard Gaussian density and distribution function, $\Omega_\Phi$ is continuous and, since $\Omega_\Phi''(\pi)=1/\varphi(\Phi^{-1}(\pi))>0$, convex; one has $\frac{\diff}{\diff \pi}\bigl(-\Omega_\Phi\bigr)(\pi) = -\Phi^{-1}(\pi)$, so the first-order condition for~\eqref{eq:regularized_gate} gives the gate $\pi_{\Omega_\Phi}(\Delta) = \Phi(\Delta)$ and the conjugate activation
 \begin{equation*}
-	\Omega_\Phi^*(\Delta) = \Delta\, \Phi(\Delta) + \phi(\Delta) = \E_{\varepsilon \sim \mathcal{N}(0,1)}\bigl[ \max(\Delta + \varepsilon, 0) \bigr],
+	\Omega_\Phi^*(\Delta) = \Delta\, \Phi(\Delta) + \varphi(\Delta) = \E_{\varepsilon \sim \mathcal{N}(0,1)}\bigl[ \max(\Delta + \varepsilon, 0) \bigr],
 \end{equation*}
-the Gaussian smoothing of \ac{relu}, differing from GELU $\Delta\Phi(\Delta)$ \parencite{Hendrycks2016} by $\phi(\Delta)$. The gate $\Phi(\Delta)=\E_\varepsilon[\1[\Delta+\varepsilon>0]]$ is the hard ReLU gate averaged over a Gaussian shift of its threshold, aligning with the original stochastic-gate motivation for GELU. Theorem~\ref{thm:freg_validity} makes the recovered $\Omega_\Phi^*$ convex, non-decreasing and $1$-Lipschitz. GELU itself is non-monotone, dipping below zero for $\Delta<0$, so it cannot be such a conjugate activation: this regularized decomposition recovers the $+\phi(\Delta)$ variant exactly and GELU networks only approximately.
+the Gaussian smoothing of \ac{relu}, differing from GELU $\Delta\Phi(\Delta)$ \parencite{Hendrycks2016} by $\varphi(\Delta)$. The gate $\Phi(\Delta)=\E_\varepsilon[\1[\Delta+\varepsilon>0]]$ is the hard ReLU gate averaged over a Gaussian shift of its threshold, aligning with the original stochastic-gate motivation for GELU. Theorem~\ref{thm:freg_validity} makes the recovered $\Omega_\Phi^*$ convex, non-decreasing and $1$-Lipschitz. GELU itself is non-monotone, dipping below zero for $\Delta<0$, so it cannot be such a conjugate activation: this regularized decomposition recovers the $+\varphi(\Delta)$ variant exactly and GELU networks only approximately.
 \end{remark}
 
 \section{Numerical Stabilization of Split Passes}\label{sec:stabilization_dc}
@@ -713,7 +713,7 @@ We shift the growing split-stream gradients while preserving the original networ
     \qquad \sigma\in\{+,-\},\quad s\in\{g,h\}.
     \label{eq:local_sensitivities}
 \end{equation}
-For $s\in\{g,h\}$ define the head on the half--half split by $\tilde s^{(l)}(\actl{l})\coloneqq s^{(l)}(\actl{l}/2,-\actl{l}/2)$. The chain rule gives the unified-input gradient
+For $s\in\{g,h\}$ define the head on the half-half split by $\tilde s^{(l)}(\actl{l})\coloneqq s^{(l)}(\actl{l}/2,-\actl{l}/2)$. The chain rule gives the unified-input gradient
 \begin{equation}
 \delta^{(l,s)}\coloneqq\frac{\partial\tilde s^{(l)}}{\partial\actl{l}}
 =\frac{\delta^{(l,+,s)}-\delta^{(l,-,s)}}2.
@@ -886,7 +886,7 @@ The Transformer DC experiments (Section~\ref{sec:vit-extension}) extend the grap
 
 \section{Split-Based Attribution}\label{sec:split_attribution_concept}
 
-In this section, we use the neural network decomposition framework introduced above to extend two common XAI attribution methods: LayerCAM and LRP~\parencite{hiddenMono}. Fix a scalar class logit and use the split-streams $g,h$. Their activations, shifted local sensitivities and implementation conventions are specified in Sections~\ref{sec:stabilization_dc} and~\ref{subsec:split_implementations}.
+In this section, we use the neural network decomposition framework introduced above to extend two common attribution methods: LayerCAM and LRP~\parencite{hiddenMono}. Fix a scalar class logit and use the split-streams $g,h$. Their activations, shifted local sensitivities and implementation conventions are specified in Sections~\ref{sec:stabilization_dc} and~\ref{subsec:split_implementations}.
 
 \subsection{SplitCAM}\label{sec:split_cam}
 

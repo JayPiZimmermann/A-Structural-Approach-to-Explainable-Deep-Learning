@@ -143,7 +143,7 @@ The optional final norm is tokenwise with positive epsilon. Depth zero retains o
 
 \subsection{The Full Transformer Construction}
 
-Use the canonical affine and ReLU splits throughout the network, add residual branches componentwise, and apply the product pair~\eqref{eq:polarized_product_pair}, the smooth activation pairs of Section~\ref{sec:closed_form_dc_activations}, softmax Theorem~\ref{thm:softmax_dc_split}, and the LayerNorm recipe above, retaining its input-dependent statistics.
+Use the canonical affine and ReLU splits throughout the network, add residual branches componentwise, and apply the product pair~\eqref{eq:polarized_product_pair}, the smooth activation pairs of Section~\ref{sec:closed_form_dc_activations}, the softmax pair of Theorem~\ref{thm:softmax_dc_split}, and the LayerNorm recipe above, retaining its input-dependent statistics.
 
 \begin{theoremenv}[Exact DC decomposition of a deterministic Transformer, \LeanResult{thm:transformer_dc_linear_cost}]\label{thm:transformer_dc}
 Let $N\colon\RR^{T\times d}\to\RR$ be the Transformer of Definition~\ref{def:prenorm_transformer}, with any finite list of blocks, including the empty list, and identify its token-feature input with $\RR^m$, where $m=Td$. The canonical construction yields split-streams
@@ -184,7 +184,7 @@ We now derive the conditioned Value-routing rule used in the ViT experiments. It
 
 \subsection{The Conditioned Map and Target Rule}\label{ptnb:app:attention-kl-routing}\label{ptnb:app:attention-target-rule}
 
-We focus on a single attention head with output/query token $t$, key token $k\in\{1,\dots,S\}$, feature $d\in\{1,\dots,d_h\}$, and input embedding coordinate $e\in\{1,\dots,D\}$. For signed inputs $X$, shared per-token weights $W_v$ and bias $b_v$, and detached row-stochastic attention $A\ge0$,
+We focus on a single attention head with output/query token $t$, key token $k\in\{1,\dots,T\}$, feature $d\in\{1,\dots,d_h\}$, and input embedding coordinate $e\in\{1,\dots,D\}$. This section drops the head index and uses its own single-head notation: $d_h$ is the head width ($d_{q,h}=d_{v,h}$ in Definition~\ref{def:prenorm_transformer}), $D$ is the embedding width, and $d$ indexes head features. For signed inputs $X$, shared per-token weights $W_v$ and bias $b_v$, and detached row-stochastic attention $A\ge0$,
 \begin{align}
     v_{k,d}&=\sum_e W_{v,e,d}X_{k,e}+b_{v,d},\label{ptnb:eq:attn-V-forward}\\
     O_{t,d}&=\sum_k A_{t,k}v_{k,d}
@@ -288,7 +288,7 @@ If $Z_{t,d}^\kappa>0$, the unique maximizing policy and subsequent projection po
 The active-player value at $L$ is $\ell(Z_{t,d}^\kappa)$; the inactive-player value is $-\infty$. At $Z_{t,d}^\kappa=0$, every admissible key policy has value $-\infty$; the game uses cemetery completion. Projection states with zero mass use the same completion.
 \end{proposition}
 \begin{proof}
-Apply the logit specialization~\eqref{ptnb:eq:kl-lf-linearized} with $u(k)=\tilde v_{k,d}^\kappa$. Its payoff is the predecessor Value-state value; the reference weight gives the composite log-payoff $\ell(A_{t,k}\tilde v_{k,d}^\kappa)$. Definition~\ref{ptnb:def:routing-recursion} gives the projection Gibbs rule and inactive-player value, as in~\eqref{ptnb:eq:routing-linear-action}. If $Z=0$, every weighted mass vanishes, giving value $\ell(0)=-\infty$.
+Apply the log-payoff specialization~\eqref{ptnb:eq:kl-lf-linearized} with $u(k)=\tilde v_{k,d}^\kappa$. Its payoff is the predecessor Value-state value; the reference weight gives the composite log-payoff $\ell(A_{t,k}\tilde v_{k,d}^\kappa)$. Definition~\ref{ptnb:def:routing-recursion} gives the projection Gibbs rule and inactive-player value, as in~\eqref{ptnb:eq:routing-linear-action}. If $Z=0$, every weighted mass vanishes, giving value $\ell(0)=-\infty$.
 \end{proof}
 Given these values, which treat the input activations $X$ as terminal, the policies are optimal at every state of the block.
 
@@ -302,7 +302,7 @@ For the discounted occupations $\Gamma_x$ of Section~\ref{ptnb:app:routing-attri
 These are the attention entry and exit instances of~\eqref{ptnb:eq:routing-Gamma-pair}.
 
 \begin{theoremenv}[$\alpha\beta$-\ac{lrp} recovery for attention, \LeanResult{ptnb:thm:attn-ab-recovery}]\label{ptnb:thm:attn-ab-recovery}\label{thm:attention_ab_recovery}\label{ptnb:thm:attention}
-For signed inputs $X$, the preceding policies with reference $A_{t,\cdot}$ and discounts~\eqref{ptnb:eq:routing-edge-discount} applied only at the sign oracle satisfies
+For signed inputs $X$, the preceding policies with reference $A_{t,\cdot}$ and discounts~\eqref{ptnb:eq:routing-edge-discount} applied only at the sign oracle satisfy
 \begin{equation}\label{ptnb:eq:attn-ab-recovery}
     \Gamma^X_{k,e}=\sum_{t,d}\left(
        \alpha\frac{A_{t,k}[X_{k,e}W_{v,e,d}]^+}{Z_{t,d}^+}
@@ -329,24 +329,24 @@ Subtracting the $r=-$ recursion from $r=+$ gives~\eqref{ptnb:eq:attn-ab-recovery
 
 \subsection{The Reference as the Policy of a QK Oracle Player}\label{ptnb:app:attention-oracle}
 
-The cached reference $A_{t,\cdot}$ suffices for Value routing. It is itself the entropy-regularized best response of an auxiliary \emph{oracle} player whose payoff is the detached query--key logit $e_{tk}=Q_tK_k^\top/\sqrt{d_h}$: by~\eqref{ptnb:eq:gibbs-lse}, at temperature $1$,
+The cached reference $A_{t,\cdot}$ suffices for Value routing. It is itself the entropy-regularized best response of an auxiliary \emph{oracle} player whose payoff is the detached query--key logit $S_{tk}=Q_tK_k^\top/\sqrt{d_h}$: by~\eqref{ptnb:eq:gibbs-lse}, at temperature $1$,
 \begin{equation}\label{ptnb:eq:attn-qk-oracle}
 \begin{gathered}
-    A_{t,\cdot}=\argmax_{\pi\in\Delta(\{1,\dots,S\})}
-      \left\{\sum_k\pi(k)e_{tk}+\Entropy(\pi)\right\},\\
-    \max_{\pi}\left\{\sum_k\pi(k)e_{tk}+\Entropy(\pi)\right\}
-      =\log\sum_k e^{e_{tk}}.
+    A_{t,\cdot}=\argmax_{\pi\in\Delta(\{1,\dots,T\})}
+      \left\{\sum_k\pi(k)S_{tk}+\Entropy(\pi)\right\},\\
+    \max_{\pi}\left\{\sum_k\pi(k)S_{tk}+\Entropy(\pi)\right\}
+      =\log\sum_k e^{S_{tk}}.
 \end{gathered}
 \end{equation}
 For masked attention, use the nonempty allowed-key set. The oracle acts in the forward pass only and hands $\bar\pi_t=A_{t,\cdot}$ to the Value-routing player; its states carry no occupation mass, so no relevance flows through $Q$ or $K$.
 
 \subsection{Risk-Averse Attention via Assumed Density Filtering}\label{ptnb:app:risk-attn}
 
-With \ac{ptnbADF} variance propagation, the implementation uses $s_{tk}=\hat\sigma_k$, the square root of the feature-averaged variance of token $k$'s query projection. This key-dependent score is a proxy, not the standard deviation of $e_{tk}$. Risk-averse attention tilts toward smaller proxy scores:
+With \ac{ptnbADF} variance propagation, the implementation uses $s_{tk}=\hat\sigma_k$, the square root of the feature-averaged variance of token $k$'s query projection. This key-dependent score is a proxy, not the standard deviation of $S_{tk}$. Risk-averse attention tilts toward smaller proxy scores:
 \begin{align}
-    \tilde e_{tk}&=e_{tk}+\lambda_{\mathrm{sm}}s_{tk},
+    \tilde S_{tk}&=S_{tk}+\lambda_{\mathrm{sm}}s_{tk},
        \qquad\lambda_{\mathrm{sm}}\le0,\label{ptnb:eq:risk-attn-policy}\\
-    \tilde\pi_t(k)&=\frac{\exp(\tilde e_{tk})}{\sum_{k'}\exp(\tilde e_{tk'})}
+    \tilde\pi_t(k)&=\frac{\exp(\tilde S_{tk})}{\sum_{k'}\exp(\tilde S_{tk'})}
        \propto A_{t,k}\exp(\lambda_{\mathrm{sm}}s_{tk}).\label{ptnb:eq:risk-attn-policy-softmax}
 \end{align}
 More-negative values penalize high scores more strongly: $\sum_k\tilde\pi_t(k)s_{tk}$ is non-decreasing in $\lambda_{\mathrm{sm}}$, while entropy may rise or fall. The shift is computed in the AV-backward hook from cached pre-softmax logits, so the forward pass and model predictions remain unchanged. Unlike activation-side $\lambda$, which lowers values by $|\lambda|\sigma$, this risk aversion changes routing rather than utility curvature.

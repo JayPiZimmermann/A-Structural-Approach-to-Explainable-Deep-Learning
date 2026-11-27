@@ -1,7 +1,7 @@
 \chapter{Game-Theoretic Framework}\label{ch:game_theory}\label{app:supp_games}
 
 The sign-separated split-streams of Chapter~\ref{ch:decompositions} expose accumulated opposing contributions. This chapter formalizes the backward-game picture of Figure~\ref{fig:game_trajectory_overview}, tracing backward rules through these contributions.
-The trajectory distributions support method design (Section~\ref{sec:risk_aversion_regularization}) and diagnostics (Chapter~\ref{ch:trajectory}). Exact recovery concerns the anchor rules; myopic temperature changes and risk-sensitive policies deform these rules. \begin{changed}Numerical experiments recover gradients with the stabilized Stopping Game and $\alpha\beta$-LRP relevance with the Routing Game to machine precision in pretrained networks (Section~\ref{sec:additional-controls}). In the ViT benchmark, changing routing improves Attribution Localization (Section~\ref{sec:results_vit}), while the full deletion/insertion controls favor LRP baselines (Section~\ref{sec:additional-controls}). These different outcomes motivate examining what each backward rule computes.\end{changed}
+The trajectory distributions support method design (Section~\ref{sec:risk_aversion_regularization}) and the trajectory-law comparisons of Chapter~\ref{ch:trajectory}. Exact recovery concerns the anchor rules; myopic temperature changes and risk-sensitive policies deform these rules. \begin{changed}Numerical experiments recover gradients with the stabilized Stopping Game and $\alpha\beta$-LRP relevance with the Routing Game to machine precision in pretrained networks (Section~\ref{sec:additional-controls}). In the ViT benchmark, changing routing improves Attribution Localization (Section~\ref{sec:results_vit}), while the full deletion/insertion controls favor LRP baselines (Section~\ref{sec:additional-controls}). These different outcomes motivate examining what each backward rule computes.\end{changed}
 
 \section{Related Work}\label{ptnb:sec:related-work}\label{sec:related_work_games}
 
@@ -116,7 +116,7 @@ laws $\Pi_x$; their discounted occupation measures $\Gamma_x$ weight visits to e
 cumulative game-specific discount (Definition~\ref{ptnb:def:occupation}).
 
 \paragraph{What the game adds to a Markov process.}
-The Markov processes that produce the trajectory distributions needed for the occupation measures can be specified independently of a game; our games underlie these Markov processes (Section~\ref{sec:trajectory_disagreement}). The contribution is the particular network-linked payoff and value construction and the exact anchor identities, rather than the necessity of game-theoretic language. The game interprets the kernels as optimal player policies and transition distributions. One player represents evidence for the prediction, the other evidence against it. The supporting and the opposing player organize signed contributions into a debate-like interpretation grounded in the network's computation. This gives routing policies a rationale beyond an arbitrarily specified kernel and makes them understandable and deformable by changing the rules of the game. Concretely, we derive routing from payoffs whose equilibrium values recover the network activations; regularizing routing yields temperature-controlled propagation, regularizing stopping yields the Softplus construction, and the value formulation identifies where to penalize uncertainty and translates this into risk-aware routing (Section~\ref{ptnb:sec:modes}). We argue that such deformations are more principled than directly modifying a Markov process. A signed Markov chain, in which the transition probabilities are replaced by signed measures, could potentially give a different framework to explain gradients or $\alpha\beta$-\ac{lrp}. It would have the same disadvantage: the signed transition measures would be hard-coded and lack a clear motivation.
+The Markov processes that produce the trajectory distributions needed for the occupation measures can be specified independently of a game; our games underlie these Markov processes (Section~\ref{sec:trajectory_disagreement}). The contribution is the particular network-linked payoff and value construction and the exact anchor identities, rather than the necessity of game-theoretic language. The game interprets the kernels as optimal player policies and transition distributions. One player represents evidence for the prediction, the other evidence against it. The supporting and the opposing player organize signed contributions into a debate-like interpretation grounded in the network's computation. This gives routing policies a rationale beyond an arbitrarily specified kernel and makes them understandable and deformable by changing the rules of the game. Concretely, we derive routing from payoffs whose equilibrium values recover the network activations; regularizing routing yields temperature-controlled propagation, regularizing stopping yields the Softplus construction, and the value formulation identifies where to penalize uncertainty and translates this into risk-aware routing (Section~\ref{ptnb:sec:modes}). We argue that such deformations are more principled than directly modifying a Markov process.
 
 \paragraph{A first example.}
 Consider $f(x)=\relu(2x_1-x_2)$ at $x=(2,1)$, where $f(x)=3$. Since the output is active, the
@@ -802,12 +802,12 @@ Replace the hard activation gate $\1[z/\sigma+\lambda>0]$ by continuation probab
 with stopping probability $1-\tilde\Phi_i^{(l)}$, where $\Phi$ is the standard normal \ac{ptnbCDF} and
 $\sigma_i^{(l)}$ is the \ac{ptnbADF} pre-activation standard deviation.
 Thus input variance remains active whenever $\tilde\Phi$ is on. For $\sigma=1$,
-$\lambda=0$, the gate has a variational interpretation using the normal density $\phi$ and quantile
+$\lambda=0$, the gate has a variational interpretation using the normal density $\varphi$ and quantile
 $\Phi^{-1}$:
 \begin{equation}\label{ptnb:eq:noisy-gate-regulariser}
-    \RegBonus_\Phi(\pi)=-\Omega_\Phi(\pi)=\phi(\Phi^{-1}(\pi)),\qquad \pi\in[0,1].
+    \RegBonus_\Phi(\pi)=-\Omega_\Phi(\pi)=\varphi(\Phi^{-1}(\pi)),\qquad \pi\in[0,1].
 \end{equation}
-As in Remark~\ref{rem:probit_gelu}, its endpoint values are zero; symmetry gives its maximum $\phi(0)=1/\sqrt{2\pi}$ at $\pi=1/2$.
+As in Remark~\ref{rem:probit_gelu}, its endpoint values are zero; symmetry gives its maximum $\varphi(0)=1/\sqrt{2\pi}$ at $\pi=1/2$.
 Like Shannon entropy, it rewards mixing.
 
 \begin{lemmaenv}[Probit dual of the soft gate]\label{ptnb:lem:noisy-gate-dual}
@@ -816,14 +816,14 @@ For every $z\in\RR$,
     \max_{\pi\in[0,1]}\{\pi z+\RegBonus_\Phi(\pi)\}
         &\quad\text{has unique maximizer }\pi^\star=\Phi(z),\label{ptnb:eq:noisy-gate-objective}\\
     \max_{\pi\in[0,1]}\{\pi z+\RegBonus_\Phi(\pi)\}
-        &=z\Phi(z)+\phi(z)=\E_{\eta\sim\mathcal N(0,1)}[\relu(z+\eta)].\label{ptnb:eq:noisy-gate-optimum}
+        &=z\Phi(z)+\varphi(z)=\E_{\eta\sim\mathcal N(0,1)}[\relu(z+\eta)].\label{ptnb:eq:noisy-gate-optimum}
 \end{align}
 \end{lemmaenv}
 \begin{proof}
-The inverse-function rule and $\phi'(y)=-y\phi(y)$ give
+The inverse-function rule and $\varphi'(y)=-y\varphi(y)$ give
 \begin{equation}\label{ptnb:eq:noisy-gate-deriv}
     \RegBonus_\Phi'(\pi)=-\Phi^{-1}(\pi),\qquad
-    \RegBonus_\Phi''(\pi)=-1/\phi(\Phi^{-1}(\pi))<0.
+    \RegBonus_\Phi''(\pi)=-1/\varphi(\Phi^{-1}(\pi))<0.
 \end{equation}
 Strict concavity and the first-order condition give $\pi^\star=\Phi(z)$; substitution and Gaussian
 integration give the displayed value. For $\sigma>0$, replace $z$ by $z+\lambda\sigma$ and
@@ -845,7 +845,7 @@ mode carries no exactness claim.\par}
 \end{remark}
 
 \paragraph{Gaussian-smoothed ReLU.}
-Replacing $\theta\Entropy$ by $\RegBonus_\Phi$ in the binary game gives value $z\Phi(z)+\phi(z)$, continuation $\Phi(z)$, and bonus $\phi(z)$ (Lemma~\ref{ptnb:lem:noisy-gate-dual}). The Softplus proofs then apply to Gaussian-smoothed-ReLU networks and their gradients.
+Replacing $\theta\Entropy$ by $\RegBonus_\Phi$ in the binary game gives value $z\Phi(z)+\varphi(z)$, continuation $\Phi(z)$, and bonus $\varphi(z)$ (Lemma~\ref{ptnb:lem:noisy-gate-dual}). The Softplus proofs then apply to Gaussian-smoothed-ReLU networks and their gradients.
 
 
 \subsection{\texorpdfstring{Fan-In Entropy Bias $\lambda_{\mathrm{ent}}$}{Fan-In Entropy Bias lambda\_ent}}\label{ptnb:app:entropy-mode}

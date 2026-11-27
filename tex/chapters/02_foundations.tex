@@ -353,7 +353,7 @@ V^{\star}(s)=
 \begin{cases}
 \max_{a\in A(s)}Q_{V^{\star}}(s,a),&s\in S_+,\\
 \min_{a\in A(s)}Q_{V^{\star}}(s,a),&s\in S_-,\\
-R(s),&s\in S_{\mathrm{ter}}.
+R(s),&s\in S_{\mathrm{ter}},
 \end{cases}
 \label{eq:shapley_bellman}
 \end{equation}
@@ -362,7 +362,7 @@ and there exist pure stationary policies $\polstar = (\polstar_{+}, \polstar_{-}
 	V^{(\polstar_{+}, \pi_{-})}(s) \;\ge\; V^{\polstar}(s) = V^{\star}(s) \;\ge\; V^{(\pi_{+}, \polstar_{-})}(s).
 	\label{eq:saddle_point}
 \end{equation}
-In particular, $V^{\star}=\max_{\pi_+}\min_{\pi_-}V^{\pi}=\min_{\pi_-}\max_{\pi_+}V^{\pi}$ is the \emph{value} of the game, and $\polstar$ is a Nash equilibrium of every subgame, i.e.\ a subgame perfect equilibrium.\end{theoremenv}
+In particular, $V^{\star}=\max_{\pi_+}\min_{\pi_-}V^{\pi}=\min_{\pi_-}\max_{\pi_+}V^{\pi}$ is the \emph{value} of the game, and $\polstar$ is a Nash equilibrium of every subgame, i.e.\ an SPNE.\end{theoremenv}
 
 \begin{proof}
 Backward induction on the finite acyclic graph starts from $V^{\star}(s)=R(s)$ at terminal states. At each remaining state, the known successor values determine $Q_{V^{\star}}$; its finite nonempty action set has an attained maximum or minimum, uniquely determining the value and a pure optimal choice.
@@ -402,7 +402,7 @@ Player $P^{+}$ maximizes and $P^{-}$ minimizes the expected discounted total pay
 Each transition decreases the layer index or terminates, so Theorem~\ref{thm:shapley_bellman} applies for arbitrary positive structural discounts. Multiplying \eqref{eq:rng_kernel} by $\gamma^{(l)}_i$ restores the sign-selected weight $\Wsig{l}{q\oplus r}_{ij}$; summing signed successor values recovers the forward affine calculation.
 
 \begin{theoremenv}[Forward pass as game value, \cite{Gaubert2025}, \LeanResult{thm:relu_net_game_value}]\label{thm:relu_net_game_value}
-The ReLU Net Game of Definition~\ref{def:relu_net_game} admits the subgame perfect equilibrium $\polstar = (\polstar_{+}, \polstar_{-})$ in which both players use the same pure stopping rule,
+The ReLU Net Game of Definition~\ref{def:relu_net_game} admits the SPNE $\polstar = (\polstar_{+}, \polstar_{-})$ in which both players use the same pure stopping rule,
 \begin{equation}
 	\polstar_{q}\bigl( s^{(l)}_{i,q} \bigr) = \mathrm{cont}
 	\quad \Longleftrightarrow \quad
@@ -650,21 +650,22 @@ Thus $\mathrm H_{\mathrm{surv}}^2=1-\mathrm{BC}_{\mathrm{surv}}$ measures disagr
 Here we apply a \emph{Doob $h$-transform} using the probability of reaching an ordinary terminal state at layer $0$ without entering $\dagger$. For backward attribution, this means reaching an input state without stopping. This survival probability, evaluated from each layer-tagged state, is the transform's function $h$; we denote it by $\psi_M^{(l)}(s)\in[0,1]$ below. The transform multiplies each transition probability by the destination's survival probability divided by the source's, when the latter is positive. The source probability equals the transition-weighted average of the destination probabilities, so the transformed row sums to one. By Bayes' rule, these are exactly the transition probabilities conditioned on survival \parencite[Section~17.6.1]{LevinPeres2017MarkovChains}.
 
 \begin{theoremenv}[Conditioned-survival laws and Hellinger distance, \LeanResult{ptnb:thm:conditioned-survival}]\label{ptnb:thm:conditioned-survival}
-For $M\in\{A,B\}$, $0\le l\le L$, and $s\in\mathcal S_+^{(l)}$, define the remaining survival probability through the kernel continued from $s$, including unreachable states:
+For $M\in\{A,B\}$, $0\le l\le L$, and $s\in\mathcal S_+^{(l)}$, define the survival probability of the process started at $s$ in layer $l$, including states unreachable from $s_0$:
 \begin{align}
- \psi_M^{(l)}(s)&=\mathbb P_M(\mathsf{Surv}\mid\zeta_l=s),
+ \psi_M^{(l)}(s)&\coloneqq\mathbb P_{M,l,s}(\zeta_0\in\mathcal S^{(0)}),
  \label{ptnb:eq:survival-function}\\
  \psi_M^{(0)}(s)&=\1\{s\in\mathcal S^{(0)}\},
  \label{ptnb:eq:survival-boundary}\\
  \psi_M^{(l)}(s)&=\sum_{s'\in\mathcal S^{(l-1)}}T_M^{(l)}(s\to s')\psi_M^{(l-1)}(s'),\qquad l\ge1,
  \label{ptnb:eq:survival-recursion}\\
- Z_M&=\mathbb P_M(\mathsf{Surv})=\psi_M^{(L)}(s_0)
+ Z_M&=\Pi_M(\mathsf{Surv})=\psi_M^{(L)}(s_0)
  =\sum_{s\in\mathcal S^{(0)}}m_M^{(0)}(s)=1-m_M^{(0)}(\dagger).
  \label{ptnb:eq:survival-mass}
 \end{align}
+Here $\mathbb P_{M,l,s}$ is the law of the process of $M$ started at $s$ in layer $l$ and moved by $T_M^{(l)},\dots,T_M^{(1)}$; at states with $m_M^{(l)}(s)>0$, $\psi_M^{(l)}(s)=\Pi_M(\mathsf{Surv}\mid\zeta_l=s)$.
 The cemetery has $\psi_M^{(l)}(\dagger)=0$ at every layer, so its term may be included in the recursion without effect.
 
-On ordinary states with $\psi_M^{(l)}(s)>0$, the Doob kernel is row-stochastic; complete zero-survival rows arbitrarily as probability distributions, with $\dagger\to\dagger$ for the cemetery, since the conditioned process never reaches them and the conditioned overlap vanishes wherever either survival probability does. Its path law is $\Pi_{M,\mathrm{surv}}$, and its ordinary-state marginals satisfy
+On ordinary states with $\psi_M^{(l)}(s)>0$, the Doob kernel~\eqref{ptnb:eq:conditioned-kernel} is row-stochastic; complete zero-survival rows arbitrarily as probability distributions, with $\dagger\to\dagger$ for the cemetery, since the conditioned process never reaches them and the conditioned overlap vanishes wherever either survival probability does. The kernel, its path law $\Pi_{M,\mathrm{surv}}$, and its ordinary-state marginals are
 \begin{align}
  T_{M,\mathrm{surv}}^{(l)}(s\to s')
  &=\frac{T_M^{(l)}(s\to s')\psi_M^{(l-1)}(s')}{\psi_M^{(l)}(s)},
@@ -685,10 +686,10 @@ Let $\widetilde T_{\mathrm{surv}}^{(l)}$ be the conditioned kernels' entrywise g
  {\sqrt{\psi_A^{(l)}(s)\psi_B^{(l)}(s)}}.
  \label{ptnb:eq:conditioned-geom-kernel}
 \end{align}
-The chain rule~\eqref{ptnb:eq:bc-chain-rule} applies to these conditioned kernels. Normalization gives
+The chain rule~\eqref{ptnb:eq:bc-chain-rule} applies to these conditioned kernels. With the ordinary overlap $\mathrm{BC}_{\mathrm{ord}}^{(0)}$ at layer $0$, normalization gives
 \begin{align}
  \mathrm{BC}_{\mathrm{ord}}^{(0)}
- &=\sum_{s\in\mathcal S^{(0)}}g^{(0)}(s)
+ &\coloneqq\sum_{s\in\mathcal S^{(0)}}g^{(0)}(s)
  =\sum_{\zeta\in\mathsf{Surv}}\sqrt{\Pi_A(\zeta)\Pi_B(\zeta)},
  \label{ptnb:eq:ordinary-bc}\\
  \mathrm{BC}_{\mathrm{surv}}&=\frac{\mathrm{BC}_{\mathrm{ord}}^{(0)}}{\sqrt{Z_AZ_B}},
